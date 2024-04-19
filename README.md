@@ -1,2 +1,7 @@
 # Sabina01-PWA
-PWA setup 
+
+To run this app locally
+please
+cd Rex
+npm i
+npm run dev ;)
