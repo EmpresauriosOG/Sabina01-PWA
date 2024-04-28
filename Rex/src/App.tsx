@@ -1,13 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import { KindeProvider } from "@kinde-oss/kinde-auth-react";
+import { Outlet } from "react-router-dom";
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
-    <>
+    <KindeProvider
+      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
+      domain="https://empresauriosog.kinde.com"
+      logoutUri={window.location.origin}
+      redirectUri={window.location.origin}
+    >
+      <Outlet />
+
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -28,8 +36,8 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
-  )
+    </KindeProvider>
+  );
 }
 
-export default App
+export default App;
