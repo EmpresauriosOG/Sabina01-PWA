@@ -1,8 +1,6 @@
-import React from "react";
-
 const Login = () => {
   console.log("Login");
-  return <div>Login</div>;
+  return <div className="bg-primary absolute h-full w-full">Login</div>;
 };
 
 export default Login;
