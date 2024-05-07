@@ -5,7 +5,6 @@ import LeftSideBar from "./shared/LeftSideBar";
 
 //ToDo: Stablish layout for Sidebar, Navbar, Footer, etc.
 function RootLayout() {
-  console.log("RootLayout");
   return (
     <div className="bg-rose-500  w-full">
       <Navbar />

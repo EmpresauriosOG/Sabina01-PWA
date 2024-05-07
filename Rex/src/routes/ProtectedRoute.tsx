@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useKindeAuth();
-  console.log("ProtectedRoute");
   return (
     <>
       {isLoading && <p>Im Loading...</p>}
