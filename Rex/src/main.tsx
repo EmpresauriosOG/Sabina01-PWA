@@ -13,51 +13,64 @@ import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import Restaurants from "./components/containers/Restaurants.tsx";
 import AdminDashboard from "./components/containers/AdminDashboard.tsx";
+import Menu from "./components/Menu.tsx";
+import Navbar from "./components/Navbar.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <RootLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: "/admin",
-            element: <AdminDashboard />,
-          },
-        ],
+    {
+        path: "/",
+        element: <RootLayout />,
         errorElement: <ErrorPage />,
-      },
-    ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
-  {
-    path: "/:restaurantId",
-    element: <Restaurants />,
-  },
+        children: [
+            {
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        path: "/admin",
+                        element: <AdminDashboard />,
+                    },
+                ],
+                errorElement: <ErrorPage />,
+            },
+        ],
+    },
+    {
+        path: "/login",
+        element: <Login />,
+    },
+    {
+        path: "/signup",
+        element: <SignUp />,
+    },
+    {
+        path: "/:restaurantId",
+        element: <Restaurants />,
+    },
+    {
+        path: "/menu",
+        element: <Navbar />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "/menu/:restaurantId",
+                element: <Menu />,
+            },
+        ],
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <KindeProvider
-      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
-      domain="https://empresauriosog.kinde.com"
-      logoutUri={"http://localhost:5173/"}
-      redirectUri={"http://localhost:5173/"}
-    >
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </KindeProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <KindeProvider
+            clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
+            domain="https://empresauriosog.kinde.com"
+            logoutUri={"http://localhost:5173/"}
+            redirectUri={"http://localhost:5173/"}
+        >
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router} />
+            </QueryClientProvider>
+        </KindeProvider>
+    </React.StrictMode>
 );
