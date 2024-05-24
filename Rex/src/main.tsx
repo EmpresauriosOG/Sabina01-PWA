@@ -15,6 +15,8 @@ import Restaurants from "./components/containers/Restaurants.tsx";
 import AdminDashboard from "./components/containers/AdminDashboard.tsx";
 import Menu from "./components/Menu.tsx";
 import Navbar from "./components/Navbar.tsx";
+import OTPTable from "./components/menu/OTPTable.tsx";
+import Tables from "./components/management/Tables.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -57,6 +59,16 @@ const router = createBrowserRouter([
                 element: <Menu />,
             },
         ],
+    },
+    {
+        path: "/otp",
+        element: <OTPTable />,
+        errorElement: <ErrorPage />,
+    },
+    {
+        path: "/tables",
+        element: <Tables />,
+        errorElement: <ErrorPage />,
     },
 ]);
 
