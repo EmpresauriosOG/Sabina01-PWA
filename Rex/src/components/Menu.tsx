@@ -40,8 +40,21 @@ import {
     GlassWater,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMenu } from "@/hooks/tanstack/getMenu";
+import { useParams } from "react-router-dom";
 
 export default function Menu() {
+    const { data, isLoading, isError } = useMenu("665239a9f25b93e429b870bc");
+
+    if (isLoading) {
+        <h1>Im cumming</h1>;
+    }
+
+    if (isError) {
+        <h1>Error</h1>;
+    }
+
+    console.log(data);
     const menuData = [
         // Main Course
         {
@@ -417,7 +430,7 @@ export default function Menu() {
     return (
         <div className="py-7 px-14">
             <div className="h-full flex justify-center mb-8">
-                <Carousel className="w-full h-[12rem] md:h-[20rem] lg:h-[25rem]">
+                <Carousel className="w-full h-[12rem] md:h-[20rem] lg:h-[25rem] -z-10">
                     <CarouselContent>
                         {promos.map((item, index) => (
                             <CarouselItem key={index} className="">
@@ -465,8 +478,7 @@ export default function Menu() {
                     {/* Menu */}
                     <div className="flex flex-col gap-8">
                         <form className="">
-                            <div className="relative">
-                                <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+                            <div className="">
                                 <Input
                                     type="search"
                                     placeholder="Search menu..."

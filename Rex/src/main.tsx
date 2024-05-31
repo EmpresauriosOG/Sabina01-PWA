@@ -11,12 +11,14 @@ import Login from "./auth/Login.tsx";
 import SignUp from "./auth/SignUp.tsx";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
-import Restaurants from "./components/containers/Restaurants.tsx";
+// import Restaurants from "./components/containers/Restaurants.tsx";
 import AdminDashboard from "./components/containers/AdminDashboard.tsx";
 import Menu from "./components/Menu.tsx";
 import Navbar from "./components/Navbar.tsx";
 import OTPTable from "./components/menu/OTPTable.tsx";
 import Tables from "./components/management/Tables.tsx";
+import Sidebar from "./components/management/Sidebar.tsx";
+import { ThemeProvider } from "./components/theme-provider.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -46,9 +48,13 @@ const router = createBrowserRouter([
         element: <SignUp />,
     },
     {
-        path: "/:restaurantId",
-        element: <Restaurants />,
+        path: "/sidebar",
+        element: <Sidebar />,
     },
+    // {
+    //     path: "/:restaurantId",
+    //     element: <Restaurants />,
+    // },
     {
         path: "/menu",
         element: <Navbar />,
@@ -80,9 +86,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             logoutUri={"http://localhost:5173/"}
             redirectUri={"http://localhost:5173/"}
         >
-            <QueryClientProvider client={queryClient}>
-                <RouterProvider router={router} />
-            </QueryClientProvider>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={router} />
+                </QueryClientProvider>
+            </ThemeProvider>
         </KindeProvider>
     </React.StrictMode>
 );
