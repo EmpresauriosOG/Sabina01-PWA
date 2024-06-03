@@ -1,8 +1,9 @@
+import { User } from "@/hooks/tanstack/getUser";
 import create from "zustand";
 
 type UserState = {
-  user: null | { given_name: string };
-  setUser: (user: null | { given_name: string }) => void;
+  user: null | User;
+  setUser: (user: User) => void;
 };
 
 export const useUserStore = create<UserState>((set) => ({
