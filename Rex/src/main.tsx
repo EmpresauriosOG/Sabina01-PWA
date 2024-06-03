@@ -9,10 +9,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./shared/ErrorPage.tsx";
 import Login from "./auth/Login.tsx";
 import SignUp from "./auth/SignUp.tsx";
-import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import Restaurants from "./components/containers/Restaurants.tsx";
 import AdminDashboard from "./components/containers/AdminDashboard.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -49,15 +49,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <KindeProvider
-      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
-      domain="https://empresauriosog.kinde.com"
-      logoutUri={"http://localhost:5173/"}
-      redirectUri={"http://localhost:5173/"}
-    >
+    <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
-    </KindeProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
