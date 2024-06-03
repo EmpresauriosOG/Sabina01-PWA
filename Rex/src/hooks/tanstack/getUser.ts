@@ -20,7 +20,7 @@ export interface User {
 }
 
 interface UserNotFoundError {
-  detail: string;
+  user: [];
 }
 
 export const fetchUser = async (email: string) => {
