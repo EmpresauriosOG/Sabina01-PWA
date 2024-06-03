@@ -10,49 +10,83 @@ import ErrorPage from "./shared/ErrorPage.tsx";
 import Login from "./auth/Login.tsx";
 import SignUp from "./auth/SignUp.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
-import Restaurants from "./components/containers/Restaurants.tsx";
+// import Restaurants from "./components/containers/Restaurants.tsx";
 import AdminDashboard from "./components/containers/AdminDashboard.tsx";
+import Menu from "./components/Menu.tsx";
+import Navbar from "./components/Navbar.tsx";
+import OTPTable from "./components/menu/OTPTable.tsx";
+import Tables from "./components/management/Tables.tsx";
+import Sidebar from "./components/management/Sidebar.tsx";
+import { ThemeProvider } from "./components/theme-provider.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <RootLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: "/admin",
-            element: <AdminDashboard />,
-          },
-        ],
+    {
+        path: "/",
+        element: <RootLayout />,
         errorElement: <ErrorPage />,
-      },
-    ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
-  {
-    path: "/:restaurantId",
-    element: <Restaurants />,
-  },
+        children: [
+            {
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        path: "/admin",
+                        element: <AdminDashboard />,
+                    },
+                ],
+                errorElement: <ErrorPage />,
+            },
+        ],
+    },
+    {
+        path: "/login",
+        element: <Login />,
+    },
+    {
+        path: "/signup",
+        element: <SignUp />,
+    },
+    {
+        path: "/sidebar",
+        element: <Sidebar />,
+    },
+    // {
+    //     path: "/:restaurantId",
+    //     element: <Restaurants />,
+    // },
+    {
+        path: "/menu",
+        element: <Navbar />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "/menu/:restaurantId",
+                element: <Menu />,
+            },
+        ],
+    },
+    {
+        path: "/otp",
+        element: <OTPTable />,
+        errorElement: <ErrorPage />,
+    },
+    {
+        path: "/tables",
+        element: <Tables />,
+        errorElement: <ErrorPage />,
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <RouterProvider router={router} />
-      </QueryClientProvider>
+        </ThemeProvider>
+      </QueryClientProvider>  
     </AuthProvider>
   </React.StrictMode>
+
 );
