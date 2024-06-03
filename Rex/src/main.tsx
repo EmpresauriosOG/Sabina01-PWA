@@ -16,77 +16,78 @@ import Menu from "./components/Menu.tsx";
 import Navbar from "./components/Navbar.tsx";
 import OTPTable from "./components/menu/OTPTable.tsx";
 import Tables from "./components/management/Tables.tsx";
-import Sidebar from "./components/management/Sidebar.tsx";
+import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
+//Context
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
-    {
+  {
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
         path: "/",
-        element: <RootLayout />,
-        errorElement: <ErrorPage />,
+        element: <ProtectedRoute />,
         children: [
-            {
-                element: <ProtectedRoute />,
-                children: [
-                    {
-                        path: "/admin",
-                        element: <AdminDashboard />,
-                    },
-                ],
-                errorElement: <ErrorPage />,
-            },
+          {
+            path: "/admin",
+            element: <AdminDashboard />,
+          },
         ],
-    },
-    {
-        path: "/login",
-        element: <Login />,
-    },
-    {
-        path: "/signup",
-        element: <SignUp />,
-    },
-    {
-        path: "/sidebar",
-        element: <Sidebar />,
-    },
-    // {
-    //     path: "/:restaurantId",
-    //     element: <Restaurants />,
-    // },
-    {
-        path: "/menu",
-        element: <Navbar />,
         errorElement: <ErrorPage />,
-        children: [
-            {
-                path: "/menu/:restaurantId",
-                element: <Menu />,
-            },
-        ],
-    },
-    {
-        path: "/otp",
-        element: <OTPTable />,
-        errorElement: <ErrorPage />,
-    },
-    {
-        path: "/tables",
-        element: <Tables />,
-        errorElement: <ErrorPage />,
-    },
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+  },
+  {
+    path: "/sidebar",
+    element: <Sidebar />,
+  },
+  // {
+  //     path: "/:restaurantId",
+  //     element: <Restaurants />,
+  // },
+  {
+    path: "/menu",
+    element: <Navbar />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/menu/:restaurantId",
+        element: <Menu />,
+      },
+    ],
+  },
+  {
+    path: "/otp",
+    element: <OTPTable />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/tables",
+    element: <Tables />,
+    errorElement: <ErrorPage />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <RouterProvider router={router} />
         </ThemeProvider>
-      </QueryClientProvider>  
+      </QueryClientProvider>
     </AuthProvider>
   </React.StrictMode>
-
 );

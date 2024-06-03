@@ -1,28 +1,16 @@
-import "./App.css";
 import { Outlet } from "react-router-dom";
-import Navbar from "./shared/Navbar";
-import LeftSideBar from "./shared/LeftSideBar";
+import "./App.css";
 
-//ToDo: Stablish layout for Sidebar, Navbar, Footer, etc.
+// Components
+import Sidebar from "./components/management/Sidebar/Sidebar";
+
 function RootLayout() {
-    return (
-        <div className="bg-rose-500  w-full">
-            <Navbar />
-            <div className="flex">
-                <LeftSideBar />
-                <section
-                    className="flex min-h-screen flex-1 flex-col
-      px-6 pb-6 pt-36 max-md:pb-14 sm:px-14"
-                >
-                    <div className="mx-auto w-full max-w-5xl">
-                        {" "}
-                        <Outlet />
-                    </div>
-                </section>
-                RightSideBar
-            </div>
-        </div>
-    );
+  return (
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <Sidebar />
+      <Outlet />
+    </div>
+  );
 }
 
 export default RootLayout;
