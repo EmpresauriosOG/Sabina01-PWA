@@ -11,10 +11,6 @@ import { Button } from "@/components/ui/button";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useRef, useState } from "react";
 
-// org_code?: string;
-// app_state?: object;
-// authUrlParams?: object;
-
 export default function SignUp() {
   console.log("SignUp");
   const { register } = useKindeAuth();

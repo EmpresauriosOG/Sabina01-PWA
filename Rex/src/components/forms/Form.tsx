@@ -31,6 +31,7 @@ const FormSchema = z.object({
 export function LoginForm() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isFoundDb, setIsFoundDB] = useState(true);
   const setUser = useUserStore((state) => state.setUser);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -46,16 +47,23 @@ export function LoginForm() {
       const userData = await fetchUser(form.getValues().email);
       console.log(userData);
       setIsLoading(false);
-      // await signInWithGoogle(); // Assuming signInWithGoogle handles authentication
-      // setUser(userData as User);
+      if ("user" in userData && userData.user.length === 0) {
+        setIsFoundDB(false);
+        return;
+      }
+      await signInWithGoogle(); // Assuming signInWithGoogle handles authentication
+      setUser(userData as User);
     } catch (err) {
       console.error("Error signing in:", err);
-      // Handle sign-in errors (e.g., display an error message)
     }
   };
 
   if (isLoading) {
     return <p>Loading...</p>;
+  }
+
+  if (!isFoundDb) {
+    return <p>Not Registered... :( </p>;
   }
 
   return (
