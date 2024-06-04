@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { useUserStore } from "@/shared/state/userState";
-import { User, fetchUser } from "@/hooks/tanstack/getUser";
 import { useState } from "react";
 
 const FormSchema = z.object({
@@ -32,7 +30,6 @@ export function LoginForm() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isFoundDb, setIsFoundDB] = useState(true);
-  const setUser = useUserStore((state) => state.setUser);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,15 +41,11 @@ export function LoginForm() {
     // Handle form submission logic here
     try {
       setIsLoading(true);
-      const userData = await fetchUser(form.getValues().email);
-      console.log(userData);
+      const found = await signInWithGoogle(form.getValues().email);
       setIsLoading(false);
-      if ("user" in userData && userData.user.length === 0) {
+      if (found !== undefined) {
         setIsFoundDB(false);
-        return;
       }
-      await signInWithGoogle(); // Assuming signInWithGoogle handles authentication
-      setUser(userData as User);
     } catch (err) {
       console.error("Error signing in:", err);
     }
