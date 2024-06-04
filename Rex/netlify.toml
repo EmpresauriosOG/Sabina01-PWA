@@ -1,3 +1,0 @@
-[build]
-  publish = "Rex/build"
-  command = "npm run build"
