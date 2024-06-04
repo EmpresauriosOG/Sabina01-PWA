@@ -1,45 +1,51 @@
 // sidebarLinks.tsx
 import {
-    BarChart,
-    ShoppingBasket,
-    ChefHat,
-    Utensils,
-    HandPlatter,
+  ShoppingBasket,
+  ChefHat,
+  Utensils,
+  HandPlatter,
+  UserPlus,
 } from "lucide-react"; // Import icons if using a library
 
 export interface SidebarLink {
-    name: string;
-    icon: JSX.Element;
-    link: string;
+  name: string;
+  icon: JSX.Element;
+  link: string;
+  roles: ["admin" | "waiter" | "chef" | "manager" | "default"];
 }
 
 const sidebarLinks: SidebarLink[] = [
-    {
-        name: "Dashboard",
-        icon: <BarChart size={16} strokeWidth={1} />,
-        link: "dashboard",
-    },
-    {
-        name: "Tables",
-        icon: <Utensils size={16} strokeWidth={1} />,
-        link: "tables",
-    },
-    {
-        name: "Orders",
-        icon: <HandPlatter size={16} strokeWidth={1} />,
-        link: "orders",
-    },
-    {
-        name: "Recipes",
-        icon: <ChefHat size={16} strokeWidth={1} />,
-        link: "recipes",
-    },
-    {
-        name: "Inventory",
-        icon: <ShoppingBasket size={16} strokeWidth={1} />,
-        link: "inventory",
-    },
-    // Add more links as needed
+  {
+    name: "Add Worker",
+    icon: <UserPlus size={16} strokeWidth={1} />,
+    link: "dashboard",
+    roles: ["admin"],
+  },
+  {
+    name: "Tables",
+    icon: <Utensils size={16} strokeWidth={1} />,
+    link: "tables",
+    roles: ["admin"],
+  },
+  {
+    name: "Orders",
+    icon: <HandPlatter size={16} strokeWidth={1} />,
+    link: "orders",
+    roles: ["admin"],
+  },
+  {
+    name: "Recipes",
+    icon: <ChefHat size={16} strokeWidth={1} />,
+    link: "recipes",
+    roles: ["admin"],
+  },
+  {
+    name: "Inventory",
+    icon: <ShoppingBasket size={16} strokeWidth={1} />,
+    link: "inventory",
+    roles: ["admin"],
+  },
+  // Add more links as needed
 ];
 
 export default sidebarLinks;
