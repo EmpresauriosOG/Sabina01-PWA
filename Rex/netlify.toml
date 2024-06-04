@@ -1,0 +1,3 @@
+[build]
+  publish = "rex/build"
+  command = "cd rex && npm run build"
