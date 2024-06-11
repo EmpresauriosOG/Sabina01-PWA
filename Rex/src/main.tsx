@@ -20,6 +20,7 @@ import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
 //Context
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
+import Staff from "./components/containers/Staff.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -33,8 +34,12 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
-            path: "/admin",
+            path: "/",
             element: <AdminDashboard />,
+          },
+          {
+            path: "/my-staff",
+            element: <Staff />,
           },
         ],
         errorElement: <ErrorPage />,
