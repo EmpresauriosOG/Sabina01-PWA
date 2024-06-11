@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) {
         throw new Error(error.message);
       }
-      setUser(userData as User);
+      setUser(userData.user[0] as User);
       return true;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

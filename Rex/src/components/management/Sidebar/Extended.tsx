@@ -12,7 +12,9 @@ import { useAuth } from "@/context/AuthContext";
 const Extended = () => {
   const { user, getRoles } = useUserStore();
   const { signOut } = useAuth();
-  const roles = getRoles() || ["default"];
+  const roles = getRoles();
+  console.log("user:", user);
+  console.log("roles:", roles);
   const onLogout = async () => {
     try {
       await signOut(); // Assuming signInWithGoogle handles authentication
@@ -42,7 +44,9 @@ const Extended = () => {
         <div className="flex">
           <nav className="flex flex-col text-sm font-light p-4 space-y-3">
             {sidebarLinks
-              .filter((item) => item.roles.some((role) => roles.includes(role)))
+              .filter((item) =>
+                item.roles.some((role) => roles?.includes(role))
+              )
               .map((item) => (
                 <Link
                   className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
