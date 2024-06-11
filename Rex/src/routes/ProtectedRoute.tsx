@@ -1,20 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { BotOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 //Hooks
 import { useUserStore } from "@/shared/state/userState";
 import { LoginForm } from "@/components/forms/Form";
+import ModalForm from "@/components/modals/ModalForm";
 const ProtectedRoute = () => {
   const { user } = useUserStore();
+  console.log(user);
   return (
     <>
       {!user && (
@@ -32,22 +24,12 @@ const ProtectedRoute = () => {
                 <p className="text-sm text-muted-foreground">
                   Porfavor inicia sesion para continuar
                 </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline">Inicia Sesion</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>Bienvenido!</DialogTitle>
-                      <DialogDescription>
-                        Recuerda utilizar las cerednciales proporcionadas,
-                        cualquier problema reportarlo con el administrador.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <LoginForm />
-                    <DialogFooter className="sm:justify-start"></DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <ModalForm
+                  buttonTitle="Inicia Sesion"
+                  dialogTitle="Bienvenido!"
+                  dialogDescription="Recuerda utilizar las credenciales proporcionadas, cualquier problema reportarlo con el administrador."
+                  form={<LoginForm />}
+                />
               </div>
             </div>
           </main>

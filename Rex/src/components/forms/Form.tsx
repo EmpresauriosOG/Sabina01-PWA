@@ -26,11 +26,13 @@ const FormSchema = z.object({
       message: "Email must be a Gmail address",
     }),
 });
+
+type FormFields = z.infer<typeof FormSchema>;
+
 export function LoginForm() {
   const { signInWithGoogle } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [isFoundDb, setIsFoundDB] = useState(true);
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       email: "",
@@ -40,18 +42,19 @@ export function LoginForm() {
   const onSubmit = async () => {
     // Handle form submission logic here
     try {
-      setIsLoading(true);
       const found = await signInWithGoogle(form.getValues().email);
-      setIsLoading(false);
       if (found !== undefined) {
         setIsFoundDB(false);
       }
     } catch (err) {
+      form.setError("root", {
+        message: "Error from service, contact support.",
+      });
       console.error("Error signing in:", err);
     }
   };
 
-  if (isLoading) {
+  if (form.formState.isSubmitting) {
     return <p>Loading...</p>;
   }
 
