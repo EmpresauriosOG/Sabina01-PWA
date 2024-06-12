@@ -9,8 +9,20 @@ import { Menu, Search } from "lucide-react";
 import sidebarLinks from "../sidebarLinks";
 //React
 import { Link } from "react-router-dom";
+import { useUserStore } from "@/shared/state/userState";
+import { useAuth } from "@/context/AuthContext";
 
 const MobileSidebar = () => {
+  const { user, getRoles } = useUserStore();
+  const roles = getRoles();
+  const { signOut } = useAuth();
+  const onLogout = async () => {
+    try {
+      await signOut(); // Assuming signInWithGoogle handles authentication
+    } catch (err) {
+      console.error("Error logging out:", err);
+    }
+  };
   return (
     <header className="flex h-14 items-center gap-4 px-4 lg:h-[60px] lg:px-6 md:hidden">
       <Sheet>
@@ -22,20 +34,29 @@ const MobileSidebar = () => {
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-sm font-light">
-            {sidebarLinks.map((item) => (
-              <Link
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
-                key={item.name}
-                to={item.link}
-              >
-                <span>{item.icon}</span>
-                <span>{item.name}</span>
-              </Link>
-            ))}
+            {sidebarLinks
+              .filter((item) =>
+                item.roles.some((role) => roles?.includes(role))
+              )
+              .map((item) => (
+                <Link
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
+                  key={item.name}
+                  to={item.link}
+                >
+                  <span>{item.icon}</span>
+                  <span>{item.name}</span>
+                </Link>
+              ))}
             <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted">
               <p>Dark Mode!</p>
               <ModeToggle></ModeToggle>
             </div>
+            {user && (
+              <Button className="self-center m-4" onClick={() => onLogout()}>
+                Logout
+              </Button>
+            )}
           </nav>
         </SheetContent>
       </Sheet>

@@ -11,15 +11,15 @@ export interface SidebarLink {
   name: string;
   icon: JSX.Element;
   link: string;
-  roles: ["admin" | "waiter" | "chef" | "manager" | "default"];
+  roles: ("admin" | "waiter" | "chef" | "manager" | "default")[];
 }
 
 const sidebarLinks: SidebarLink[] = [
   {
-    name: "Add Worker",
+    name: "Staff",
     icon: <UserPlus size={16} strokeWidth={1} />,
-    link: "dashboard",
-    roles: ["admin"],
+    link: "my-staff",
+    roles: ["admin", "manager"],
   },
   {
     name: "Tables",

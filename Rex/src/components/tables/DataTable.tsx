@@ -59,10 +59,12 @@ export function DataTable<TData, TValue>({
     <div className="rounded-md border">
       <div className="flex space-between py-4">
         <Input
-          placeholder="Filtrar emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Buscar por nombre"
+          value={
+            (table.getColumn("first_name")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("first_name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

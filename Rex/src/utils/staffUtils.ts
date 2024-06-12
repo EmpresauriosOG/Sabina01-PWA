@@ -1,4 +1,5 @@
-import { UserResponse, User } from "@/hooks/tanstack/getUser";
+import { Staff } from "@/components/Staff/constants";
+import { User } from "@/hooks/tanstack/getUser";
 import axios from "axios";
 
 export interface NoStaffFoundError {
@@ -6,8 +7,8 @@ export interface NoStaffFoundError {
 }
 
 export const fetchStaff = async (
-  location_id: string,
-  restaurant_id: string
+  restaurant_id: string,
+  location_id: string
 ) => {
   const options = {
     method: "GET",
@@ -16,7 +17,7 @@ export const fetchStaff = async (
 
   const response = await axios.request(options);
   console.log(response);
-  return response.data as UserResponse | NoStaffFoundError;
+  return response.data.user as Staff[];
 };
 
 export const submitStaff = async (data: User) => {

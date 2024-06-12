@@ -23,15 +23,6 @@ export const columns: ColumnDef<Staff>[] = [
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("email")}</div>
-    ),
-  },
-  {
     accessorKey: "first_name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="nombre" />
@@ -47,6 +38,15 @@ export const columns: ColumnDef<Staff>[] = [
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("last_name")}</div>
+    ),
+  },
+  {
+    accessorKey: "roles",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Roles" />
+    ),
+    cell: ({ row }) => (
+      <div className="font-medium">{row.getValue("roles")}</div>
     ),
   },
   {
