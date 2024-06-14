@@ -1,5 +1,6 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -29,7 +30,13 @@ const ModalForm = (props: ModalFormProps) => {
           <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
         {form}
-        <DialogFooter className="sm:justify-start"></DialogFooter>
+        <DialogFooter className="sm:justify-start">
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">
+              Cerrar
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -5,15 +5,16 @@ import { z } from "zod";
 //ShadCn
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
 
 //Components
 import EmailInput from "./FormFields/EmailInput";
 import SelectField from "./FormFields/SelectField";
 import GenericInput from "./FormFields/GenericInput";
+
+//Utils
 import { submitStaff } from "@/utils/staffUtils";
 import { Roles } from "@/hooks/tanstack/getUser";
-import { useNavigate } from "react-router-dom";
+import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 
 const FormSchema = z.object({
   email: z
@@ -41,8 +42,6 @@ interface StaffFormProps {
 
 export function StaffForm(props: StaffFormProps) {
   const { location_id, restaurant_id } = props;
-  const navigate = useNavigate();
-  const { toast } = useToast();
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -64,12 +63,8 @@ export function StaffForm(props: StaffFormProps) {
         restaurant_id: restaurant_id || "",
         roles: [form.getValues().role] as Roles[],
       };
-      await submitStaff(staff).then(() => {
-        toast({
-          description: "Usuario dado de alta correctamente.",
-        });
-        navigate("/my-staff");
-      });
+      await submitStaff(staff);
+      useFormSubmissionStore.getState().setStaffFormSubmitted(true);
     } catch (err) {
       console.log("Error adding staff:");
       form.setError("root", {
