@@ -36,3 +36,20 @@ export const submitStaff = async (data: User) => {
     throw new Error(error);
   }
 };
+
+export const deleteStaff = async (email: string) => {
+  const options = {
+    method: "DELETE",
+    url: `https://sabina01.onrender.com/user/delete-user/${email}`,
+  };
+
+  try {
+    const response = await axios.request(options);
+    console.log(response.data);
+    return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Oops");
+    throw new Error(error);
+  }
+};

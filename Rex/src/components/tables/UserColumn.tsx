@@ -1,25 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Staff } from "../Staff/constants";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "../ui/button";
 import { DataTableColumnHeader } from "./ColumnHeader";
+import DeleteToast from "./DeleteToast";
 
 export const columns: ColumnDef<Staff>[] = [
   {
-    accessorKey: "status",
+    accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="status" />
+      <DataTableColumnHeader column={column} title="email" />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("status")}</div>
+      <div className="font-medium">{row.getValue("email")}</div>
     ),
   },
   {
@@ -50,30 +41,9 @@ export const columns: ColumnDef<Staff>[] = [
     ),
   },
   {
-    accessorKey: "Actions",
+    accessorKey: "Opciones",
     cell: ({ row }) => {
-      const email = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(email.email)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <DeleteToast item={row.getValue("email")} />;
     },
   },
 ];
