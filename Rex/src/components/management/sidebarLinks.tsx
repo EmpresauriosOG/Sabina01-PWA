@@ -2,7 +2,7 @@
 import {
   ShoppingBasket,
   ChefHat,
-  Utensils,
+  BoxesIcon,
   HandPlatter,
   UserPlus,
 } from "lucide-react"; // Import icons if using a library
@@ -22,10 +22,10 @@ const sidebarLinks: SidebarLink[] = [
     roles: ["admin", "manager"],
   },
   {
-    name: "Tables",
-    icon: <Utensils size={16} strokeWidth={1} />,
-    link: "tables",
-    roles: ["admin"],
+    name: "Inventario",
+    icon: <BoxesIcon size={16} strokeWidth={1} />,
+    link: "inventory",
+    roles: ["admin", "manager"],
   },
   {
     name: "Orders",

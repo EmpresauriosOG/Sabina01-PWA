@@ -35,6 +35,7 @@ const Staff = () => {
   }
 
   return (
+    //Not sure if you need to move this styles @Braun
     <div className="container mx-auto py-10 bg-slate-500">
       <DataTable columns={columns} data={data} />
     </div>
