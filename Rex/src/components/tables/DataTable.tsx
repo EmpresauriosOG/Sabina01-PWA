@@ -20,22 +20,21 @@ import {
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
 import { Input } from "@/components/ui/input";
-//Components
-import ModalForm from "../modals/ModalForm";
-import { StaffForm } from "../forms/StaffForm";
-import { useUserStore } from "@/shared/state/userState";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filter: string;
+  Modal: JSX.Element;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filter,
+  Modal,
 }: DataTableProps<TData, TValue>) {
   //state
-  const { user } = useUserStore();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -59,26 +58,16 @@ export function DataTable<TData, TValue>({
     <div className="rounded-md border">
       <div className="flex space-between py-4">
         <Input
-          placeholder="Buscar por nombre"
+          placeholder="Buscar"
           value={
-            (table.getColumn("first_name")?.getFilterValue() as string) ?? ""
+            (table.getColumn(`${filter}`)?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("first_name")?.setFilterValue(event.target.value)
+            table.getColumn(`${filter}`)?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <ModalForm
-          buttonTitle="Agregar Staff"
-          dialogTitle="Completa el formulario"
-          dialogDescription="Siempre puedes eliminar / modificar despues"
-          form={
-            <StaffForm
-              location_id={user?.location_id}
-              restaurant_id={user?.restaurant_id}
-            />
-          }
-        />
+        {Modal}
       </div>
       <Table>
         {/* //Table Header */}
