@@ -15,6 +15,7 @@ interface GenericInputProps {
   placeholder: string;
   formLabel: string;
   formDescription: string;
+  isNumber?: boolean;
 }
 
 const GenericInput = (props: GenericInputProps) => {
@@ -27,7 +28,11 @@ const GenericInput = (props: GenericInputProps) => {
         <FormItem>
           <FormLabel>{formLabel}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            {props.isNumber ? (
+              <Input placeholder={placeholder} {...field} type="number" />
+            ) : (
+              <Input placeholder={placeholder} {...field} />
+            )}
           </FormControl>
           <FormDescription>{formDescription}</FormDescription>
           <FormMessage />

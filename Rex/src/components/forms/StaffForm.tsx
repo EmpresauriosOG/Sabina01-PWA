@@ -101,6 +101,7 @@ export function StaffForm(props: StaffFormProps) {
           formLabel="Rol"
           formDescription="Selecciona el rol del usuario"
           selectItems={[Roles.admin, Roles.manager, Roles.staff, Roles.waiter]}
+          name="role"
         />
         <Button type="submit" disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting ? "Agregando..." : "Agregar"}

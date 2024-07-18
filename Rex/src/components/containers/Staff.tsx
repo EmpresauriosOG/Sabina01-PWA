@@ -4,13 +4,13 @@ import { useStaff } from "@/hooks/tanstack/getStaff";
 import { useUserStore } from "@/shared/state/userState";
 import { useEffect } from "react";
 import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import StaffModal from "../modals/StaffModal";
 
 const Staff = () => {
   const { user } = useUserStore();
   const staffFormSubmitted = useFormSubmissionStore(
     (state) => state.staffFormSubmitted
   );
-  console.log("staffFormSubmitted", staffFormSubmitted);
   const {
     data = [],
     isLoading,
@@ -37,7 +37,17 @@ const Staff = () => {
   return (
     //Not sure if you need to move this styles @Braun
     <div className="container mx-auto py-10 bg-slate-500">
-      <DataTable columns={columns} data={data} />
+      <DataTable
+        columns={columns}
+        data={data}
+        filter="first_name"
+        Modal={
+          <StaffModal
+            location_id={user?.location_id ?? ""}
+            restaurant_id={user?.restaurant_id ?? ""}
+          />
+        }
+      />
     </div>
   );
 };

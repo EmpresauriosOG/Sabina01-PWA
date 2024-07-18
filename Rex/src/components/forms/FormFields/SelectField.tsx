@@ -20,21 +20,22 @@ interface SelectFieldProps {
   formLabel: string;
   formDescription: string;
   selectItems: string[];
+  name: string;
 }
 
 const SelectField = (props: SelectFieldProps) => {
-  const { form, formLabel, formDescription, selectItems } = props;
+  const { form, formLabel, formDescription, selectItems, name } = props;
   return (
     <FormField
       control={form.control}
-      name="role"
+      name={name}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{formLabel}</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder="Select a verified email to display" />
+                <SelectValue placeholder="Selecciona" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
