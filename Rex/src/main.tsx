@@ -21,7 +21,7 @@ import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import Staff from "./components/containers/Staff.tsx";
-import Inventory from "./components/containers/Inventory.tsx";
+import Inventory from "./components/containers/Inventory/Inventory.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
