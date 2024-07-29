@@ -6,7 +6,7 @@ const Inventory = () => {
       <Tabs defaultValue="ingredientes" className="container">
         <TabsList>
           <TabsTrigger value="ingredientes">Ingredientes</TabsTrigger>
-          <TabsTrigger value="platillos">Platillos</TabsTrigger>
+          <TabsTrigger value="platillos">Otros</TabsTrigger>
         </TabsList>
         <TabsContent value="ingredientes">
           <Ingredients />

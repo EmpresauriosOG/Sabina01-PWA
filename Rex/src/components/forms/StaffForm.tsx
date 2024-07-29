@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useToast } from "@/components/ui/use-toast";
 
 //ShadCn
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ interface StaffFormProps {
 
 export function StaffForm(props: StaffFormProps) {
   const { location_id, restaurant_id } = props;
+  const { toast } = useToast();
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -63,7 +65,12 @@ export function StaffForm(props: StaffFormProps) {
         restaurant_id: restaurant_id || "",
         roles: [form.getValues().role] as Roles[],
       };
-      await submitStaff(staff);
+      await submitStaff(staff).then(() => {
+        toast({
+          description: `${staff.first_name} agregado.`,
+        });
+        form.reset();
+      });
       useFormSubmissionStore.getState().setStaffFormSubmitted(true);
     } catch (err) {
       console.log("Error adding staff:");

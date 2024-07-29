@@ -7,4 +7,5 @@ export interface Ingredient {
   stock: number | string;
   type: string;
   unit: string;
+  id: string;
 }

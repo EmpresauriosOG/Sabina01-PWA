@@ -24,7 +24,7 @@ export const fetchIngredients = async (restaurant_id: string) => {
   }
 };
 
-export const submitIngredient = async (data: Ingredient) => {
+export const submitIngredient = async (data: Omit<Ingredient, "id">) => {
   const options = {
     method: "POST",
     url: "https://sabina01.onrender.com/ingredients/upload-new-ingredient",

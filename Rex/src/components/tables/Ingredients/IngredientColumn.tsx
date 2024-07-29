@@ -2,7 +2,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "../ColumnHeader";
 import DeleteToast from "../DeleteToast";
 import { Ingredient } from "./types";
+import ModifyButton from "../ModifyButton";
 
+//@Braun Check styles
 export const columns: ColumnDef<Ingredient>[] = [
   {
     accessorKey: "name",
@@ -49,11 +51,18 @@ export const columns: ColumnDef<Ingredient>[] = [
       <div className="font-medium">{row.getValue("expiration")}</div>
     ),
   },
-
-  // {
-  //   accessorKey: "Opciones",
-  //   cell: ({ row }) => {
-  //     return <DeleteToast item={row.getValue("email")} />;
-  //   },
-  // },
+  {
+    accessorKey: "id",
+    header: () => <div>Opciones</div>,
+    cell: ({ row }) => {
+      const data = row.original;
+      return (
+        //@Braun Check styles
+        <>
+          <DeleteToast item={row.getValue("id")} />
+          <ModifyButton ingredient={data} />
+        </>
+      );
+    },
+  },
 ];

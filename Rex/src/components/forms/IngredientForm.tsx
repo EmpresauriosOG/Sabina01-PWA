@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useToast } from "../ui/use-toast";
 
 //ShadCn
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ interface IngredientFormProps {
 
 export function IngredientForm(props: IngredientFormProps) {
   const { location_id, restaurant_id } = props;
+  const { toast } = useToast();
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -66,8 +68,13 @@ export function IngredientForm(props: IngredientFormProps) {
         restaurant_id: restaurant_id || "",
         min_stock: 0,
       };
-      await submitIngredient(ingredient);
-      useFormSubmissionStore.getState().setIngredientFormSubmitted(true);
+      await submitIngredient(ingredient).then(() => {
+        toast({
+          description: `${ingredient.name} agregado.`,
+        });
+        form.reset();
+        useFormSubmissionStore.getState().setIngredientFormSubmitted(true);
+      });
     } catch (err) {
       console.log("Error adding ingredient:");
       form.setError("root", {
