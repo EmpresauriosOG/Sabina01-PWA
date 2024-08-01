@@ -13,11 +13,13 @@ import GenericInput from "./FormFields/GenericInput";
 
 //Utils
 import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
-import { submitIngredient } from "@/utils/ingredientUtils";
+import { submitIngredient, updateIngredient } from "@/utils/ingredientUtils";
+//Constants and types
 import {
   IngredientTypeOptions,
   UnitTypeOptions,
 } from "../containers/Inventory/constants";
+import { Ingredient } from "../tables/Ingredients/types";
 
 const FormSchema = z.object({
   name: z.string().refine((name) => name.length >= 3, {
@@ -39,53 +41,92 @@ type FormFields = z.infer<typeof FormSchema>;
 interface IngredientFormProps {
   location_id?: string;
   restaurant_id?: string;
+  isModify?: boolean;
+  ingredientToModify?: Ingredient;
 }
 
 export function IngredientForm(props: IngredientFormProps) {
-  const { location_id, restaurant_id } = props;
+  const { location_id, restaurant_id, ingredientToModify, isModify } = props;
   const { toast } = useToast();
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      type: "",
-      stock: "0",
-      unit: "",
-      expiration: "0",
+      name: ingredientToModify?.name || "",
+      type: ingredientToModify?.type || "",
+      stock: ingredientToModify?.stock.toString() || "0",
+      unit: ingredientToModify?.unit || "",
+      expiration: ingredientToModify?.expiration.toString() || "0",
     },
   });
 
+  //ToDO: Remove this to a utils file
   const onSubmit = async () => {
     // Handle form submission logic here
-    try {
-      const ingredient = {
-        name: form.getValues().name,
-        type: form.getValues().type,
-        unit: form.getValues().unit,
-        stock: form.getValues().stock,
-        expiration: form.getValues().expiration,
-        location_id: location_id || "",
-        restaurant_id: restaurant_id || "",
-        min_stock: 0,
-      };
-      await submitIngredient(ingredient).then(() => {
+    const ingredient = {
+      name: form.getValues().name,
+      type: form.getValues().type,
+      unit: form.getValues().unit,
+      stock: form.getValues().stock,
+      expiration: form.getValues().expiration,
+      location_id: location_id || "",
+      restaurant_id: restaurant_id || "",
+      min_stock: 0,
+    };
+    await submitIngredient(ingredient)
+      .then(() => {
         toast({
           description: `${ingredient.name} agregado.`,
         });
         form.reset();
         useFormSubmissionStore.getState().setIngredientFormSubmitted(true);
+      })
+      .catch((error) => {
+        console.log("Error adding ingredient:", error);
+        form.setError("root", {
+          message: "Error agregando ingrediente",
+        });
       });
-    } catch (err) {
-      console.log("Error adding ingredient:");
-      form.setError("root", {
-        message: "Error agregando ingrediente",
+  };
+
+  //ToDO: Remove this to a utils file
+  const onSubmitModify = async () => {
+    // Handle form submission logic here
+    const ingredient = {
+      name: form.getValues().name,
+      type: form.getValues().type,
+      unit: form.getValues().unit,
+      stock: form.getValues().stock,
+      expiration: form.getValues().expiration,
+      location_id: location_id || "",
+      restaurant_id: restaurant_id || "",
+      min_stock: 0,
+      id: ingredientToModify?.id || "",
+    };
+    await updateIngredient(ingredient)
+      .then(() => {
+        toast({
+          description: `${ingredient.name} Modificado.`,
+        });
+        useFormSubmissionStore.getState().setIngredientFormSubmitted(true);
+      })
+      .catch((error) => {
+        console.log("Error modificando ingrediente:", error);
+        form.setError("root", {
+          message: "Error modificando ingrediente",
+        });
       });
-    }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form
+        onSubmit={
+          isModify
+            ? form.handleSubmit(onSubmit)
+            : form.handleSubmit(onSubmitModify)
+        }
+        className="w-2/3 space-y-6"
+      >
         <GenericInput
           form={form}
           name="name"

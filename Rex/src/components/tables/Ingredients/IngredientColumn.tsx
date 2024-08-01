@@ -60,7 +60,11 @@ export const columns: ColumnDef<Ingredient>[] = [
         //@Braun Check styles
         <>
           <DeleteToast item={row.getValue("id")} />
-          <ModifyButton ingredient={data} />
+          <ModifyButton
+            dialogTitle="Modificar Ingrediente"
+            dialogDescription="Ingresa"
+            ingredient={data}
+          />
         </>
       );
     },

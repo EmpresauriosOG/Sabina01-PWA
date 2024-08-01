@@ -16,6 +16,7 @@ const IngredientModal = (props: IngredientModalProps) => {
         <IngredientForm
           location_id={props.location_id}
           restaurant_id={props.restaurant_id}
+          isModify={false}
         />
       }
     />

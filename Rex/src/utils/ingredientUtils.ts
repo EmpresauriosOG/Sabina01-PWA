@@ -41,3 +41,19 @@ export const submitIngredient = async (data: Omit<Ingredient, "id">) => {
     throw new Error(error);
   }
 };
+
+export const updateIngredient = async (data: Ingredient) => {
+  const options = {
+    method: "PUT",
+    url: `https://sabina01.onrender.com/ingredients/update/${data.id}`,
+    data,
+  };
+  try {
+    const response = await axios.request(options);
+    return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Oops");
+    throw new Error(error);
+  }
+};
