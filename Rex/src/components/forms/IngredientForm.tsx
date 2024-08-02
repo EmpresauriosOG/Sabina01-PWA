@@ -170,7 +170,7 @@ export function IngredientForm(props: IngredientFormProps) {
         />
 
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Agregando..." : "Agregar"}
+          {form.formState.isSubmitting ? "Agregando..." : "Ok"}
         </Button>
         {form.formState.errors.root && (
           <div className="text-red-500">

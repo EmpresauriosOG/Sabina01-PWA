@@ -22,7 +22,7 @@ interface ModifyButtonProps {
 }
 
 const ModifyButton = (props: ModifyButtonProps) => {
-  const { dialogDescription, dialogTitle } = props;
+  const { dialogDescription, dialogTitle, ingredient } = props;
   const { user } = useUserStore();
   return (
     <Dialog>
@@ -40,6 +40,7 @@ const ModifyButton = (props: ModifyButtonProps) => {
           location_id={user?.location_id}
           restaurant_id={user?.restaurant_id}
           isModify={false}
+          ingredientToModify={ingredient}
         />
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
