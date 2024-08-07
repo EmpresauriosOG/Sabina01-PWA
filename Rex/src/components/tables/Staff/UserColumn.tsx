@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Staff } from "../Staff/constants";
-import { DataTableColumnHeader } from "./ColumnHeader";
-import DeleteToast from "./DeleteToast";
+import { Staff } from "../../Staff/constants";
+import { DataTableColumnHeader } from "../ColumnHeader";
+import DeleteToast from "../DeleteToast";
+import ModifyButton from "../Ingredients/ModifyButton";
 
 export const columns: ColumnDef<Staff>[] = [
   {
@@ -43,7 +44,18 @@ export const columns: ColumnDef<Staff>[] = [
   {
     accessorKey: "Opciones",
     cell: ({ row }) => {
-      return <DeleteToast item={row.getValue("email")} />;
+      const data = row.original;
+      return (
+        //@Braun Check styles
+        <>
+          <DeleteToast item={row.getValue("email")} />
+          <ModifyButton
+            dialogTitle="Modificar Personal"
+            dialogDescription="Ingresa"
+            item={{ ...data, itemName: "staff" } as Staff}
+          />
+        </>
+      );
     },
   },
 ];
