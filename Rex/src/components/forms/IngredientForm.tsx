@@ -122,8 +122,8 @@ export function IngredientForm(props: IngredientFormProps) {
       <form
         onSubmit={
           isModify
-            ? form.handleSubmit(onSubmit)
-            : form.handleSubmit(onSubmitModify)
+            ? form.handleSubmit(onSubmitModify)
+            : form.handleSubmit(onSubmit)
         }
         className="w-2/3 space-y-6"
       >

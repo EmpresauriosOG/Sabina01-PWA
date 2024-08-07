@@ -57,3 +57,18 @@ export const updateIngredient = async (data: Ingredient) => {
     throw new Error(error);
   }
 };
+
+export const deleteIngredient = async (id: string) => {
+  const options = {
+    method: "DELETE",
+    url: `https://sabina01.onrender.com/ingredients/delete-ingredient/${id}`,
+  };
+  try {
+    const response = await axios.request(options);
+    return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Oops");
+    throw new Error(error);
+  }
+};

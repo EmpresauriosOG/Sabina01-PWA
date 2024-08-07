@@ -8,4 +8,5 @@ export interface Ingredient {
   type: string;
   unit: string;
   id: string;
+  itemName?: string;
 }

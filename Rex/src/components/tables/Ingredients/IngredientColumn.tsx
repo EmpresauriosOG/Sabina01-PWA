@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "../ColumnHeader";
-import DeleteToast from "../DeleteToast";
 import { Ingredient } from "./types";
-import ModifyButton from "../ModifyButton";
+import ModifyButton from "./ModifyButton";
+import DeleteIngredientToast from "./DeleteIngredient";
 
 //@Braun Check styles
 export const columns: ColumnDef<Ingredient>[] = [
@@ -59,11 +59,11 @@ export const columns: ColumnDef<Ingredient>[] = [
       return (
         //@Braun Check styles
         <>
-          <DeleteToast item={row.getValue("id")} />
+          <DeleteIngredientToast item={row.getValue("id")} />
           <ModifyButton
             dialogTitle="Modificar Ingrediente"
             dialogDescription="Ingresa"
-            ingredient={data}
+            item={{ ...data, itemName: "ingredient" } as Ingredient}
           />
         </>
       );
