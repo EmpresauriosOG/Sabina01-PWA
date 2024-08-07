@@ -1,4 +1,4 @@
-import { columns } from "../tables/UserColumn";
+import { columns } from "../tables/Staff/UserColumn";
 import { DataTable } from "../tables/DataTable";
 import { useStaff } from "@/hooks/tanstack/getStaff";
 import { useUserStore } from "@/shared/state/userState";

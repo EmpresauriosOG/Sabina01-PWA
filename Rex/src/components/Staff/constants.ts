@@ -1,6 +1,7 @@
 import { Roles, User } from "@/hooks/tanstack/getUser";
 export interface Staff extends User {
   status?: string;
+  itemName?: string;
 }
 
 export const staff: Staff[] = [

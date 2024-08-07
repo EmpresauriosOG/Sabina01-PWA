@@ -53,3 +53,20 @@ export const deleteStaff = async (email: string) => {
     throw new Error(error);
   }
 };
+
+export const modifyStaff = async (data: User) => {
+  const options = {
+    method: "PUT",
+    url: `https://sabina01.onrender.com/user/update/${data.email}`,
+    data,
+  };
+  try {
+    const response = await axios.request(options);
+    console.log(response.data);
+    return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Oops");
+    throw new Error(error);
+  }
+};

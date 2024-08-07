@@ -13,9 +13,10 @@ import SelectField from "./FormFields/SelectField";
 import GenericInput from "./FormFields/GenericInput";
 
 //Utils
-import { submitStaff } from "@/utils/staffUtils";
+import { modifyStaff, submitStaff } from "@/utils/staffUtils";
 import { Roles } from "@/hooks/tanstack/getUser";
 import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { Staff } from "../Staff/constants";
 
 const FormSchema = z.object({
   email: z
@@ -39,18 +40,20 @@ type FormFields = z.infer<typeof FormSchema>;
 interface StaffFormProps {
   location_id?: string;
   restaurant_id?: string;
+  isModify?: boolean;
+  staffToModify?: Staff;
 }
 
 export function StaffForm(props: StaffFormProps) {
-  const { location_id, restaurant_id } = props;
+  const { location_id, restaurant_id, isModify, staffToModify } = props;
   const { toast } = useToast();
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: "@gmail.com",
-      first_name: "Joe",
-      last_name: "Doe",
-      role: "waiter",
+      email: staffToModify?.email || "@gmail.com",
+      first_name: staffToModify?.first_name || "",
+      last_name: staffToModify?.last_name || "",
+      role: staffToModify?.roles[0] || "",
     },
   });
 
@@ -80,9 +83,42 @@ export function StaffForm(props: StaffFormProps) {
     }
   };
 
+  //ToDO: Remove this to a utils file
+  const onSubmitModify = async () => {
+    // Handle form submission logic here
+    const staff = {
+      first_name: form.getValues().first_name,
+      last_name: form.getValues().last_name,
+      email: form.getValues().email,
+      location_id: location_id || "",
+      restaurant_id: restaurant_id || "",
+      roles: [form.getValues().role] as Roles[],
+    };
+    await modifyStaff(staff)
+      .then(() => {
+        toast({
+          description: `${staff.email} Modificado.`,
+        });
+        useFormSubmissionStore.getState().setStaffFormSubmitted(true);
+      })
+      .catch((error) => {
+        console.log("Error modificando al staff:", error);
+        form.setError("root", {
+          message: "Error modificando staff",
+        });
+      });
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form
+        onSubmit={
+          isModify
+            ? form.handleSubmit(onSubmitModify)
+            : form.handleSubmit(onSubmit)
+        }
+        className="w-2/3 space-y-6"
+      >
         <GenericInput
           form={form}
           name="first_name"
