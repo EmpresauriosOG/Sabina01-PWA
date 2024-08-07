@@ -147,7 +147,7 @@ export function StaffForm(props: StaffFormProps) {
           name="role"
         />
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Agregando..." : "Agregar"}
+          {form.formState.isSubmitting ? "Espera..." : "Ok"}
         </Button>
         {form.formState.errors.root && (
           <div className="text-red-500">
