@@ -37,7 +37,7 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
       special_instructions: text.trim(),
     };
 
-    setCards((pv) => [...pv, newCard]);
+    //setCards((pv) => [...pv, newCard]);
 
     setAdding(false);
     setText("");
