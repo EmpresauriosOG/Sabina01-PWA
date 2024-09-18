@@ -17,11 +17,13 @@ import Navbar from "./components/Navbar.tsx";
 import OTPTable from "./components/menu/OTPTable.tsx";
 import Tables from "./components/management/Tables.tsx";
 import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
+import Staff from "./components/containers/Staff.tsx";
+import Inventory from "./components/containers/Inventory/Inventory.tsx";
 //Context
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
-import Staff from "./components/containers/Staff.tsx";
-import Inventory from "./components/containers/Inventory/Inventory.tsx";
+import OrderContainer from "./components/containers/Orders/OrderContainer.tsx";
+import RestaurantTables from "./components/containers/RestaurantTables/RestaurantTables.tsx";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
           {
             path: "/inventory",
             element: <Inventory />,
+          },
+          {
+            path: "/orders",
+            element: <OrderContainer />,
+          },
+          {
+            path: "/tables",
+            element: <RestaurantTables />,
           },
         ],
         errorElement: <ErrorPage />,
