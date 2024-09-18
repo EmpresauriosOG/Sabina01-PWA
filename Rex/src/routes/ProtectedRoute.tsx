@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
   return (
     <>
       {!user && (
-        <div className="h-full p-4">
+        <div className="h-screen p-4 ">
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted border rounded-lg h-full">
             <div
               className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
