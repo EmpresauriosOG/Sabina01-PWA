@@ -5,6 +5,7 @@ import {
   BoxesIcon,
   HandPlatter,
   UserPlus,
+  Table,
 } from "lucide-react"; // Import icons if using a library
 
 export interface SidebarLink {
@@ -31,7 +32,13 @@ const sidebarLinks: SidebarLink[] = [
     name: "Orders",
     icon: <HandPlatter size={16} strokeWidth={1} />,
     link: "orders",
-    roles: ["admin"],
+    roles: ["admin", "manager"],
+  },
+  {
+    name: "Tables",
+    icon: <Table size={16} strokeWidth={1} />,
+    link: "tables",
+    roles: ["admin", "manager"],
   },
   {
     name: "Recipes",
