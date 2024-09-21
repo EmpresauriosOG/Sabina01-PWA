@@ -72,8 +72,8 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
   );
 
   return (
-    //ToDO: Check this container. Need to be responsive
-    <div className="flex h-full w-full gap-3 overflow-scroll p-12">
+    //ToDO: Check this container. map Order COlumns
+    <div className="flex flex-col md:flex-row h-full w-full gap-3 overflow-x-auto p-4 md:p-12">
       <OrderColumn
         title="Pedidos"
         column={1}
