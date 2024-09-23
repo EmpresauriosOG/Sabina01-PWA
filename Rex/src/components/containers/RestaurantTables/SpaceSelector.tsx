@@ -66,6 +66,7 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
           value={newSpaceName}
           onChange={(e) => setNewSpaceName(e.target.value)}
           placeholder="New space name"
+          className="bg-white" // Add this line to set the background color of the input to white
         />
         <Button onClick={handleAddSpace}>Add Space</Button>
       </div>

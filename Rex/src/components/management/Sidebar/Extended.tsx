@@ -7,22 +7,14 @@ import sidebarLinks from "../sidebarLinks";
 import { Button } from "@/components/ui/button";
 //Hook
 import { useUserStore } from "@/shared/state/userState";
-import { useAuth } from "@/context/AuthContext";
+import { useClerk } from "@clerk/clerk-react";
 
 const Extended = () => {
-  const { user, getRoles } = useUserStore();
-  const { signOut } = useAuth();
+  const { user, getRoles, setUser } = useUserStore();
   const roles = getRoles();
   console.log("user:", user);
   console.log("roles:", roles);
-  const onLogout = async () => {
-    try {
-      await signOut(); // Assuming signInWithGoogle handles authentication
-    } catch (err) {
-      console.error("Error logging out:", err);
-    }
-  };
-
+  const { signOut } = useClerk();
   return (
     <aside className="hidden md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -64,7 +56,13 @@ const Extended = () => {
           </nav>
         </div>
         {user && (
-          <Button className="self-center m-4" onClick={() => onLogout()}>
+          <Button
+            className="self-center m-4"
+            onClick={() => {
+              signOut({ redirectUrl: "/" });
+              setUser(null);
+            }}
+          >
             Logout
           </Button>
         )}

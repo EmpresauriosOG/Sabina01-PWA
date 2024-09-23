@@ -10,19 +10,12 @@ import sidebarLinks from "../sidebarLinks";
 //React
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/shared/state/userState";
-import { useAuth } from "@/context/AuthContext";
+import { useClerk } from "@clerk/clerk-react";
 
 const MobileSidebar = () => {
-  const { user, getRoles } = useUserStore();
+  const { user, getRoles, setUser } = useUserStore();
+  const { signOut } = useClerk();
   const roles = getRoles();
-  const { signOut } = useAuth();
-  const onLogout = async () => {
-    try {
-      await signOut(); // Assuming signInWithGoogle handles authentication
-    } catch (err) {
-      console.error("Error logging out:", err);
-    }
-  };
   return (
     <header className="flex h-14 items-center gap-4 px-4 lg:h-[60px] lg:px-6 md:hidden">
       <Sheet>
@@ -53,7 +46,13 @@ const MobileSidebar = () => {
               <ModeToggle></ModeToggle>
             </div>
             {user && (
-              <Button className="self-center m-4" onClick={() => onLogout()}>
+              <Button
+                className="self-center m-4"
+                onClick={() => {
+                  signOut({ redirectUrl: "/" });
+                  setUser(null);
+                }}
+              >
                 Logout
               </Button>
             )}
