@@ -1,8 +1,13 @@
+import { Order, updateOrder } from "@/utils/orderUtils";
 import { Flame, Trash2 } from "lucide-react";
 import { useState } from "react";
 
+interface BurnBarrelProps {
+  setCards: React.Dispatch<React.SetStateAction<Order[]>>;
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const BurnBarrel = ({ setCards }: any) => {
+const BurnBarrel = ({ setCards }: BurnBarrelProps) => {
   const [active, setActive] = useState(false);
 
   const handleDragOver = (e: any) => {
@@ -14,12 +19,19 @@ const BurnBarrel = ({ setCards }: any) => {
     setActive(false);
   };
 
-  const handleDragEnd = (e: any) => {
+  const handleDragEnd = async (e: any) => {
     const cardId = e.dataTransfer.getData("cardId");
-
-    setCards((pv: any) => pv.filter((c: any) => c.id !== cardId));
-
-    setActive(false);
+    if (!cardId) {
+      console.error("No card ID found in drag event");
+      return;
+    }
+    try {
+      await updateOrder(cardId, 5); // Assuming column 5 is the "burned" column
+      setCards((prevCards) => prevCards.filter((card) => card.id !== cardId));
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+      // Handle error (e.g., show a notification to the user)
+    }
   };
 
   return (
