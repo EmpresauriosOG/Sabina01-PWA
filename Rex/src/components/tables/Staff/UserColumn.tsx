@@ -46,15 +46,14 @@ export const columns: ColumnDef<Staff>[] = [
     cell: ({ row }) => {
       const data = row.original;
       return (
-        //@Braun Check styles
-        <>
+        <div className="flex items-center space-x-2">
           <DeleteToast item={row.getValue("email")} />
           <ModifyButton
             dialogTitle="Modificar Personal"
             dialogDescription="Ingresa"
             item={{ ...data, itemName: "staff" } as Staff}
           />
-        </>
+        </div>
       );
     },
   },

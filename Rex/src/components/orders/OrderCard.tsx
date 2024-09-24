@@ -60,10 +60,10 @@ const OrderCard = ({ order, column, handleDragStart }: OrderCardProps) => {
         onDragStart={(e) => handleDragStart(e, { ...order })}
         className="cursor-grab active:cursor-grabbing mb-2"
       >
-        <Card className="w-full bg-neutral-800 border-neutral-700">
+        <Card className="w-full">
           <CardContent className="p-3">
             {order.items.map((dish, index) => (
-              <p key={index} className="text-sm text-neutral-200">
+              <p key={index} className="text-sm">
                 {dish.dish_name} x{dish.quantity}
               </p>
             ))}
@@ -75,13 +75,13 @@ const OrderCard = ({ order, column, handleDragStart }: OrderCardProps) => {
                 <CollapsibleTrigger asChild>
                   <Button
                     variant="link"
-                    className="p-0 h-auto text-xs md:text-sm text-neutral-400"
+                    className="p-0 h-auto text-xs md:text-sm"
                   >
                     {isInstructionsOpen ? "Hide" : "Show"} Special Instructions
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-2">
-                  <p className="text-xs md:text-sm text-neutral-300">
+                  <p className="text-xs md:text-sm">
                     {order.special_instructions}
                   </p>
                 </CollapsibleContent>

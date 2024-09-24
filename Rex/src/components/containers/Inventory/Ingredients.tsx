@@ -33,7 +33,7 @@ const Ingredients = () => {
 
   return (
     //Not sure if you need to move this styles @Braun
-    <div className="container mx-auto py-10 bg-slate-700">
+    <div className="container mx-auto py-10">
       <DataTable
         columns={columns}
         data={data?.ingredients ?? []}

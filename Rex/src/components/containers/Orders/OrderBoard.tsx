@@ -78,7 +78,7 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
         title="Pedidos"
         column={1}
         key={1}
-        headingColor="text-neutral-500"
+        headingColor="text-orange-100"
         cards={filteredCards(1)}
         allCards={cards}
         setCards={setCards}
@@ -87,7 +87,7 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
         title="Confirmados"
         column={2}
         key={2}
-        headingColor="text-yellow-200"
+        headingColor="text-orange-200"
         cards={filteredCards(2)}
         allCards={cards}
         setCards={setCards}
@@ -96,7 +96,7 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
         title="Cocinando..."
         column={3}
         key={3}
-        headingColor="text-blue-200"
+        headingColor="text-orange-300"
         cards={filteredCards(3)}
         allCards={cards}
         setCards={setCards}
@@ -104,7 +104,7 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
       <OrderColumn
         title="Listo"
         column={4}
-        headingColor="text-emerald-200"
+        headingColor="text-orange-500"
         cards={filteredCards(4)}
         allCards={cards}
         setCards={setCards}

@@ -55,8 +55,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border">
-      <div className="flex space-between py-4">
+    <div className="rounded-md border overflow-x-auto">
+      <div className="flex justify-between py-4 px-4 sm:px-6 lg:px-8">
         <Input
           placeholder="Buscar"
           value={
@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
         />
         {Modal}
       </div>
-      <Table>
+      <Table className="min-w-full">
         {/* //Table Header */}
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
       {/* //Pagination */}
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 py-4 px-4 sm:px-6 lg:px-8">
         <Button
           variant="outline"
           size="sm"
