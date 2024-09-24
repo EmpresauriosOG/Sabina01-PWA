@@ -8,12 +8,13 @@ import { fetchUser, User } from "@/hooks/tanstack/getUser";
 import { Button } from "@/components/ui/button";
 // import { LoginForm } from "@/components/forms/Form";
 // import ModalForm from "@/components/modals/ModalForm";
+
 const ProtectedRoute = () => {
   const { isSignedIn, user, isLoaded } = useUser();
   // const storeUser = useUserStore().user;
   const { setUser } = useUserStore();
   const [error, setError] = useState<string | null>(null);
-  console.log(isSignedIn);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,21 +26,22 @@ const ProtectedRoute = () => {
       } catch (err) {
         console.error("Failed to fetch user data:", err);
         setError("Failed to fetch user data. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
 
     if (isLoaded) {
       fetchData();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, setUser]);
+  }, [isLoaded]);
 
-  if (!isLoaded) {
+  if (!isLoaded || loading) {
     // Handle loading state however you like
     return <div>Loading...</div>;
   }
-  console.log(user);
+
   if (error) {
     return (
       <div className="h-screen p-4">
@@ -77,7 +79,7 @@ const ProtectedRoute = () => {
           </main>
         </div>
       )}
-      {isSignedIn && <Outlet />}
+      {isSignedIn && !loading && <Outlet />}
     </>
   );
 };
