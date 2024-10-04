@@ -41,7 +41,6 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMenu } from "@/hooks/tanstack/getMenu";
-
 export default function Menu() {
   const { data, isLoading, isError } = useMenu("665239a9f25b93e429b870bc");
 
