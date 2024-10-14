@@ -1,68 +1,78 @@
-import React, { useState } from "react";
-import Table from "./Table";
+import { useState } from "react";
+import DisplayedTable from "./Table";
 import TableEditor from "./TableEditor";
 import SpaceSelector from "./SpaceSelector";
-import { Button } from "@/components/ui/button";
+import {
+  addRestaurantSpace,
+  deleteRestaurantSpace,
+  deleteRestaurantTable,
+  Table,
+  TablesResponse,
+} from "@/utils/tablesUtils";
+import { Wind } from "lucide-react";
 
-export interface TableData {
-  id: number;
-  status: "available" | "occupied" | "reserved";
-  color: string;
-  persons: number;
-  names: string[];
-  spaceId: string;
+interface RestaurantTablesProps {
+  tableData: TablesResponse;
+  restaurantId?: string;
+  locationId?: string;
+  refetchTables: () => void;
 }
 
-export interface Space {
-  id: string;
-  name: string;
-}
-
-const RestaurantTables: React.FC = () => {
-  const [tables, setTables] = useState<TableData[]>([]);
-  const [spaces, setSpaces] = useState<Space[]>([]);
+const RestaurantTables = (props: RestaurantTablesProps) => {
+  const data = props.tableData;
   const [selectedSpace, setSelectedSpace] = useState<string | null>(null);
-  const [selectedTable, setSelectedTable] = useState<TableData | null>(null);
+  const [selectedTable, setSelectedTable] = useState<Table | null>(null);
+  const displayedTables = data.spaces.find(
+    (space) => space.name === selectedSpace
+  )?.tables;
 
-  const addTable = (spaceId: string) => {
-    const newTable: TableData = {
-      id: Date.now(),
-      status: "available",
-      color: "#4CAF50", // Default green color
-      persons: 2,
-      names: ["Guest 1", "Guest 2"],
-      spaceId,
-    };
-    setTables([...tables, newTable]);
-  };
+  // const addTable = async (spaceName: string, tableNumber: number) => {
+  //   await addRestaurantTable(
+  //     props.restaurantId || "",
+  //     props.locationId || "",
+  //     spaceName,
+  //     tableNumber
+  //   );
+  //   props.refetchTables();
+  // };
 
-  const deleteTable = (id: number) => {
-    setTables(tables.filter((table) => table.id !== id));
-  };
-
-  const updateTable = (updatedTable: TableData) => {
-    setTables(
-      tables.map((table) =>
-        table.id === updatedTable.id ? updatedTable : table
-      )
+  // Add a new space
+  const addSpace = async (name: string) => {
+    await addRestaurantSpace(
+      props.restaurantId || "",
+      props.locationId || "",
+      name,
+      "waiter"
     );
+    props.refetchTables();
   };
 
-  const addSpace = (name: string) => {
-    const newSpace: Space = { id: Date.now().toString(), name };
-    setSpaces([...spaces, newSpace]);
+  // Delete a space and all its tables
+  const deleteSpace = async (name: string) => {
+    await deleteRestaurantSpace(
+      props.restaurantId || "",
+      props.locationId || "",
+      name
+    );
+    props.refetchTables();
   };
 
-  const deleteSpace = (id: string) => {
-    setSpaces(spaces.filter((space) => space.id !== id));
-    setTables(tables.filter((table) => table.spaceId !== id));
+  //Delete a Table
+  const deleteTable = async (spaceName: string, tableNumber: number) => {
+    await deleteRestaurantTable(
+      props.restaurantId || "",
+      props.locationId || "",
+      spaceName,
+      tableNumber
+    );
+    props.refetchTables();
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Restaurant Tables</h1>
+      <h1 className="text-2xl font-bold mb-4">Gestiona tu restaurante</h1>
       <SpaceSelector
-        spaces={spaces}
+        spaces={data.spaces}
         selectedSpace={selectedSpace}
         onSpaceSelect={setSelectedSpace}
         onAddSpace={addSpace}
@@ -72,20 +82,25 @@ const RestaurantTables: React.FC = () => {
         <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0">
           {selectedSpace && (
             <div>
-              <Button onClick={() => addTable(selectedSpace)} className="mb-4">
-                Add Table
-              </Button>
+              {/* <Button onClick={addTable(props.restaurantId, props.locationId, )} className="mb-4">
+                Agrega una mesa
+              </Button> */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {tables
-                  .filter((table) => table.spaceId === selectedSpace)
-                  .map((table) => (
-                    <Table
-                      key={table.id}
+                {displayedTables &&
+                  displayedTables.length > 0 &&
+                  displayedTables.map((table) => (
+                    <DisplayedTable
+                      key={table.table_id}
                       table={table}
                       onClick={() => setSelectedTable(table)}
-                      isSelected={selectedTable?.id === table.id}
+                      isSelected={selectedTable?.table_id === table.table_id}
                     />
                   ))}
+                {displayedTables && displayedTables.length === 0 && (
+                  <div className="col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 flex items-center justify-center h-full">
+                    No hay mesas en este espacio... <Wind />
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -94,12 +109,12 @@ const RestaurantTables: React.FC = () => {
           {selectedTable && (
             <TableEditor
               table={selectedTable}
-              onUpdate={(updatedTable) => {
-                updateTable(updatedTable);
-                setSelectedTable(null);
-              }}
-              onDelete={(id) => {
-                deleteTable(id);
+              locationId={props.locationId || ""}
+              restaurantId={props.restaurantId || ""}
+              spaceName={selectedSpace || ""}
+              refetchTables={props.refetchTables}
+              onDelete={() => {
+                deleteTable(selectedSpace || "", selectedTable.table_number);
                 setSelectedTable(null);
               }}
               onClose={() => setSelectedTable(null)}

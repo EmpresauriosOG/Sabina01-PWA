@@ -1,8 +1,8 @@
 import React from "react";
-import { Space } from "./RestaurantTables";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
+import { Space } from "@/utils/tablesUtils";
 
 interface SpaceSelectorProps {
   spaces: Space[];
@@ -28,7 +28,7 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
   onDeleteSpace,
 }) => {
   const [newSpaceName, setNewSpaceName] = React.useState("");
-
+  const [isInputVisible, setIsInputVisible] = React.useState(false);
   const handleAddSpace = () => {
     if (newSpaceName.trim()) {
       onAddSpace(newSpaceName.trim());
@@ -38,19 +38,45 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
 
   return (
     <div className="mb-4">
-      <h2 className="text-xl font-semibold mb-2">Spaces</h2>
+      <div className="mb-4">
+        <Button
+          onClick={() => setIsInputVisible(!isInputVisible)}
+          className="mr-2"
+        >
+          {isInputVisible ? "Cancelar" : "Agregar un espacio con mesas"}
+        </Button>
+        {isInputVisible && (
+          <div className="flex items-center mt-2">
+            <Input
+              type="text"
+              value={newSpaceName}
+              onChange={(e) => setNewSpaceName(e.target.value)}
+              placeholder="Genera un espacio para tus mesas"
+              className="mr-2"
+            />
+            <Button onClick={handleAddSpace} className="mr-2">
+              Agregar
+            </Button>
+          </div>
+        )}
+      </div>
+      {selectedSpace ? (
+        <div className="mb-4"> Espacio seleccionado: {selectedSpace}</div>
+      ) : (
+        <div className="mb-4">No tienes ningun espacio seleccionado</div>
+      )}
       <div className="flex flex-wrap gap-2 mb-2">
         {spaces.map((space) => (
-          <div key={space.id} className="flex items-center">
+          <div key={space.space_id} className="flex items-center">
             <Button
-              onClick={() => onSpaceSelect(space.id)}
-              variant={selectedSpace === space.id ? "default" : "outline"}
+              onClick={() => onSpaceSelect(space.name)}
+              variant={selectedSpace === space.name ? "default" : "outline"}
               className="mr-1"
             >
               {space.name}
             </Button>
             <Button
-              onClick={() => onDeleteSpace(space.id)}
+              onClick={() => onDeleteSpace(space.name)}
               variant="ghost"
               size="icon"
               className="h-8 w-8"
@@ -59,15 +85,6 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
             </Button>
           </div>
         ))}
-      </div>
-      <div className="flex gap-2">
-        <Input
-          type="text"
-          value={newSpaceName}
-          onChange={(e) => setNewSpaceName(e.target.value)}
-          placeholder="Genera un espacio para tus mesas"
-        />
-        <Button onClick={handleAddSpace}>Add Space</Button>
       </div>
     </div>
   );

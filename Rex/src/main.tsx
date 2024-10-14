@@ -24,7 +24,7 @@ import Inventory from "./components/containers/Inventory/Inventory.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 // import { AuthProvider } from "./context/AuthContext.tsx";
 import OrderContainer from "./components/containers/Orders/OrderContainer.tsx";
-import RestaurantTables from "./components/containers/RestaurantTables/RestaurantTables.tsx";
+import RestaurantTablesContainer from "./components/containers/RestaurantTables/RestaurantTablesContainer.tsx";
 
 const queryClient = new QueryClient();
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -65,7 +65,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/tables",
-            element: <RestaurantTables />,
+            element: <RestaurantTablesContainer />,
           },
         ],
         errorElement: <ErrorPage />,
@@ -80,11 +80,6 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SignUp />,
   },
-
-  // {
-  //     path: "/:restaurantId",
-  //     element: <Restaurants />,
-  // },
   {
     path: "/menu",
     element: <Navbar />,

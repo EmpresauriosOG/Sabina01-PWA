@@ -1,18 +1,22 @@
 import React from "react";
-import { TableData } from "./RestaurantTables";
 import { cn } from "@/lib/utils";
+import { Table } from "@/utils/tablesUtils";
 
 interface TableProps {
-  table: TableData;
+  table: Table;
   onClick: () => void;
   isSelected: boolean;
 }
 
-const Table: React.FC<TableProps> = ({ table, onClick, isSelected }) => {
-  const statusColors = {
-    available: "bg-green-500",
-    occupied: "bg-red-500",
-    reserved: "bg-yellow-500",
+const DisplayedTable: React.FC<TableProps> = ({
+  table,
+  onClick,
+  isSelected,
+}) => {
+  const statusColors: { [key: number]: string } = {
+    0: "bg-green-500",
+    1: "bg-red-500",
+    2: "bg-yellow-500",
   };
 
   return (
@@ -24,10 +28,12 @@ const Table: React.FC<TableProps> = ({ table, onClick, isSelected }) => {
       )}
       onClick={onClick}
     >
-      <span className="font-bold text-white">Table {table.id}</span>
-      <span className="text-sm text-white">{table.persons} persons</span>
+      <span className="font-bold text-white">Mesa {table.table_number}</span>
+      <span className="text-sm text-white">
+        {table.number_of_persons} Personas
+      </span>
     </div>
   );
 };
 
-export default Table;
+export default DisplayedTable;

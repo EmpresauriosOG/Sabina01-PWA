@@ -1,5 +1,4 @@
 import React from "react";
-import { TableData } from "./RestaurantTables";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,21 +8,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Table, updateRestaurantTable } from "@/utils/tablesUtils";
 
 interface TableEditorProps {
-  table: TableData;
-  onUpdate: (updatedTable: TableData) => void;
-  onDelete: (id: number) => void;
-  onClose: () => void; // Add this line
+  table: Table;
+  restaurantId: string;
+  locationId: string;
+  spaceName: string;
+  onDelete: (id: string) => void;
+  onClose: () => void;
+  refetchTables: () => void;
 }
 
 const TableEditor: React.FC<TableEditorProps> = ({
   table,
-  onUpdate,
   onDelete,
   onClose,
+  refetchTables,
+  restaurantId,
+  locationId,
+  spaceName,
 }) => {
-  const [editedTable, setEditedTable] = React.useState<TableData>(table);
+  const [editedTable, setEditedTable] = React.useState<Table>(table);
+
+  const updateTable = async (updatedTable: Table) => {
+    await updateRestaurantTable(
+      restaurantId,
+      locationId,
+      spaceName,
+      updatedTable.table_number,
+      updatedTable.current_waiter ?? undefined,
+      updatedTable.guest_names,
+      updatedTable.number_of_persons,
+      updatedTable.status
+    );
+    refetchTables(); // Add this line to refetch tables after updating
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,55 +51,66 @@ const TableEditor: React.FC<TableEditorProps> = ({
   };
 
   const handleStatusChange = (value: string) => {
-    setEditedTable({ ...editedTable, status: value as TableData["status"] });
+    setEditedTable({ ...editedTable, status: parseInt(value) });
   };
 
   const handleSave = () => {
-    onUpdate(editedTable);
-    onClose(); // Add this line to close the editor after saving
+    updateTable(editedTable);
+    onClose(); // Close the editor after saving
   };
 
   return (
     <div className="p-4 border rounded-lg">
-      <h3 className="text-lg font-semibold mb-4">Edit Table {table.id}</h3>
+      <h3 className="text-lg font-semibold mb-4">
+        Edit Table {table.table_number}
+      </h3>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Status</label>
           <Select
             onValueChange={handleStatusChange}
-            defaultValue={editedTable.status}
+            defaultValue={editedTable.status.toString()}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="available">Available</SelectItem>
-              <SelectItem value="occupied">Occupied</SelectItem>
-              <SelectItem value="reserved">Reserved</SelectItem>
+              <SelectItem value="0">Disponible</SelectItem>
+              <SelectItem value="1">Ocupado</SelectItem>
+              <SelectItem value="2">Reservado</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Persons</label>
+          <label className="block text-sm font-medium mb-1">Mesero</label>
+          <Input
+            type="string"
+            name="current_waiter"
+            value={editedTable.current_waiter ?? ""}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Personas</label>
           <Input
             type="number"
-            name="persons"
-            value={editedTable.persons}
+            name="number_of_persons"
+            value={editedTable.number_of_persons}
             onChange={handleInputChange}
             min={1}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Names</label>
-          {editedTable.names.map((name, index) => (
+          <label className="block text-sm font-medium mb-1">Nombres</label>
+          {editedTable.guest_names.map((name, index) => (
             <Input
               key={index}
               type="text"
               value={name}
               onChange={(e) => {
-                const newNames = [...editedTable.names];
+                const newNames = [...editedTable.guest_names];
                 newNames[index] = e.target.value;
-                setEditedTable({ ...editedTable, names: newNames });
+                setEditedTable({ ...editedTable, guest_names: newNames });
               }}
               className="mb-2"
             />
@@ -88,18 +119,21 @@ const TableEditor: React.FC<TableEditorProps> = ({
             onClick={() =>
               setEditedTable({
                 ...editedTable,
-                names: [...editedTable.names, ""],
+                guest_names: [...editedTable.guest_names, ""],
               })
             }
             variant="outline"
             size="sm"
           >
-            Add Name
+            Agregar Nombre
           </Button>
         </div>
         <div className="flex justify-between mt-4">
-          <Button onClick={handleSave}>Save Changes</Button>
-          <Button onClick={() => onDelete(table.id)} variant="destructive">
+          <Button onClick={handleSave}>Guardar</Button>
+          <Button
+            onClick={() => onDelete(table.table_id)}
+            variant="destructive"
+          >
             Delete Table
           </Button>
           <Button onClick={onClose} variant="outline">
