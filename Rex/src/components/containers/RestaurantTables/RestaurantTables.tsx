@@ -4,12 +4,16 @@ import TableEditor from "./TableEditor";
 import SpaceSelector from "./SpaceSelector";
 import {
   addRestaurantSpace,
+  addRestaurantTable,
   deleteRestaurantSpace,
   deleteRestaurantTable,
   Table,
   TablesResponse,
 } from "@/utils/tablesUtils";
 import { Wind } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface RestaurantTablesProps {
   tableData: TablesResponse;
@@ -20,21 +24,14 @@ interface RestaurantTablesProps {
 
 const RestaurantTables = (props: RestaurantTablesProps) => {
   const data = props.tableData;
-  const [selectedSpace, setSelectedSpace] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [selectedSpace, setSelectedSpace] = useState<string | null>(
+    data.spaces[0]?.name
+  );
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const displayedTables = data.spaces.find(
     (space) => space.name === selectedSpace
   )?.tables;
-
-  // const addTable = async (spaceName: string, tableNumber: number) => {
-  //   await addRestaurantTable(
-  //     props.restaurantId || "",
-  //     props.locationId || "",
-  //     spaceName,
-  //     tableNumber
-  //   );
-  //   props.refetchTables();
-  // };
 
   // Add a new space
   const addSpace = async (name: string) => {
@@ -68,9 +65,21 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
     props.refetchTables();
   };
 
+  //add a new table
+  const addTable = async () => {
+    await addRestaurantTable(
+      props.restaurantId || "",
+      props.locationId || "",
+      selectedSpace || "",
+      (props.tableData.spaces.find((space) => space.name === selectedSpace)
+        ?.tables.length ?? 0) + 1
+    );
+    props.refetchTables();
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Gestiona tu restaurante</h1>
+    <div className="w-full mx-auto px-4 py-8 ">
+      <h1 className="text-2xl font-bold mb-4">Gestiona tus espacios</h1>
       <SpaceSelector
         spaces={data.spaces}
         selectedSpace={selectedSpace}
@@ -79,12 +88,36 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
         onDeleteSpace={deleteSpace}
       />
       <div className="flex flex-col md:flex-row">
-        <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0">
+        <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0 dark:bg-neutral-900 shadow-md rounded-md mr-4">
+          {/* //ToDo add a component for empty spaces */}
+          {data.spaces.length === 0 && (
+            <div>
+              <p className="text-white text-center p-4">
+                No hay espacios en este restaurante...
+              </p>
+            </div>
+          )}
           {selectedSpace && (
             <div>
-              {/* <Button onClick={addTable(props.restaurantId, props.locationId, )} className="mb-4">
+              <Button
+                onClick={() => {
+                  toast({
+                    title: "Estas agregando una mesa en " + selectedSpace,
+                    description: "Confirma para proceder",
+                    action: (
+                      <>
+                        <ToastAction altText="Cancelar">Cancelar</ToastAction>
+                        <ToastAction onClick={addTable} altText="Agregar">
+                          Agregar
+                        </ToastAction>
+                      </>
+                    ),
+                  });
+                }}
+                className="mb-4 ml-4 mt-4"
+              >
                 Agrega una mesa
-              </Button> */}
+              </Button>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {displayedTables &&
                   displayedTables.length > 0 &&

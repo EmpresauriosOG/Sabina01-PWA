@@ -19,18 +19,24 @@ const DisplayedTable: React.FC<TableProps> = ({
     2: "border-yellow-500",
   };
 
+  const statusNames: { [key: number]: string } = {
+    0: "Disponible",
+    1: "Ocupado",
+    2: "Reservado",
+  };
+
   return (
     <div
       className={cn(
-        "w-full max-w-xs p-4 m-2 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all border-4",
+        "w-full max-w-xs p-4 m-2 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all border-2",
         statusColors[table.status],
-        isSelected && "ring-4 ring-blue-500"
+        isSelected && "ring-1 ring-blue-500 border-1 bg-blue-400"
       )}
       onClick={onClick}
     >
       <h2 className=" text-lg text-center mb-2">Mesa {table.table_number}</h2>
       <span className="text-sm">{table.number_of_persons} Personas</span>
-      <span className="text-sm">Status: {table.status}</span>
+      <span className="text-sm">Status: {statusNames[table.status]}</span>
       <span className="text-sm">Mesero: {table.current_waiter}</span>
     </div>
   );

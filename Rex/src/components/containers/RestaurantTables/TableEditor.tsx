@@ -59,11 +59,10 @@ const TableEditor: React.FC<TableEditorProps> = ({
     onClose(); // Close the editor after saving
   };
 
+  console.log(table);
   return (
     <div className="p-4 border rounded-lg">
-      <h3 className="text-lg font-semibold mb-4">
-        Edit Table {table.table_number}
-      </h3>
+      <h3 className="text-lg font-semibold mb-4">Mesa {table.table_number}</h3>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Status</label>
@@ -72,7 +71,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
             defaultValue={editedTable.status.toString()}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select status" />
+              <SelectValue placeholder="Cambia el status de la mesa" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="0">Disponible</SelectItem>
@@ -134,7 +133,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
             onClick={() => onDelete(table.table_id)}
             variant="destructive"
           >
-            Delete Table
+            Borrar Mesa
           </Button>
           <Button onClick={onClose} variant="outline">
             Close

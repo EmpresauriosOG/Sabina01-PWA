@@ -16,7 +16,7 @@ const Extended = () => {
   console.log("roles:", roles);
   const { signOut } = useClerk();
   return (
-    <aside className="hidden md:block">
+    <aside className="hidden md:block border border-gray-300 dark:border-gray-700">
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
           <Link to="/" className="flex items-center gap-2 font-semibold">
@@ -41,7 +41,7 @@ const Extended = () => {
               )
               .map((item) => (
                 <Link
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted border border-gray-300 dark:border-gray-700"
                   key={item.name}
                   to={item.link}
                 >

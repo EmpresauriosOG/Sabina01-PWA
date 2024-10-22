@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 import { Space } from "@/utils/tablesUtils";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SpaceSelectorProps {
   spaces: Space[];
@@ -27,6 +29,7 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
   onAddSpace,
   onDeleteSpace,
 }) => {
+  const { toast } = useToast();
   const [newSpaceName, setNewSpaceName] = React.useState("");
   const [isInputVisible, setIsInputVisible] = React.useState(false);
   const handleAddSpace = () => {
@@ -43,48 +46,63 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
           onClick={() => setIsInputVisible(!isInputVisible)}
           className="mr-2"
         >
-          {isInputVisible ? "Cancelar" : "Agregar un espacio con mesas"}
+          {isInputVisible ? "Cancelar" : "Agrega un espacio"}
         </Button>
         {isInputVisible && (
-          <div className="flex items-center mt-2">
+          <div className="flex flex-col sm:flex-row items-center mt-2">
             <Input
               type="text"
               value={newSpaceName}
               onChange={(e) => setNewSpaceName(e.target.value)}
               placeholder="Genera un espacio para tus mesas"
-              className="mr-2"
+              className="mr-2 mb-2 sm:mb-0"
             />
             <Button onClick={handleAddSpace} className="mr-2">
-              Agregar
+              Agregar Espacio
             </Button>
           </div>
         )}
       </div>
-      {selectedSpace ? (
-        <div className="mb-4"> Espacio seleccionado: {selectedSpace}</div>
-      ) : (
-        <div className="mb-4">No tienes ningun espacio seleccionado</div>
-      )}
-      <div className="flex flex-wrap gap-2 mb-2">
-        {spaces.map((space) => (
-          <div key={space.space_id} className="flex items-center">
-            <Button
-              onClick={() => onSpaceSelect(space.name)}
-              variant={selectedSpace === space.name ? "default" : "outline"}
-              className="mr-1"
-            >
-              {space.name}
-            </Button>
-            <Button
-              onClick={() => onDeleteSpace(space.name)}
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        ))}
+      <div className="flex flex-col shadow-md rounded-md  dark:bg-neutral-900 p-4">
+        <h2 className="text-lg font-semibold mb-2 ">Espacios</h2>
+        <div className="flex flex-wrap gap-2 pl-2 shadow-md rounded-md  dark:bg-neutral-900">
+          {spaces.map((space) => (
+            <div key={space.name} className="flex items-center mb-2">
+              <Button
+                onClick={() => onSpaceSelect(space.name)}
+                variant={selectedSpace === space.name ? "default" : "outline"}
+                className="mr-2"
+              >
+                {space.name}
+              </Button>
+              <Button
+                onClick={() => {
+                  toast({
+                    variant: "destructive",
+                    title: "Estas seguro?",
+                    description: space.name + " sera eliminado",
+                    action: (
+                      <>
+                        <ToastAction altText="Cancelar">Cancelar</ToastAction>
+                        <ToastAction
+                          onClick={() => onDeleteSpace(space.name)}
+                          altText="Eliminar"
+                        >
+                          Eliminar
+                        </ToastAction>
+                      </>
+                    ),
+                  });
+                }}
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
