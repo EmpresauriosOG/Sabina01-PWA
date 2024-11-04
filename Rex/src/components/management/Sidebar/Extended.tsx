@@ -16,12 +16,12 @@ const Extended = () => {
   console.log("roles:", roles);
   const { signOut } = useClerk();
   return (
-    <aside className="hidden md:block border border-gray-300 dark:border-gray-700">
+    <aside className="hidden md:block dark:bg-neutral-900 shadow-md rounded-md my-4">
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
           <Link to="/" className="flex items-center gap-2 font-semibold">
             <Package2 className="h-6 w-6" />
-            <span className="">Restaurant</span>
+            <span className="">Restaurante</span>
           </Link>
         </div>
         {user && (
@@ -34,14 +34,14 @@ const Extended = () => {
         )}
 
         <div className="flex">
-          <nav className="flex flex-col text-sm font-light p-4 space-y-3">
+          <nav className="flex flex-col text-sm font-light p-2 space-y-3">
             {sidebarLinks
               .filter((item) =>
                 item.roles.some((role) => roles?.includes(role))
               )
               .map((item) => (
                 <Link
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted border border-gray-300 dark:border-gray-700"
+                  className="flex items-center gap-3 px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted  shadow-md rounded-md "
                   key={item.name}
                   to={item.link}
                 >
@@ -50,7 +50,7 @@ const Extended = () => {
                 </Link>
               ))}
             <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted">
-              <p>Dark Mode</p>
+              <p>Modo Oscuro</p>
               <ModeToggle></ModeToggle>
             </div>
           </nav>
@@ -63,7 +63,7 @@ const Extended = () => {
               setUser(null);
             }}
           >
-            Logout
+            Cerrar Sesion
           </Button>
         )}
       </div>
