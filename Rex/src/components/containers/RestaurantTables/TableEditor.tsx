@@ -9,6 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Table, updateRestaurantTable } from "@/utils/tablesUtils";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface TableEditorProps {
   table: Table;
@@ -59,7 +61,8 @@ const TableEditor: React.FC<TableEditorProps> = ({
     onClose(); // Close the editor after saving
   };
 
-  console.log(table);
+  const { toast } = useToast();
+
   return (
     <div className="p-4 border rounded-lg">
       <h3 className="text-lg font-semibold mb-4">Mesa {table.table_number}</h3>
@@ -130,7 +133,24 @@ const TableEditor: React.FC<TableEditorProps> = ({
         <div className="flex justify-between mt-4">
           <Button onClick={handleSave}>Guardar</Button>
           <Button
-            onClick={() => onDelete(table.table_id)}
+            onClick={() => {
+              toast({
+                variant: "destructive",
+                title: "Estas seguro?",
+                description: table.table_id + " sera eliminado",
+                action: (
+                  <>
+                    <ToastAction altText="Cancelar">Cancelar</ToastAction>
+                    <ToastAction
+                      onClick={() => onDelete(table.table_id)}
+                      altText="Eliminar"
+                    >
+                      Eliminar
+                    </ToastAction>
+                  </>
+                ),
+              });
+            }}
             variant="destructive"
           >
             Borrar Mesa

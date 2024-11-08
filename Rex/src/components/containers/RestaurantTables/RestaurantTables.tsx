@@ -78,7 +78,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
   };
 
   return (
-    <div className="w-full mx-auto px-4 py-8 ">
+    <div className="w-full mx-auto px-4 py-4">
       <h1 className="text-2xl font-bold mb-4">Gestiona tus espacios</h1>
       <SpaceSelector
         spaces={data.spaces}
@@ -87,7 +87,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
         onAddSpace={addSpace}
         onDeleteSpace={deleteSpace}
       />
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row flex-1 overflow-auto ">
         <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0 dark:bg-neutral-900 shadow-md rounded-md mr-4">
           {/* //ToDo add a component for empty spaces */}
           {data.spaces.length === 0 && (
@@ -141,6 +141,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
         <div className="w-full md:w-1/3">
           {selectedTable && (
             <TableEditor
+              key={selectedTable.table_id}
               table={selectedTable}
               locationId={props.locationId || ""}
               restaurantId={props.restaurantId || ""}
