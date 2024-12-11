@@ -5,9 +5,19 @@ import { useUserStore } from "@/shared/state/userState";
 const Kpis = () => {
   const { user } = useUserStore();
   return (
-    <div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {/* this user && means that the user is logged in and not null, equivalent to if(user !== null) */}
-      {user && <SalesChartContainer user={user} />}
+      {user && (
+        <>
+          <SalesChartContainer user={user} />
+          <SalesChartContainer user={user} />
+          <SalesChartContainer user={user} />
+          <SalesChartContainer user={user} />
+          <SalesChartContainer user={user} />
+          <SalesChartContainer user={user} />
+          {/* Add other chart containers here */}
+        </>
+      )}
       {/* All the other charts go here */}
     </div>
   );
