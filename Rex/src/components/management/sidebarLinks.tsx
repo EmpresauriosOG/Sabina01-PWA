@@ -6,6 +6,7 @@ import {
   HandPlatter,
   UserPlus,
   Table,
+  PieChartIcon,
 } from "lucide-react"; // Import icons if using a library
 
 export interface SidebarLink {
@@ -51,6 +52,12 @@ const sidebarLinks: SidebarLink[] = [
     icon: <ShoppingBasket size={16} strokeWidth={1} />,
     link: "inventory",
     roles: ["admin"],
+  },
+  {
+    name: "Kpis",
+    icon: <PieChartIcon size={16} strokeWidth={1} />,
+    link: "kpis",
+    roles: ["admin", "manager"],
   },
   // Add more links as needed
 ];

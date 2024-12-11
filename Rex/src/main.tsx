@@ -14,7 +14,6 @@ import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 // import Restaurants from "./components/containers/Restaurants.tsx";
 import AdminDashboard from "./components/containers/AdminDashboard.tsx";
 import Menu from "./components/Menu.tsx";
-import Navbar from "./components/Navbar.tsx";
 import OTPTable from "./components/menu/OTPTable.tsx";
 import Tables from "./components/management/Tables.tsx";
 import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
@@ -81,15 +80,8 @@ const router = createBrowserRouter([
     element: <SignUp />,
   },
   {
-    path: "/menu",
-    element: <Navbar />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "/menu/:restaurantId",
-        element: <Menu />,
-      },
-    ],
+    path: "/menu/:restaurantId/:locationId",
+    element: <Menu />,
   },
   {
     path: "/otp",
