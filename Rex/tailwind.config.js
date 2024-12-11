@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -16,6 +16,11 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    darkBackground2: {
+      shadow: "shadow-md",
+      rounded: "rounded-md",
+      bg: "dark:bg-neutral-900",
+    }, //dark:bg-neutral-900 shadow-md rounded-md
     extend: {
       colors: {
         border: "hsl(var(--border))",
@@ -74,4 +79,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
