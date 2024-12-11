@@ -1,21 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const fetchMenuByRestaurantID = async (restaurantId: string) => {
-    console.log(restaurantId);
-    const options = {
-        method: "GET",
-        url: `https://sabina01.onrender.com/menu/${restaurantId}`,
-    };
-
-    const response = await axios.request(options);
-    return response.data;
-};
-
-export const useMenu = (restaurantId: string) => {
+export const useMenu = (restaurantId: string, locationId: string) => {
     return useQuery({
-        queryKey: ["menu", restaurantId],
-        queryFn: () => fetchMenuByRestaurantID(restaurantId),
-        staleTime: 0,
+        queryKey: ["menu", restaurantId, locationId],
+        queryFn: async () => {
+            console.log(`Fetching menu for restaurant ${restaurantId} and location ${locationId}`);
+            const response  = await axios.get(`https://sabina01.onrender.com/menu/${restaurantId}/${locationId}`);
+            return response.data.menu
+        },
     });
 };
