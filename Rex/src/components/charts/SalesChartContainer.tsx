@@ -21,7 +21,12 @@ const SalesChartContainer = (props: SalesChartProps) => {
     return <div>Error</div>;
   }
 
-  return <SalesChart data={data ?? { date: "error", total_sales: 0 }} />;
+  return (
+    //Fix this color
+    <div className="bg-slate-950 p-4 rounded-lg shadow-md">
+      <SalesChart data={data ?? { date: "error", total_sales: 0 }} />
+    </div>
+  );
 };
 
 export default SalesChartContainer;

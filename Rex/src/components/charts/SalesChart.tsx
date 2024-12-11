@@ -32,9 +32,17 @@ interface SalesChartProps {
 }
 
 export function SalesChart(props: SalesChartProps) {
+  //Data should match chart below
   const { data } = props;
+  //Becareful with dataKey="month" and dataKey="desktop" and dataKey="mobile"
+  //Read shadcn docs for more info
   const chartData = [
-    { fecha: data.date, cantidad: data.total_sales, otro: 80 },
+    { month: data.date, desktop: data.total_sales, mobile: 80 },
+    { month: "February", desktop: 305, mobile: 200 },
+    { month: "March", desktop: 237, mobile: 120 },
+    { month: "April", desktop: 73, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+    { month: "June", desktop: 214, mobile: 140 },
   ];
   return (
     <Card>
