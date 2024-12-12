@@ -121,7 +121,7 @@ export default function Menu() {
     setIsChatLoading(true);
 
     try {
-      const response = await axios.post(`https:///menu/rag/665239a9f25b93e429b870bc/66523d74f25b93e429b870be/1/${chatInput}`);
+      const response = await axios.post(`https://sabina01.onrender.com/menu/rag/665239a9f25b93e429b870bc/66523d74f25b93e429b870be/1/${chatInput}`);
       const { validation, recommendation } = response.data;
       let botMessage: string | undefined;
       if (validation === 0) {
