@@ -1,5 +1,5 @@
-import { TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import {
   Card,
   CardContent,
@@ -17,91 +17,107 @@ import {
 import { Sales } from "@/hooks/tanstack/getSales";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  sales: {
+    label: "Ventas",
     color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
 interface SalesChartProps {
-  data: Sales;
+  data: Sales[];
 }
 
-export function SalesChart(props: SalesChartProps) {
-  //Data should match chart below
-  const { data } = props;
-  //Becareful with dataKey="month" and dataKey="desktop" and dataKey="mobile"
-  //Read shadcn docs for more info
-  const chartData = [
-    { month: data.date, desktop: data.total_sales, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-  ];
+export function SalesChart({ data }: SalesChartProps) {
+  const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  const calculateTrend = () => {
+    if (sortedData.length < 2) return 0;
+    const lastValue = sortedData[sortedData.length - 1].total_sales;
+    const previousValue = sortedData[sortedData.length - 2].total_sales;
+    return ((lastValue - previousValue) / previousValue) * 100;
+  };
+  
+  const trendPercentage = calculateTrend();
+  
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Area Chart - Stacked</CardTitle>
+    <Card className="w-full h-full flex flex-col">
+      <CardHeader className="pb-2 flex-none">
+        <CardTitle>Ventas</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Desempeño diario de ventas
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
-            />
-            <Area
-              dataKey="mobile"
-              type="natural"
-              fill="var(--color-mobile)"
-              fillOpacity={0.4}
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--color-desktop)"
-              fillOpacity={0.4}
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
+      <CardContent className="flex-1 min-h-0">
+        <div className="w-full h-full" style={{ minHeight: "160px" }}>
+          <ChartContainer config={chartConfig}>
+            <ResponsiveContainer width="100%" height="100%" minHeight={160}>
+              <LineChart
+                data={sortedData}
+                margin={{
+                  left: 0,
+                  right: 0,
+                  top: 5,
+                  bottom: 35,
+                }}
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={formatDate}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => `$${value}`}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                  formatter={(value: number) => [ "$",`${value}`]}
+                />
+                <Line
+                  type="natural"
+                  dataKey="total_sales"
+                  stroke="var(--color-sales)"
+                  strokeWidth={2}
+                  dot={{
+                    fill: "var(--color-sales)",
+                  }}
+                  activeDot={{
+                    r: 6,
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
-            </div>
+      <CardFooter className="pt-2 mt-2 border-t flex-none">
+        <div className="flex w-full flex-col items-start gap-2 text-sm">
+          <div className="flex items-center gap-2 font-medium leading-none">
+            {trendPercentage > 0 ? (
+              <>
+                Incremento del {Math.abs(trendPercentage).toFixed(1)}% 
+                <TrendingUp className="h-4 w-4 text-green-500" />
+              </>
+            ) : (
+              <>
+                Decremento del {Math.abs(trendPercentage).toFixed(1)}% 
+                <TrendingDown className="h-4 w-4 text-red-500" />
+              </>
+            )}
+          </div>
+          <div className="leading-none text-muted-foreground">
+            {formatDate(sortedData[0]?.date || '')} - {formatDate(sortedData[sortedData.length - 1]?.date || '')}
           </div>
         </div>
       </CardFooter>
