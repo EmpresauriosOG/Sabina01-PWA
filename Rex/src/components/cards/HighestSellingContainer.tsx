@@ -24,7 +24,7 @@ const HighestSellingContainer = (props: HighestSellingContainerProps) => {
   }
 
   return (
-    <div className="bg-slate-950 p-4 rounded-lg shadow-md">
+    <div className="bg-neutral-900/60 p-4 rounded-lg shadow-md">
       <HighestSellingCard data={data.data} />
     </div>
   );

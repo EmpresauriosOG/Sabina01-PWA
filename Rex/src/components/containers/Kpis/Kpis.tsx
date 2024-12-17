@@ -1,7 +1,11 @@
 import SalesChartContainer from "@/components/charts/SalesChartContainer";
-import ItemSalesChartContainer from "@/components/charts/ItemSalesChartContainer";
+// import ItemSalesChartContainer from "@/components/charts/ItemSalesChartContainer";
 import HighestSellingContainer  from "@/components/cards/HighestSellingContainer";
 import AverageTicketContainer from "@/components/cards/AverageTicketContainer";
+import AverageOrderTimesContainer from "@/components/cards/AverageOrderTimesContainer";
+import BusiestHoursContainer from "@/components/charts/BusiestHoursContainer";
+import ItemsChartContainer from "@/components/charts/ItemsChartContainer";
+import OrderStatusContainer from "@/components/charts/OrderStatusContainer";
 import { useUserStore } from "@/shared/state/userState";
 
 //this is the big container for all kpis
@@ -14,10 +18,11 @@ const Kpis = () => {
         <>
           <HighestSellingContainer user={user} />
           <AverageTicketContainer user={user} />
-          <HighestSellingContainer user={user} />
+          <AverageOrderTimesContainer user={user} />
           <SalesChartContainer user={user} />
-          <ItemSalesChartContainer user={user} />
-          <SalesChartContainer user={user} />
+          <BusiestHoursContainer user={user} />
+          <ItemsChartContainer user={user} />
+          <OrderStatusContainer user={user} />
           {/* Add other chart containers here */}
         </>
       )}

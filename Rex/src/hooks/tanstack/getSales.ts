@@ -33,7 +33,7 @@ export interface SalesResponse {
 const fetchSales = async (restaurant_id: string, location_id: string) => {
   const options = {
     method: "GET",
-    url: `https://sabina01.onrender.com/kpis/daily_sales/${restaurant_id}?location_id=${location_id}`,
+    url: `http://localhost:8000/kpis/daily_sales/${restaurant_id}?location_id=${location_id}`,
   };
 
   const response = await axios.request(options);

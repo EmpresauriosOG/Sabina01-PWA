@@ -25,7 +25,7 @@ const SalesChartContainer = (props: SalesChartProps) => {
   const salesData = data?.data || [];
 
   return (
-    <div className="bg-slate-950 p-4 rounded-lg shadow-md">
+    <div className="bg-neutral-900/60 p-4 rounded-lg shadow-md">
       <SalesChart data={salesData} />
     </div>
   );

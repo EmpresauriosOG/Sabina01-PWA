@@ -1,5 +1,6 @@
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,6 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ChartConfig,
   ChartContainer,
@@ -28,12 +36,32 @@ interface SalesChartProps {
 }
 
 export function SalesChart({ data }: SalesChartProps) {
-  const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const [timeRange, setTimeRange] = useState("all");
+  
+  // Filter data based on selected time range
+  const getFilteredData = () => {
+    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    if (timeRange === "all") return sortedData;
+    
+    const lastDate = new Date(sortedData[sortedData.length - 1]?.date || new Date());
+    const startDate = new Date(lastDate);
+    
+    if (timeRange === "3m") {
+      startDate.setMonth(startDate.getMonth() - 3);
+    } else if (timeRange === "1m") {
+      startDate.setMonth(startDate.getMonth() - 1);
+    }
+    
+    return sortedData.filter(item => new Date(item.date) >= startDate);
+  };
+  
+  const filteredData = getFilteredData();
   
   const calculateTrend = () => {
-    if (sortedData.length < 2) return 0;
-    const lastValue = sortedData[sortedData.length - 1].total_sales;
-    const previousValue = sortedData[sortedData.length - 2].total_sales;
+    if (filteredData.length < 2) return 0;
+    const lastValue = filteredData[filteredData.length - 1].total_sales;
+    const previousValue = filteredData[filteredData.length - 2].total_sales;
     return ((lastValue - previousValue) / previousValue) * 100;
   };
   
@@ -46,18 +74,39 @@ export function SalesChart({ data }: SalesChartProps) {
 
   return (
     <Card className="w-full h-full flex flex-col">
-      <CardHeader className="pb-2 flex-none">
-        <CardTitle>Ventas</CardTitle>
-        <CardDescription>
-          Desempeño diario de ventas
-        </CardDescription>
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="grid flex-1 gap-1 text-center sm:text-left">
+          <CardTitle>Ventas</CardTitle>
+          <CardDescription>
+            Desempeño diario de ventas
+          </CardDescription>
+        </div>
+        <Select value={timeRange} onValueChange={setTimeRange}>
+          <SelectTrigger
+            className="w-[160px] rounded-lg sm:ml-auto"
+            aria-label="Seleccionar periodo"
+          >
+            <SelectValue placeholder="Todo el tiempo" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all" className="rounded-lg">
+              Todo el tiempo
+            </SelectItem>
+            <SelectItem value="3m" className="rounded-lg">
+              Últimos 3 meses
+            </SelectItem>
+            <SelectItem value="1m" className="rounded-lg">
+              Último mes
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </CardHeader>
-      <CardContent className="flex-1 min-h-0">
+      <CardContent className="flex-1 min-h-0 px-2 pt-4 sm:px-6 sm:pt-6">
         <div className="w-full h-full" style={{ minHeight: "160px" }}>
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%" minHeight={160}>
               <LineChart
-                data={sortedData}
+                data={filteredData}
                 margin={{
                   left: 0,
                   right: 0,
@@ -71,6 +120,7 @@ export function SalesChart({ data }: SalesChartProps) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  minTickGap={32}
                   tickFormatter={formatDate}
                 />
                 <YAxis
@@ -82,7 +132,7 @@ export function SalesChart({ data }: SalesChartProps) {
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
-                  formatter={(value: number) => [ "$",`${value}`]}
+                  formatter={(value: number) => [`$${value}`, ""]}
                 />
                 <Line
                   type="natural"
@@ -117,7 +167,7 @@ export function SalesChart({ data }: SalesChartProps) {
             )}
           </div>
           <div className="leading-none text-muted-foreground">
-            {formatDate(sortedData[0]?.date || '')} - {formatDate(sortedData[sortedData.length - 1]?.date || '')}
+            {formatDate(filteredData[0]?.date || '')} - {formatDate(filteredData[filteredData.length - 1]?.date || '')}
           </div>
         </div>
       </CardFooter>

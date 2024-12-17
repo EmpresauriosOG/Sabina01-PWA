@@ -14,7 +14,7 @@ export interface AverageTicketResponse {
 const fetchAverageTicket = async (restaurant_id: string) => {
   const options = {
     method: "GET",
-    url: `https://sabina01.onrender.com/kpis/average_ticket/${restaurant_id}`,
+    url: `http://localhost:8000/kpis/average_ticket/${restaurant_id}`,
   };
 
   const response = await axios.request(options);
