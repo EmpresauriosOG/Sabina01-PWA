@@ -73,7 +73,7 @@ const AdminDashboard = (props: AdminDashboardProps) => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/menu/rag/${restaurantId}/${locationId}/1/${chatInput}`
+        `https://sabina01.onrender.com/menu/rag/${restaurantId}/${locationId}/1/${chatInput}`
       );
       const { validation, recommendation } = response.data;
       console.log(response.data);

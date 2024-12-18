@@ -16,7 +16,7 @@ export interface ItemsResponse {
 const fetchItems = async (restaurant_id: string) => {
   const options = {
     method: "GET",
-    url: `http://localhost:8000/kpis/item_performance/${restaurant_id}`,
+    url: `https://sabina01.onrender.com/kpis/item_performance/${restaurant_id}`,
   };
 
   const response = await axios.request(options);

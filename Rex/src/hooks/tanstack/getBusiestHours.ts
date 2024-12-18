@@ -13,7 +13,7 @@ export interface BusiestHoursResponse {
 const fetchBusiestHours = async (restaurant_id: string) => {
   const options = {
     method: "GET",
-    url: `http://localhost:8000/kpis/busiest_hours/${restaurant_id}`,
+    url: `https://sabina01.onrender.com/kpis/busiest_hours/${restaurant_id}`,
   };
 
   const response = await axios.request(options);

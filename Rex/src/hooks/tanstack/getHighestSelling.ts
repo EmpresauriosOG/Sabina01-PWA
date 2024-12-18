@@ -15,7 +15,7 @@ export interface HighestSellingResponse {
 const fetchHighestSelling = async (restaurant_id: string) => {
   const options = {
     method: "GET",
-    url: `http://localhost:8000/kpis/highest_selling_item/${restaurant_id}`,
+    url: `https://sabina01.onrender.com/kpis/highest_selling_item/${restaurant_id}`,
   };
 
   const response = await axios.request(options);

@@ -16,7 +16,7 @@ export interface AverageOrderTimesResponse {
 const fetchAverageOrderTimes = async (restaurant_id: string) => {
   const options = {
     method: "GET",
-    url: `http://localhost:8000/kpis/average_order_times/${restaurant_id}`,
+    url: `https://sabina01.onrender.com/kpis/average_order_times/${restaurant_id}`,
   };
 
   const response = await axios.request(options);
