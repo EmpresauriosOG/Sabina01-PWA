@@ -18,11 +18,11 @@ import { Item } from "@/hooks/tanstack/getItems";
 const chartConfig = {
   quantity: {
     label: "Cantidad",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-1)",
   },
   revenue: {
     label: "Ingresos",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1)",
   },
 } satisfies ChartConfig;
 
@@ -51,31 +51,30 @@ export function ItemsChart({ data }: ItemsChartProps) {
 
   return (
     <Card>
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Desempeño de Platillos</CardTitle>
-          <CardDescription>
-            Mostrando cantidad vendida e ingresos por platillo
-          </CardDescription>
-        </div>
-        <div className="flex">
-          {(Object.keys(chartConfig) as Array<keyof typeof chartConfig>).map((key) => (
-            <button
-              key={key}
-              data-active={activeChart === key}
-              className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
-              onClick={() => setActiveChart(key)}
-            >
-              <span className="text-xs text-muted-foreground">
-                {chartConfig[key].label}
-              </span>
-              <span className="text-lg font-bold leading-none sm:text-3xl">
-                {key === 'revenue' 
-                  ? `$${total[key].toLocaleString()}`
-                  : total[key].toLocaleString()}
-              </span>
-            </button>
-          ))}
+      <CardHeader className="border-b p-0">
+        <div className="flex flex-col w-full">
+          <div className="p-4 sm:p-6">
+            <CardTitle>Desempeño de Platillos</CardTitle>
+          </div>
+          <div className="flex flex-row flex-wrap border-t">
+            {(Object.keys(chartConfig) as Array<keyof typeof chartConfig>).map((key) => (
+              <button
+                key={key}
+                data-active={activeChart === key}
+                className="flex-1 min-w-[120px] max-w-none flex flex-col justify-center gap-1 px-2 py-2 text-left even:border-l data-[active=true]:bg-muted/50 sm:px-3 sm:py-3"
+                onClick={() => setActiveChart(key)}
+              >
+                <span className="text-xs text-muted-foreground">
+                  {chartConfig[key].label}
+                </span>
+                <span className="text-base font-bold leading-none sm:text-lg">
+                  {key === 'revenue' 
+                    ? `$${total[key].toLocaleString()}`
+                    : total[key].toLocaleString()}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
@@ -88,6 +87,7 @@ export function ItemsChart({ data }: ItemsChartProps) {
             margin={{
               left: 12,
               right: 12,
+              bottom: 48, // increased bottom margin for rotated labels
             }}
           >
             <CartesianGrid vertical={false} />
@@ -95,26 +95,24 @@ export function ItemsChart({ data }: ItemsChartProps) {
               dataKey="name"
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
+              tickMargin={16}
               interval={0}
-              tick={{ fontSize: 12 }}
+              tick={{
+                fontSize: 12,
+                dominantBaseline: 'auto'
+              }}
             />
             <ChartTooltip
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
                   nameKey={activeChart}
-                  valueFormatter={(value) => 
-                    activeChart === 'revenue' 
-                      ? `$${value.toLocaleString()}`
-                      : value.toLocaleString()
-                  }
                 />
               }
             />
             <Bar 
               dataKey={activeChart} 
-              fill={`var(--color-${activeChart})`}
+              fill={`hsl(var(--chart-1)`}
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

@@ -101,7 +101,7 @@ export function BusiestHoursChart({ data }: BusiestHoursChartProps) {
         <TimeRangeSelect value={timeRange} onValueChange={setTimeRange} />
       </CardHeader>
       <CardContent className="flex-1 min-h-0 px-2 pt-4 sm:px-6 sm:pt-6">
-        <div className="w-full h-full" style={{ minHeight: "160px" }}>
+        <div className="w-full h-full">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%" minHeight={160}>
               <BarChart
