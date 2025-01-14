@@ -21,10 +21,12 @@ const SalesChartContainer = (props: SalesChartProps) => {
     return <div>Error</div>;
   }
 
+  // Ensure we have an array of data, even if empty
+  const salesData = data?.data || [];
+
   return (
-    //Fix this color
-    <div className="bg-slate-950 p-4 rounded-lg shadow-md">
-      <SalesChart data={data ?? { date: "error", total_sales: 0 }} />
+    <div className="bg-neutral-900/60 p-4 rounded-lg shadow-md">
+      <SalesChart data={salesData} />
     </div>
   );
 };

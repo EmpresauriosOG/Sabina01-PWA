@@ -1,5 +1,6 @@
-import { TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,6 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -17,91 +25,149 @@ import {
 import { Sales } from "@/hooks/tanstack/getSales";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  sales: {
+    label: "Ventas",
     color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
 interface SalesChartProps {
-  data: Sales;
+  data: Sales[];
 }
 
-export function SalesChart(props: SalesChartProps) {
-  //Data should match chart below
-  const { data } = props;
-  //Becareful with dataKey="month" and dataKey="desktop" and dataKey="mobile"
-  //Read shadcn docs for more info
-  const chartData = [
-    { month: data.date, desktop: data.total_sales, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-  ];
+export function SalesChart({ data }: SalesChartProps) {
+  const [timeRange, setTimeRange] = useState("all");
+  
+  // Filter data based on selected time range
+  const getFilteredData = () => {
+    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    if (timeRange === "all") return sortedData;
+    
+    const lastDate = new Date(sortedData[sortedData.length - 1]?.date || new Date());
+    const startDate = new Date(lastDate);
+    
+    if (timeRange === "3m") {
+      startDate.setMonth(startDate.getMonth() - 3);
+    } else if (timeRange === "1m") {
+      startDate.setMonth(startDate.getMonth() - 1);
+    }
+    
+    return sortedData.filter(item => new Date(item.date) >= startDate);
+  };
+  
+  const filteredData = getFilteredData();
+  
+  const calculateTrend = () => {
+    if (filteredData.length < 2) return 0;
+    const lastValue = filteredData[filteredData.length - 1].total_sales;
+    const previousValue = filteredData[filteredData.length - 2].total_sales;
+    return ((lastValue - previousValue) / previousValue) * 100;
+  };
+  
+  const trendPercentage = calculateTrend();
+  
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Area Chart - Stacked</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+    <Card className="w-full h-full flex flex-col">
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="grid flex-1 gap-1 text-center sm:text-left">
+          <CardTitle>Ventas</CardTitle>
+          <CardDescription>
+            Desempeño diario de ventas
+          </CardDescription>
+        </div>
+        <Select value={timeRange} onValueChange={setTimeRange}>
+          <SelectTrigger
+            className="w-[160px] rounded-lg sm:ml-auto"
+            aria-label="Seleccionar periodo"
           >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
-            />
-            <Area
-              dataKey="mobile"
-              type="natural"
-              fill="var(--color-mobile)"
-              fillOpacity={0.4}
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--color-desktop)"
-              fillOpacity={0.4}
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
+            <SelectValue placeholder="Todo el tiempo" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all" className="rounded-lg">
+              Todo el tiempo
+            </SelectItem>
+            <SelectItem value="3m" className="rounded-lg">
+              Últimos 3 meses
+            </SelectItem>
+            <SelectItem value="1m" className="rounded-lg">
+              Último mes
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </CardHeader>
+      <CardContent className="flex-1 min-h-0 px-2 pt-4 sm:px-6 sm:pt-6">
+        <div className="w-full h-full" style={{ minHeight: "160px" }}>
+          <ChartContainer config={chartConfig}>
+            <ResponsiveContainer width="100%" height="100%" minHeight={160}>
+              <LineChart
+                data={filteredData}
+                margin={{
+                  left: 0,
+                  right: 0,
+                  top: 5,
+                  bottom: 35,
+                }}
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                  tickFormatter={formatDate}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => `$${value}`}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                  formatter={(value: number) => [`$${value}`, ""]}
+                />
+                <Line
+                  type="natural"
+                  dataKey="total_sales"
+                  stroke="var(--color-sales)"
+                  strokeWidth={2}
+                  dot={{
+                    fill: "var(--color-sales)",
+                  }}
+                  activeDot={{
+                    r: 6,
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
-            </div>
+      <CardFooter className="pt-2 mt-2 border-t flex-none">
+        <div className="flex w-full flex-col items-start gap-2 text-sm">
+          <div className="flex items-center gap-2 font-medium leading-none">
+            {trendPercentage > 0 ? (
+              <>
+                Incremento del {Math.abs(trendPercentage).toFixed(1)}% 
+                <TrendingUp className="h-4 w-4 text-green-500" />
+              </>
+            ) : (
+              <>
+                Decremento del {Math.abs(trendPercentage).toFixed(1)}% 
+                <TrendingDown className="h-4 w-4 text-red-500" />
+              </>
+            )}
+          </div>
+          <div className="leading-none text-muted-foreground">
+            {formatDate(filteredData[0]?.date || '')} - {formatDate(filteredData[filteredData.length - 1]?.date || '')}
           </div>
         </div>
       </CardFooter>

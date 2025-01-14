@@ -25,7 +25,9 @@ export interface Sales {
   date: string;
   total_sales: number;
 }
-
+export interface SalesResponse {
+  data: Sales[];
+}
 //this is the function that will fetch the data from the API
 //this usex axios to make the request
 const fetchSales = async (restaurant_id: string, location_id: string) => {
@@ -35,8 +37,7 @@ const fetchSales = async (restaurant_id: string, location_id: string) => {
   };
 
   const response = await axios.request(options);
-  console.log("this is sales", response.data);
-  return response.data as Sales;
+  return response.data as SalesResponse;
 };
 
 //this is the hook that will be used in the component
