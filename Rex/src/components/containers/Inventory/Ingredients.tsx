@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const Ingredients = () => {
   const { user } = useUserStore();
   const { data, isLoading, isError, refetch } = useIngredient(
-    user?.restaurant_id
+    user?.restaurant_id, user?.location_id
   );
   const ingredientFormSubmitted = useFormSubmissionStore(
     (state) => state.ingredientFormSubmitted
