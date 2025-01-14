@@ -9,10 +9,10 @@ export interface NoStaffFoundError {
   detail: string;
 }
 
-export const fetchIngredients = async (restaurant_id: string) => {
+export const fetchIngredients = async (restaurant_id: string, location_id: string) => {
   const options = {
     method: "GET",
-    url: `https://sabina01.onrender.com/ingredients/${restaurant_id}`,
+    url: `https://sabina01.onrender.com/ingredients/${restaurant_id}/${location_id}`,
   };
   try {
     const response = await axios.request(options);
