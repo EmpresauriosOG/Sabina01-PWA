@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Bot } from "lucide-react";
-import axios from "axios"; // Make sure to install axios if you haven't already
 import { Button } from "@/components/ui/button";
 //Components
 import ShoppingCardbutton from "../smartOrders/ShoppingCardbutton";
@@ -10,6 +8,7 @@ import ShoppingCardModal from "../smartOrders/ShoppingCardModal";
 import SmartOrderSearchBar from "../smartOrders/SmartOrderSearchBar";
 import SmartOrderCarousel from "../smartOrders/SmartOrderCarousel";
 import SmartOrderTabs from "../smartOrders/SmartOrderTabs";
+import ChatInterface from "../smartOrders/ChatInterface";
 
 export interface MenuItem {
   name: string;
@@ -30,13 +29,7 @@ export interface AdminDashboardProps {
 const AdminDashboard = (props: AdminDashboardProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredItems, setFilteredItems] = useState<MenuItem[]>([]);
-  const [messages, setMessages] = useState<
-    { sender: "user" | "bot"; text: string }[]
-  >([]);
-  const [chatInput, setChatInput] = useState("");
-  const [isChatLoading, setIsChatLoading] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [order, setOrder] = useState<OrderItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [itemAmounts, setItemAmounts] = useState<{ [key: string]: number }>({});
@@ -55,57 +48,6 @@ const AdminDashboard = (props: AdminDashboardProps) => {
     setFilteredItems(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleChatSend = async () => {
-    if (!chatInput.trim() || isChatLoading) return;
-
-    setMessages((prev) => [...prev, { text: chatInput, sender: "user" }]);
-    setChatInput("");
-    setIsChatLoading(true);
-
-    try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/menu/rag/${restaurantId}/${locationId}/1/${chatInput}`
-      );
-      const { validation, recommendation } = response.data;
-      console.log(response.data);
-      let botMessage: string | undefined;
-      if (validation === 0) {
-        botMessage = recommendation;
-      } else if (validation === 1) {
-        const { nombre_platillo, precio, descripcion, atributos } =
-          JSON.parse(recommendation);
-        botMessage = JSON.stringify({
-          type: "card",
-          content: {
-            title: nombre_platillo,
-            price: precio,
-            description: descripcion,
-            attributes: atributos,
-          },
-        });
-      }
-      if (typeof botMessage === "string") {
-        setMessages((prev) => [...prev, { text: botMessage, sender: "bot" }]);
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-      setMessages((prev) => [
-        ...prev,
-        { text: "Error communicating with the server.", sender: "bot" },
-      ]);
-    } finally {
-      setIsChatLoading(false);
-    }
-  };
 
   const addToOrderWithAmount = (item: MenuItem) => {
     const amount = itemAmounts[item.name] || 0;
@@ -246,74 +188,12 @@ const AdminDashboard = (props: AdminDashboardProps) => {
 
       {/* Chat interface */}
       {isChatOpen && (
-        <div className="fixed bottom-24 right-6 w-80 bg-gray-900 rounded-lg shadow-xl overflow-hidden flex flex-col">
-          <div className="bg-gray-800 text-white p-3 font-bold flex justify-between items-center">
-            <span>Sabina - Tu asistente AI</span>
-            <button
-              onClick={toggleChat}
-              className="text-gray-400 hover:text-white"
-            >
-              ×
-            </button>
-          </div>
-          <div
-            className="flex-grow overflow-y-auto p-4 bg-gray-900"
-            style={{ maxHeight: "400px" }}
-          >
-            {messages.map((msg, index) => (
-              <React.Fragment key={index}>{renderMessage(msg)}</React.Fragment>
-            ))}
-            {isChatLoading && (
-              <div className="flex justify-start mb-2">
-                <div className="message bot p-3 rounded-lg bg-gray-700 text-white">
-                  <div className="typing-indicator flex">
-                    <span className="dot animate-bounce">.</span>
-                    <span className="dot animate-bounce animation-delay-200">
-                      .
-                    </span>
-                    <span className="dot animate-bounce animation-delay-400">
-                      .
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-          <div className="p-3 bg-gray-800 border-t border-gray-700">
-            <div className="flex items-center">
-              <Input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleChatSend()}
-                placeholder="Pregunta sobre el menú..."
-                disabled={isChatLoading}
-                className="flex-grow mr-2 bg-gray-700 text-white border-gray-600 rounded-full"
-              />
-              <Button
-                onClick={handleChatSend}
-                disabled={isChatLoading}
-                className="bg-blue-600 text-white hover:bg-blue-700 rounded-full p-2"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ChatInterface
+          restaurantId={restaurantId}
+          locationId={locationId}
+          renderMessage={renderMessage}
+          toggleChat={toggleChat}
+        />
       )}
     </div>
   );
