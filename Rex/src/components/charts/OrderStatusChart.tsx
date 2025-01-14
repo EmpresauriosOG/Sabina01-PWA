@@ -19,17 +19,19 @@ interface OrderStatusChartProps {
   data: OrderStatus[];
 }
 
-const chartConfig = Object.entries(STATUS_MAPPING).reduce((config, [status, { label, color }]) => ({
-  ...config,
-  [status]: {
-    label,
-    color,
-  },
-}), {
-}) satisfies ChartConfig;
+const chartConfig = Object.entries(STATUS_MAPPING).reduce(
+  (config, [status, { label, color }]) => ({
+    ...config,
+    [status]: {
+      label,
+      color,
+    },
+  }),
+  {}
+) satisfies ChartConfig;
 
 export function OrderStatusChart({ data }: OrderStatusChartProps) {
-  const chartData = data.map(item => ({
+  const chartData = data.map((item) => ({
     status: item.status,
     count: item.count,
     name: STATUS_MAPPING[item.status]?.label || `Status ${item.status}`,
@@ -54,8 +56,12 @@ export function OrderStatusChart({ data }: OrderStatusChartProps) {
               <ChartTooltip
                 content={
                   <ChartTooltipContent
-                    valueFormatter={(value, name) => {
-                      const percentage = ((value as number) / totalOrders * 100).toFixed(1);
+                    //@ts-expect-error: valueFormatter expects a number but receives a string
+                    valueFormatter={(value) => {
+                      const percentage = (
+                        ((value as number) / totalOrders) *
+                        100
+                      ).toFixed(1);
                       return `${value} (${percentage}%)`;
                     }}
                   />
@@ -70,10 +76,7 @@ export function OrderStatusChart({ data }: OrderStatusChartProps) {
                 paddingAngle={2}
               >
                 {chartData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`}
-                    fill={entry.fill}
-                  />
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
               </Pie>
             </PieChart>
@@ -83,13 +86,11 @@ export function OrderStatusChart({ data }: OrderStatusChartProps) {
       <CardFooter className="flex justify-center gap-4 pt-4">
         {chartData.map((entry) => (
           <div key={entry.status} className="flex items-center gap-2">
-            <div 
-              className="h-3 w-3 rounded-full" 
+            <div
+              className="h-3 w-3 rounded-full"
               style={{ backgroundColor: entry.fill }}
             />
-            <span className="text-sm text-muted-foreground">
-              {entry.name}
-            </span>
+            <span className="text-sm text-muted-foreground">{entry.name}</span>
           </div>
         ))}
       </CardFooter>
