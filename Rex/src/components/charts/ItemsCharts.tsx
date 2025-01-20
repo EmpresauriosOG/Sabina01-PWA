@@ -1,12 +1,6 @@
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -31,15 +25,18 @@ interface ItemsChartProps {
 }
 
 export function ItemsChart({ data }: ItemsChartProps) {
-  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("quantity");
+  const [activeChart, setActiveChart] =
+    React.useState<keyof typeof chartConfig>("quantity");
 
-  const chartData = React.useMemo(() => 
-    data.map(item => ({
-      name: item.dish_name,
-      quantity: item.total_quantity,
-      revenue: item.total_revenue
-    }))
-  , [data]);
+  const chartData = React.useMemo(
+    () =>
+      data.map((item) => ({
+        name: item.dish_name,
+        quantity: item.total_quantity,
+        revenue: item.total_revenue,
+      })),
+    [data]
+  );
 
   const total = React.useMemo(
     () => ({
@@ -57,23 +54,25 @@ export function ItemsChart({ data }: ItemsChartProps) {
             <CardTitle>Desempeño de Platillos</CardTitle>
           </div>
           <div className="flex flex-row flex-wrap border-t">
-            {(Object.keys(chartConfig) as Array<keyof typeof chartConfig>).map((key) => (
-              <button
-                key={key}
-                data-active={activeChart === key}
-                className="flex-1 min-w-[120px] max-w-none flex flex-col justify-center gap-1 px-2 py-2 text-left even:border-l data-[active=true]:bg-muted/50 sm:px-3 sm:py-3"
-                onClick={() => setActiveChart(key)}
-              >
-                <span className="text-xs text-muted-foreground">
-                  {chartConfig[key].label}
-                </span>
-                <span className="text-base font-bold leading-none sm:text-lg">
-                  {key === 'revenue' 
-                    ? `$${total[key].toLocaleString()}`
-                    : total[key].toLocaleString()}
-                </span>
-              </button>
-            ))}
+            {(Object.keys(chartConfig) as Array<keyof typeof chartConfig>).map(
+              (key) => (
+                <button
+                  key={key}
+                  data-active={activeChart === key}
+                  className="flex-1 min-w-[120px] max-w-none flex flex-col justify-center gap-1 px-2 py-2 text-left even:border-l data-[active=true]:bg-muted/50 sm:px-3 sm:py-3"
+                  onClick={() => setActiveChart(key)}
+                >
+                  <span className="text-xs text-muted-foreground">
+                    {chartConfig[key].label}
+                  </span>
+                  <span className="text-base font-bold leading-none sm:text-lg">
+                    {key === "revenue"
+                      ? `$${total[key].toLocaleString()}`
+                      : total[key].toLocaleString()}
+                  </span>
+                </button>
+              )
+            )}
           </div>
         </div>
       </CardHeader>
@@ -99,7 +98,7 @@ export function ItemsChart({ data }: ItemsChartProps) {
               interval={0}
               tick={{
                 fontSize: 12,
-                dominantBaseline: 'auto'
+                dominantBaseline: "auto",
               }}
             />
             <ChartTooltip
@@ -110,8 +109,8 @@ export function ItemsChart({ data }: ItemsChartProps) {
                 />
               }
             />
-            <Bar 
-              dataKey={activeChart} 
+            <Bar
+              dataKey={activeChart}
               fill={`hsl(var(--chart-1)`}
               radius={[4, 4, 0, 0]}
             />
