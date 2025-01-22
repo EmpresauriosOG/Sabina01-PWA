@@ -33,6 +33,7 @@ const SmartOrdersChat = (props: SmartOrderProps) => {
     onSuccess: (data) => {
       // Handle successful message send
       setIsChatLoading(false);
+      setChatInput(""); // Clear the input field
       const { validation, recommendation } = data;
       let botMessage: string | undefined;
       if (validation === 0) {
@@ -55,6 +56,7 @@ const SmartOrdersChat = (props: SmartOrderProps) => {
       }
     },
     onError: (error) => {
+      console.log("Getting Here");
       console.error("Error sending message:", error);
       setMessages((prev) => [
         ...prev,
@@ -67,7 +69,6 @@ const SmartOrdersChat = (props: SmartOrderProps) => {
     if (chatInput.trim() !== "") {
       setIsChatLoading(true);
       mutation.mutate();
-      setChatInput(""); // Clear the input field
     }
   };
   return (
