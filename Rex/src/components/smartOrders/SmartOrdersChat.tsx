@@ -67,6 +67,7 @@ const SmartOrdersChat = (props: SmartOrderProps) => {
 
   const handleChatSend = () => {
     if (chatInput.trim() !== "") {
+      setMessages((prev) => [...prev, { text: chatInput, sender: "user" }]);
       setIsChatLoading(true);
       mutation.mutate();
     }
