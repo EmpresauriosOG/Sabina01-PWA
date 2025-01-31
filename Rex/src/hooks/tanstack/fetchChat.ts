@@ -1,13 +1,12 @@
 import axios from "axios";
 
 export const fetchChat = async (
-  restaurantId: string,
   locationId: string,
   chatInput: string
 ) => {
   const options = {
-    method: "POST",
-    url: `https://sabina01.onrender.com/menu/rag/${restaurantId}/${locationId}/1/${chatInput}`,
+    method: "GET",
+    url: `https://aiapi-production-fbc0.up.railway.app/ask/${locationId}/${chatInput}`,
   };
   const response = await axios.request(options);
   return response.data;
