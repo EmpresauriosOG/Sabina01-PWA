@@ -4,6 +4,19 @@ import { Button } from "../ui/button";
 import { fetchChat } from "@/hooks/tanstack/fetchChat";
 import { useMutation } from "@tanstack/react-query";
 
+interface Dish {
+  name: string;
+  price: number;
+  short_description: string;
+  attributes: string[];
+}
+
+interface ChatResponse {
+  dishes: Dish[];
+  total_results: number;
+  message: string;
+}
+
 interface SmartOrderProps {
   restaurantId: string;
   locationId: string;
@@ -21,7 +34,6 @@ interface SmartOrderProps {
 
 const SmartOrdersChat = (props: SmartOrderProps) => {
   const {
-    restaurantId,
     locationId,
     setMessages,
     isChatLoading,
@@ -29,30 +41,48 @@ const SmartOrdersChat = (props: SmartOrderProps) => {
   } = props;
   const [chatInput, setChatInput] = useState("");
   const mutation = useMutation({
-    mutationFn: () => fetchChat(restaurantId, locationId, chatInput),
+    mutationFn: () => fetchChat( locationId, chatInput),
     onSuccess: (data) => {
-      // Handle successful message send
       setIsChatLoading(false);
-      setChatInput(""); // Clear the input field
-      const { validation, recommendation } = data;
-      let botMessage: string | undefined;
-      if (validation === 0) {
-        botMessage = recommendation;
-      } else if (validation === 1) {
-        const { nombre_platillo, precio, descripcion, atributos } =
-          JSON.parse(recommendation);
-        botMessage = JSON.stringify({
-          type: "card",
-          content: {
-            title: nombre_platillo,
-            price: precio,
-            description: descripcion,
-            attributes: atributos,
-          },
-        });
-      }
-      if (typeof botMessage === "string") {
-        setMessages((prev) => [...prev, { text: botMessage, sender: "bot" }]);
+      setChatInput("");
+      
+      try {
+        // Try to parse as JSON first
+        const content = data[0].content;
+        let parsedContent: ChatResponse;
+        
+        try {
+          parsedContent = JSON.parse(content);
+          const { dishes, message } = parsedContent;
+          
+          // Add the natural language message
+          setMessages((prev) => [...prev, { text: message, sender: "bot" }]);
+
+          // If there are dishes, add them as cards
+          if (dishes && dishes.length > 0) {
+            dishes.forEach((dish: Dish) => {
+              const cardMessage = JSON.stringify({
+                type: "card",
+                content: {
+                  title: dish.name,
+                  price: dish.price,
+                  description: dish.short_description,
+                  attributes: dish.attributes,
+                },
+              });
+              setMessages((prev) => [...prev, { text: cardMessage, sender: "bot" }]);
+            });
+          }
+        } catch {
+          // If content is not JSON, treat it as a plain string message
+          setMessages((prev) => [...prev, { text: content, sender: "bot" }]);
+        }
+      } catch (error) {
+        console.error("Error processing response:", error);
+        setMessages((prev) => [
+          ...prev,
+          { text: "Error processing the server response.", sender: "bot" },
+        ]);
       }
     },
     onError: (error) => {
