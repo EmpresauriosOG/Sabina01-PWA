@@ -16,7 +16,7 @@ const SmartOrderSearchBar = (props: SmartOrderSearchBarProps) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search menu items..."
-        className="pl-10 py-2 bg-gray-800 text-white border-gray-700 focus:border-blue-500 rounded-full w-full"
+        className="pl-10 py-2 dark:bg-neutral-900 shadow-md rounded-md w-full"
       />
     </div>
   );

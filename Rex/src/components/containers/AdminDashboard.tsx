@@ -71,6 +71,23 @@ const AdminDashboard = (props: AdminDashboardProps) => {
     }
   };
 
+  const handleUpdateQuantity = (index: number, quantity: number) => {
+    setOrder((prevOrder) => {
+      if (quantity < 1) return prevOrder;
+      return prevOrder.map((item, i) =>
+        i === index ? { ...item, quantity } : item
+      );
+    });
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setOrder((prevOrder) => prevOrder.filter((_, i) => i !== index));
+  };
+
+  const handleDiscardCart = () => {
+    setOrder([]);
+  };
+
   const renderMessage = (msg: { text: string; sender: "user" | "bot" }) => {
     if (msg.sender === "user") {
       return (
@@ -94,8 +111,8 @@ const AdminDashboard = (props: AdminDashboardProps) => {
           course_type: "",
         };
         return (
-          <div className="flex justify-start mb-2 bg-gray-900">
-            <Card className="message bot bg-gray-800 text-white max-w-[80%]">
+          <div className="flex justify-start mb-2 dark:bg-neutral-900">
+            <Card className="message bot dark:bg-neutral-900 text-white max-w-[80%]">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-bold">{title}</CardTitle>
               </CardHeader>
@@ -106,14 +123,14 @@ const AdminDashboard = (props: AdminDashboardProps) => {
                   {attributes.map((attr: string, index: number) => (
                     <span
                       key={index}
-                      className="px-2 py-1 rounded-full text-xs font-semibold bg-[#70B7FF] text-gray-800"
+                      className="px-2 py-1 rounded-full text-xs font-semibold"
                     >
-                      {attr}
+                      {attr} aaa
                     </span>
                   ))}
                 </div>
                 <Button
-                  className="w-full mt-2 bg-green-500 hover:bg-green-600 text-gray-900 font-semibold"
+                  className="w-full mt-2 dark:bg-neutral-900 hover:bg-green-200 text-gray-900 font-semibold"
                   onClick={() => addToOrderWithAmount(menuItem)}
                 >
                   Agregar a la orden
@@ -150,7 +167,21 @@ const AdminDashboard = (props: AdminDashboardProps) => {
         setIsCartOpen={setIsCartOpen}
       />
       {/* Shopping Cart Modal */}
-      {isCartOpen && <ShoppingCardModal order={order} />}
+      {isCartOpen && (
+        <ShoppingCardModal
+          order={order}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+          onDiscardCart={handleDiscardCart}
+        />
+      )}
+
+      {/* Carousel component */}
+      <SmartOrderCarousel />
+
+      <h1 className="mb-4 font-light text-center">
+        Explora nuestro Menu o preguntale al Bot por Sugerencias!
+      </h1>
 
       {/* Search Bar */}
       <SmartOrderSearchBar
@@ -158,13 +189,8 @@ const AdminDashboard = (props: AdminDashboardProps) => {
         setSearchTerm={setSearchTerm}
       />
 
-      {/* Carousel component */}
-      <SmartOrderCarousel />
-
       {/* Menu Tabs */}
-      <h1 className="text-3xl mb-4 font-light text-center text-white">
-        Explore Our Menu
-      </h1>
+
       <SmartOrderTabs
         filteredItems={filteredItems}
         itemAmounts={itemAmounts}

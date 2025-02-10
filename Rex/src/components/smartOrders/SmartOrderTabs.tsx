@@ -39,18 +39,18 @@ const SmartOrderTabs = (props: SmartOrderTabsProps) => {
 
   return (
     <Tabs defaultValue="all" onValueChange={setSelectedCourseType}>
-      <TabsList className="grid grid-cols-1 md:grid-cols-3 h-max mb-6">
+      <TabsList className="grid grid-cols-1 md:grid-cols-3 h-max mb-6 dark:bg-neutral-900 shadow-md rounded-md ">
         <TabsTrigger className="flex gap-2" value="all">
           <Utensils className="w-4 h-4" />
-          All
+          Todo
         </TabsTrigger>
         <TabsTrigger className="flex gap-2" value="Entrada">
           <Salad className="w-4 h-4" />
-          Appetizers
+          Entradas
         </TabsTrigger>
         <TabsTrigger className="flex gap-2" value="Postre">
           <CakeSlice className="w-4 h-4" />
-          Desserts
+          Postres
         </TabsTrigger>
       </TabsList>
 
@@ -60,7 +60,7 @@ const SmartOrderTabs = (props: SmartOrderTabsProps) => {
             {filteredAndTypedItems.map((item) => (
               <Card
                 key={item.name}
-                className="bg-gray-800 text-white overflow-hidden flex flex-col h-full"
+                className="dark:bg-neutral-900 shadow-md rounded-md  overflow-hidden flex flex-col h-full"
               >
                 <div className="relative h-48">
                   <img
@@ -71,14 +71,12 @@ const SmartOrderTabs = (props: SmartOrderTabsProps) => {
                 </div>
                 <CardContent className="p-4 flex-grow flex flex-col">
                   <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
-                  <p className="text-sm text-gray-400 mb-2 flex-grow overflow-hidden line-clamp-3">
+                  <p className="text-sm dark:bg-neutral-900 shadow-md rounded-md  mb-2 flex-grow overflow-hidden line-clamp-3">
                     {item.short_description}
                   </p>
-                  <p className="mt-auto font-bold text-blue-400">
-                    ${item.price.toFixed(2)}
-                  </p>
+                  <p className="mt-auto font-bold">${item.price.toFixed(2)}</p>
                 </CardContent>
-                <CardFooter className="p-4 bg-gray-700">
+                <CardFooter className="p-4">
                   <div className="w-full">
                     <div className="flex justify-center pb-3">
                       <div className="flex items-center justify-between w-full">
@@ -109,7 +107,7 @@ const SmartOrderTabs = (props: SmartOrderTabsProps) => {
                       </div>
                     </div>
                     <Button
-                      className="w-full bg-green-500 hover:bg-green-600 text-gray-900 font-semibold"
+                      className="w-full "
                       onClick={() => addToOrderWithAmount(item)}
                       disabled={!itemAmounts[item.name]}
                     >
