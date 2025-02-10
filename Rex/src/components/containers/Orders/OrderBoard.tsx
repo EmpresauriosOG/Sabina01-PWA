@@ -5,7 +5,7 @@ import { useUserStore } from "@/shared/state/userState";
 import { Order } from "@/utils/orderUtils";
 
 export interface Card {
-  id: string;
+  _id: string;
   title: string;
   column: string;
 }
@@ -15,14 +15,14 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
   const [cards, setCards] = useState<Order[]>(data);
 
   const updateCards = useCallback((newCard: Order) => {
-    if (!newCard || !newCard.id) {
+    if (!newCard || !newCard._id) {
       console.error("Invalid card data:", newCard);
       return;
     }
 
     setCards((prevCards) => {
       const existingCardIndex = prevCards.findIndex(
-        (card) => card.id === newCard.id
+        (card) => card._id === newCard._id
       );
       if (existingCardIndex !== -1) {
         // Update existing card

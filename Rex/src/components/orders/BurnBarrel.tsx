@@ -27,7 +27,7 @@ const BurnBarrel = ({ setCards }: BurnBarrelProps) => {
     }
     try {
       await updateOrder(cardId, 5); // Assuming column 5 is the "burned" column
-      setCards((prevCards) => prevCards.filter((card) => card.id !== cardId));
+      setCards((prevCards) => prevCards.filter((card) => card._id !== cardId));
     } catch (error) {
       console.error("Failed to update order status:", error);
       // Handle error (e.g., show a notification to the user)

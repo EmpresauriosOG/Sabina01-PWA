@@ -68,6 +68,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
 
   //add a new table
   const addTable = async () => {
+    console.log(props.tableData.spaces)
     await addRestaurantTable(
       props.restaurantId || "",
       props.locationId || "",

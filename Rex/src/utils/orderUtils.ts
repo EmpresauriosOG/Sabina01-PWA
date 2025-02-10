@@ -2,7 +2,7 @@ import axios from "axios";
 export interface Order {
   restaurant_id: string;
   location_id: string;
-  id: string;
+  _id: string;
   items: {
     dish_id: string;
     quantity: number;
@@ -24,6 +24,7 @@ export const fetchOrders = async (
     method: "GET",
     url: `https://sabina01.onrender.com/orders/${restaurant_id}/${location_id}`,
   };
+  console.log("fetchOrders", options);
   try {
     const response = await axios.request(options);
     return response.data;
