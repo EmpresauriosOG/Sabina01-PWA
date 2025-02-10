@@ -9,15 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 interface SpaceSelectorProps {
   spaces: Space[];
   selectedSpace: string | null;
-  onSpaceSelect: (spaceId: string) => void;
-  onAddSpace: (name: string) => void;
-  onDeleteSpace: (id: string) => void;
-}
-
-interface SpaceSelectorProps {
-  spaces: Space[];
-  selectedSpace: string | null;
-  onSpaceSelect: (spaceId: string) => void;
+  onSpaceSelect: (space: Space) => void;
   onAddSpace: (name: string) => void;
   onDeleteSpace: (id: string) => void;
 }
@@ -69,7 +61,7 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
           {spaces.map((space) => (
             <div key={space.name} className="flex items-center mb-2">
               <Button
-                onClick={() => onSpaceSelect(space.name)}
+                onClick={() => onSpaceSelect(space)}
                 variant={selectedSpace === space.name ? "default" : "outline"}
                 className="mr-2"
               >
@@ -85,7 +77,7 @@ const SpaceSelector: React.FC<SpaceSelectorProps> = ({
                       <>
                         <ToastAction altText="Cancelar">Cancelar</ToastAction>
                         <ToastAction
-                          onClick={() => onDeleteSpace(space.name)}
+                          onClick={() => onDeleteSpace(space.space_id)}
                           altText="Eliminar"
                         >
                           Eliminar

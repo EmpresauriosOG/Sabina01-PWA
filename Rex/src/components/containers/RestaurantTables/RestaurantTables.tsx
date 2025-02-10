@@ -7,6 +7,7 @@ import {
   addRestaurantTable,
   deleteRestaurantSpace,
   deleteRestaurantTable,
+  Space,
   Table,
   TablesResponse,
 } from "@/utils/tablesUtils";
@@ -25,12 +26,12 @@ interface RestaurantTablesProps {
 const RestaurantTables = (props: RestaurantTablesProps) => {
   const data = props.tableData;
   const { toast } = useToast();
-  const [selectedSpace, setSelectedSpace] = useState<string | null>(
-    data.spaces[0]?.name
+  const [selectedSpace, setSelectedSpace] = useState<Space | null>(
+    data.spaces[0]
   );
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const displayedTables = data.spaces.find(
-    (space) => space.name === selectedSpace
+    (space) => space.name === selectedSpace?.name
   )?.tables;
 
   // Add a new space
@@ -45,22 +46,22 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
   };
 
   // Delete a space and all its tables
-  const deleteSpace = async (name: string) => {
+  const deleteSpace = async (id: string) => {
     await deleteRestaurantSpace(
       props.restaurantId || "",
       props.locationId || "",
-      name
+      id
     );
     props.refetchTables();
   };
 
   //Delete a Table
-  const deleteTable = async (spaceName: string, tableNumber: number) => {
+  const deleteTable = async (spaceName: string, tableId: string) => {
     await deleteRestaurantTable(
       props.restaurantId || "",
       props.locationId || "",
       spaceName,
-      tableNumber
+      tableId
     );
     props.refetchTables();
   };
@@ -70,9 +71,10 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
     await addRestaurantTable(
       props.restaurantId || "",
       props.locationId || "",
-      selectedSpace || "",
-      (props.tableData.spaces.find((space) => space.name === selectedSpace)
-        ?.tables.length ?? 0) + 1
+      selectedSpace?.space_id || "",
+      (props.tableData.spaces.find(
+        (space) => space.name === selectedSpace?.name
+      )?.tables.length ?? 0) + 1
     );
     props.refetchTables();
   };
@@ -82,7 +84,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
       <h1 className="text-2xl font-bold mb-4">Gestiona tus espacios</h1>
       <SpaceSelector
         spaces={data.spaces}
-        selectedSpace={selectedSpace}
+        selectedSpace={selectedSpace?.name || null}
         onSpaceSelect={setSelectedSpace}
         onAddSpace={addSpace}
         onDeleteSpace={deleteSpace}
@@ -102,7 +104,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
               <Button
                 onClick={() => {
                   toast({
-                    title: "Estas agregando una mesa en " + selectedSpace,
+                    title: "Estas agregando una mesa en " + selectedSpace.name,
                     description: "Confirma para proceder",
                     action: (
                       <>
@@ -145,10 +147,13 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
               table={selectedTable}
               locationId={props.locationId || ""}
               restaurantId={props.restaurantId || ""}
-              spaceName={selectedSpace || ""}
+              spaceId={selectedSpace?.space_id || ""}
               refetchTables={props.refetchTables}
               onDelete={() => {
-                deleteTable(selectedSpace || "", selectedTable.table_number);
+                deleteTable(
+                  selectedSpace?.space_id || "",
+                  selectedTable.table_id
+                );
                 setSelectedTable(null);
               }}
               onClose={() => setSelectedTable(null)}
