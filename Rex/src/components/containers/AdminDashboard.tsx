@@ -16,11 +16,14 @@ export interface MenuItem {
   price: number;
   image: string;
   course_type: string;
+  id: string;
+  isActive: number;
   // Add other fields as needed
 }
 
 export interface OrderItem extends MenuItem {
   quantity: number;
+  specialInstructions?: string;
 }
 export interface AdminDashboardProps {
   menu: MenuItem[];
@@ -34,7 +37,6 @@ const AdminDashboard = (props: AdminDashboardProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [itemAmounts, setItemAmounts] = useState<{ [key: string]: number }>({});
   const [isMessageVisible, setIsMessageVisible] = useState(true);
-
   // You'll need to provide these IDs from your application state or props
   const restaurantId = "665239a9f25b93e429b870bc";
   const locationId = "66523d74f25b93e429b870be";
@@ -54,11 +56,11 @@ const AdminDashboard = (props: AdminDashboardProps) => {
     if (amount > 0) {
       setOrder((prevOrder) => {
         const existingItem = prevOrder.find(
-          (orderItem) => orderItem.name === item.name
+          (orderItem) => orderItem.id === item.id
         );
         if (existingItem) {
           return prevOrder.map((orderItem) =>
-            orderItem.name === item.name
+            orderItem.id === item.id
               ? { ...orderItem, quantity: orderItem.quantity + amount }
               : orderItem
           );
@@ -102,13 +104,16 @@ const AdminDashboard = (props: AdminDashboardProps) => {
     try {
       const parsedMessage = JSON.parse(msg.text);
       if (parsedMessage.type === "card") {
-        const { title, price, description, attributes } = parsedMessage.content;
+        const { title, price, description, attributes, id, isActive } =
+          parsedMessage.content;
         const menuItem: MenuItem = {
           name: title,
           short_description: description,
           price: parseFloat(price),
           image: "", // You might want to add an image field if available
           course_type: "",
+          id: id,
+          isActive,
         };
         return (
           <div className="flex justify-start mb-2 dark:bg-neutral-900">

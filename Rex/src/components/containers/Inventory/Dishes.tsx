@@ -8,14 +8,11 @@ import DishModal from "@/components/modals/DishesModal";
 
 const Dishes = () => {
   const { user } = useUserStore();
-  console.log('User data:', user); // Debug user data
 
   const { data, isLoading, isError, error, refetch } = useMenu(
     user?.restaurant_id || "NOT_FOUND",
     user?.location_id || "NOT_FOUND"
   );
-
-  console.log('Raw data from useMenu:', data); // Debug raw data
 
   const dishFormSubmitted = useFormSubmissionStore(
     (state) => state.dishFormSubmitted
@@ -26,7 +23,8 @@ const Dishes = () => {
       refetch();
       useFormSubmissionStore.getState().setDishFormSubmitted(false);
     }
-  }, [dishFormSubmitted, refetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dishFormSubmitted]);
 
   if (!user?.restaurant_id || !user?.location_id) {
     return <div>Missing restaurant or location information</div>;
@@ -36,8 +34,7 @@ const Dishes = () => {
   if (isError) return <div>Error loading menu items: {error?.message}</div>;
 
   const menuItems = Array.isArray(data) ? data : [];
-  console.log('Processed menuItems:', menuItems); // Debug processed items
-  
+
   return (
     <div className="container mx-auto py-10">
       <DataTable

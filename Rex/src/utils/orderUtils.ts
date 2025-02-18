@@ -16,6 +16,12 @@ export interface Order {
   special_instructions: string | null;
 }
 
+export interface CartOrder {
+  items: { dish_id: string; quantity: number }[];
+  special_instructions: string | null;
+  ticket_id: string;
+}
+
 export const fetchOrders = async (
   restaurant_id: string,
   location_id: string
@@ -24,7 +30,6 @@ export const fetchOrders = async (
     method: "GET",
     url: `https://sabina01.onrender.com/orders/${restaurant_id}/${location_id}`,
   };
-  console.log("fetchOrders", options);
   try {
     const response = await axios.request(options);
     return response.data;
@@ -34,30 +39,22 @@ export const fetchOrders = async (
   }
 };
 
-export const uploadOrder = async (
-  order: Omit<
-    Order,
-    | "id"
-    | "ordered_ts"
-    | "preparation_ts"
-    | "serving_ts"
-    | "special_instructions"
-  >
-) => {
+//ToDo: Fix this flow
+export const uploadOrder = async (order: CartOrder) => {
   const options = {
     method: "POST",
     url: "https://sabina01.onrender.com/orders/upload-order",
     data: {
-      restaurant_id: order.restaurant_id,
-      location_id: order.location_id,
       items: order.items,
-      total_price: order.total_price,
-      status: order.status,
+      special_instructions: order.special_instructions,
+      ticket_id: "67296617b5cb4f83a12608c3",
     },
   };
+
   try {
     const response = await axios.request(options);
-    return response.data as Order;
+
+    return response.data;
   } catch (error) {
     console.error("Error uploading order:", error);
     if (axios.isAxiosError(error) && error.response) {
