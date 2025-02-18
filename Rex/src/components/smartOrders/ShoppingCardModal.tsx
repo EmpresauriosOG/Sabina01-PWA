@@ -57,7 +57,7 @@ const ShoppingCardModal = (props: ShoppingCardModalProps) => {
   };
 
   return (
-    <div className="fixed top-16 right-4 w-96 dark:bg-neutral-900 shadow-md rounded-md overflow-hidden z-50">
+    <div className="fixed top-16 right-4 w-96 dark:bg-neutral-700 shadow-md rounded-md overflow-hidden z-50">
       <div className="p-3 font-bold">Resumen Orden</div>
       <div className="p-4 max-h-[calc(100vh-120px)] overflow-y-auto">
         {order.length === 0 ? (
