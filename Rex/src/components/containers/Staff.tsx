@@ -39,7 +39,7 @@ const Staff = () => {
       <DataTable
         columns={columns}
         data={data}
-        filter="first_name"
+        filter={["first_name", "email"]}
         Modal={
           <StaffModal
             location_id={user?.location_id ?? ""}

@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "sonner";
 
 // Components
 import Sidebar from "./components/management/Sidebar/Sidebar";
@@ -12,6 +13,7 @@ function RootLayout() {
         <Outlet />
       </div>
       <Toaster />
+      <SonnerToaster position="top-right" richColors />
     </>
   );
 }

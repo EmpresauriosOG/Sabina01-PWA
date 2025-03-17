@@ -13,6 +13,7 @@ import DishModal from "@/components/modals/DishesModal";
 import { updateDish } from "@/utils/menuUtils";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 
 interface ModifyDishProps {
   item: MenuItem;
@@ -21,12 +22,16 @@ interface ModifyDishProps {
 
 export const ModifyDish = ({ item, onUpdate }: ModifyDishProps) => {
   const [open, setOpen] = useState(false);
+  const setDishFormSubmitted = useFormSubmissionStore(
+    (state) => state.setDishFormSubmitted
+  );
 
   const handleUpdate = async (updatedDish: MenuItem) => {
     const result = await updateDish(updatedDish);
     if (result.success) {
       toast.success("Platillo actualizado exitosamente");
       setOpen(false);
+      setDishFormSubmitted(true);
       onUpdate?.();
     } else {
       toast.error("Error al actualizar el platillo");
@@ -50,6 +55,7 @@ export const ModifyDish = ({ item, onUpdate }: ModifyDishProps) => {
           restaurant_id={item.restaurant_id}
           editItem={item}
           onSubmit={handleUpdate}
+          isNestedInDialog={true}
         />
       </DialogContent>
     </Dialog>
