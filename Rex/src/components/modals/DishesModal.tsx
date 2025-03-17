@@ -53,6 +53,30 @@ export default function DishModal({ restaurant_id, location_id, editItem, onSubm
     editItem?.attributes || []
   );
 
+  const [imagePreview, setImagePreview] = useState<string | null>(editItem?.image || null);
+
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const base64Image = await convertToBase64(file);
+        setImagePreview(base64Image);
+        setFormData(prev => ({ ...prev, image: base64Image }));
+      } catch (error) {
+        console.error("Error converting image:", error);
+      }
+    }
+  };
+
   const handleAddAttribute = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -100,7 +124,7 @@ export default function DishModal({ restaurant_id, location_id, editItem, onSubm
       short_description: formData.get("short_description") as string,
       long_description: formData.get("long_description") as string,
       price: Number(formData.get("price")),
-      image: formData.get("image") as string,
+      image: imagePreview || '', // Ensure image is always a string
       attributes: selectedAttributes,
       course_type: formData.get("course_type") as string,
       meal_type: formData.get("meal_type") as string,
@@ -206,16 +230,27 @@ export default function DishModal({ restaurant_id, location_id, editItem, onSubm
 
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="image" className="text-right">
-                URL de imagen
+                Imagen
               </Label>
-              <Input
-                id="image"
-                name="image"
-                type="url"
-                defaultValue={formData.image}
-                className="col-span-3"
-                required
-              />
+              <div className="col-span-3">
+                <Input
+                  id="image"
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="mb-2"
+                />
+                {imagePreview && (
+                  <div className="mt-2">
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="max-w-[200px] h-auto rounded-md"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
