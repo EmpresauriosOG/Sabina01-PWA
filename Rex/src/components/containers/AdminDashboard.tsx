@@ -16,11 +16,14 @@ export interface MenuItem {
   price: number;
   image: string;
   course_type: string;
+  id: string;
+  isActive: number;
   // Add other fields as needed
 }
 
 export interface OrderItem extends MenuItem {
   quantity: number;
+  specialInstructions?: string;
 }
 export interface AdminDashboardProps {
   menu: MenuItem[];
@@ -34,7 +37,6 @@ const AdminDashboard = (props: AdminDashboardProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [itemAmounts, setItemAmounts] = useState<{ [key: string]: number }>({});
   const [isMessageVisible, setIsMessageVisible] = useState(true);
-
   // You'll need to provide these IDs from your application state or props
   const restaurantId = "665239a9f25b93e429b870bc";
   const locationId = "66523d74f25b93e429b870be";
@@ -54,11 +56,11 @@ const AdminDashboard = (props: AdminDashboardProps) => {
     if (amount > 0) {
       setOrder((prevOrder) => {
         const existingItem = prevOrder.find(
-          (orderItem) => orderItem.name === item.name
+          (orderItem) => orderItem.id === item.id
         );
         if (existingItem) {
           return prevOrder.map((orderItem) =>
-            orderItem.name === item.name
+            orderItem.id === item.id
               ? { ...orderItem, quantity: orderItem.quantity + amount }
               : orderItem
           );
@@ -69,6 +71,23 @@ const AdminDashboard = (props: AdminDashboardProps) => {
       // Reset the amount after adding to order
       setItemAmounts((prev) => ({ ...prev, [item.name]: 0 }));
     }
+  };
+
+  const handleUpdateQuantity = (index: number, quantity: number) => {
+    setOrder((prevOrder) => {
+      if (quantity < 1) return prevOrder;
+      return prevOrder.map((item, i) =>
+        i === index ? { ...item, quantity } : item
+      );
+    });
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setOrder((prevOrder) => prevOrder.filter((_, i) => i !== index));
+  };
+
+  const handleDiscardCart = () => {
+    setOrder([]);
   };
 
   const renderMessage = (msg: { text: string; sender: "user" | "bot" }) => {
@@ -85,17 +104,20 @@ const AdminDashboard = (props: AdminDashboardProps) => {
     try {
       const parsedMessage = JSON.parse(msg.text);
       if (parsedMessage.type === "card") {
-        const { title, price, description, attributes } = parsedMessage.content;
+        const { title, price, description, attributes, id, isActive } =
+          parsedMessage.content;
         const menuItem: MenuItem = {
           name: title,
           short_description: description,
           price: parseFloat(price),
           image: "", // You might want to add an image field if available
           course_type: "",
+          id: id,
+          isActive,
         };
         return (
-          <div className="flex justify-start mb-2 bg-gray-900">
-            <Card className="message bot bg-gray-800 text-white max-w-[80%]">
+          <div className="flex justify-start mb-2 dark:bg-neutral-900">
+            <Card className="message bot dark:bg-neutral-900 text-white max-w-[80%]">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-bold">{title}</CardTitle>
               </CardHeader>
@@ -106,14 +128,14 @@ const AdminDashboard = (props: AdminDashboardProps) => {
                   {attributes.map((attr: string, index: number) => (
                     <span
                       key={index}
-                      className="px-2 py-1 rounded-full text-xs font-semibold bg-[#70B7FF] text-gray-800"
+                      className="px-2 py-1 rounded-full text-xs font-semibold"
                     >
-                      {attr}
+                      {attr} aaa
                     </span>
                   ))}
                 </div>
                 <Button
-                  className="w-full mt-2 bg-green-500 hover:bg-green-600 text-gray-900 font-semibold"
+                  className="w-full mt-2 dark:bg-neutral-900 hover:bg-green-200 text-gray-900 font-semibold"
                   onClick={() => addToOrderWithAmount(menuItem)}
                 >
                   Agregar a la orden
@@ -150,7 +172,21 @@ const AdminDashboard = (props: AdminDashboardProps) => {
         setIsCartOpen={setIsCartOpen}
       />
       {/* Shopping Cart Modal */}
-      {isCartOpen && <ShoppingCardModal order={order} />}
+      {isCartOpen && (
+        <ShoppingCardModal
+          order={order}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+          onDiscardCart={handleDiscardCart}
+        />
+      )}
+
+      {/* Carousel component */}
+      <SmartOrderCarousel />
+
+      <h1 className="mb-4 font-light text-center">
+        Explora nuestro Menu o preguntale al Bot por Sugerencias!
+      </h1>
 
       {/* Search Bar */}
       <SmartOrderSearchBar
@@ -158,13 +194,8 @@ const AdminDashboard = (props: AdminDashboardProps) => {
         setSearchTerm={setSearchTerm}
       />
 
-      {/* Carousel component */}
-      <SmartOrderCarousel />
-
       {/* Menu Tabs */}
-      <h1 className="text-3xl mb-4 font-light text-center text-white">
-        Explore Our Menu
-      </h1>
+
       <SmartOrderTabs
         filteredItems={filteredItems}
         itemAmounts={itemAmounts}

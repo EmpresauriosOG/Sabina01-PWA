@@ -7,6 +7,7 @@ import {
   addRestaurantTable,
   deleteRestaurantSpace,
   deleteRestaurantTable,
+  Space,
   Table,
   TablesResponse,
 } from "@/utils/tablesUtils";
@@ -25,12 +26,12 @@ interface RestaurantTablesProps {
 const RestaurantTables = (props: RestaurantTablesProps) => {
   const data = props.tableData;
   const { toast } = useToast();
-  const [selectedSpace, setSelectedSpace] = useState<string | null>(
-    data.spaces[0]?.name
+  const [selectedSpace, setSelectedSpace] = useState<Space | null>(
+    data.spaces[0]
   );
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const displayedTables = data.spaces.find(
-    (space) => space.name === selectedSpace
+    (space) => space.name === selectedSpace?.name
   )?.tables;
 
   // Add a new space
@@ -45,50 +46,52 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
   };
 
   // Delete a space and all its tables
-  const deleteSpace = async (name: string) => {
+  const deleteSpace = async (id: string) => {
     await deleteRestaurantSpace(
       props.restaurantId || "",
       props.locationId || "",
-      name
+      id
     );
     props.refetchTables();
   };
 
   //Delete a Table
-  const deleteTable = async (spaceName: string, tableNumber: number) => {
+  const deleteTable = async (spaceName: string, tableId: string) => {
     await deleteRestaurantTable(
       props.restaurantId || "",
       props.locationId || "",
       spaceName,
-      tableNumber
+      tableId
     );
     props.refetchTables();
   };
 
   //add a new table
   const addTable = async () => {
+    console.log(props.tableData.spaces);
     await addRestaurantTable(
       props.restaurantId || "",
       props.locationId || "",
-      selectedSpace || "",
-      (props.tableData.spaces.find((space) => space.name === selectedSpace)
-        ?.tables.length ?? 0) + 1
+      selectedSpace?.space_id || "",
+      (props.tableData.spaces.find(
+        (space) => space.name === selectedSpace?.name
+      )?.tables.length ?? 0) + 1
     );
     props.refetchTables();
   };
 
   return (
-    <div className="w-full mx-auto px-4 py-4">
+    <div className="w-full mx-auto px-4 py-4 max-h-screen h-full">
       <h1 className="text-2xl font-bold mb-4">Gestiona tus espacios</h1>
       <SpaceSelector
         spaces={data.spaces}
-        selectedSpace={selectedSpace}
+        selectedSpace={selectedSpace?.name || null}
         onSpaceSelect={setSelectedSpace}
         onAddSpace={addSpace}
         onDeleteSpace={deleteSpace}
       />
-      <div className="flex flex-col md:flex-row flex-1 overflow-auto ">
-        <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0 dark:bg-neutral-900 shadow-md rounded-md mr-4">
+      <div className="flex flex-col md:flex-row flex-1 dark:bg-neutral-900 max-h-screen h-full">
+        <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0 shadow-md rounded-md mr-4">
           {/* //ToDo add a component for empty spaces */}
           {data.spaces.length === 0 && (
             <div>
@@ -102,7 +105,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
               <Button
                 onClick={() => {
                   toast({
-                    title: "Estas agregando una mesa en " + selectedSpace,
+                    title: "Estas agregando una mesa en " + selectedSpace.name,
                     description: "Confirma para proceder",
                     action: (
                       <>
@@ -145,10 +148,13 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
               table={selectedTable}
               locationId={props.locationId || ""}
               restaurantId={props.restaurantId || ""}
-              spaceName={selectedSpace || ""}
+              spaceId={selectedSpace?.space_id || ""}
               refetchTables={props.refetchTables}
               onDelete={() => {
-                deleteTable(selectedSpace || "", selectedTable.table_number);
+                deleteTable(
+                  selectedSpace?.space_id || "",
+                  selectedTable.table_id
+                );
                 setSelectedTable(null);
               }}
               onClose={() => setSelectedTable(null)}

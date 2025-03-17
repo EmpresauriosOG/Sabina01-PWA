@@ -2,7 +2,7 @@ import axios from "axios";
 export interface Order {
   restaurant_id: string;
   location_id: string;
-  id: string;
+  _id: string;
   items: {
     dish_id: string;
     quantity: number;
@@ -14,6 +14,12 @@ export interface Order {
   preparation_ts: string | null;
   serving_ts: string | null;
   special_instructions: string | null;
+}
+
+export interface CartOrder {
+  items: { dish_id: string; quantity: number }[];
+  special_instructions: string | null;
+  ticket_id: string;
 }
 
 export const fetchOrders = async (
@@ -33,30 +39,22 @@ export const fetchOrders = async (
   }
 };
 
-export const uploadOrder = async (
-  order: Omit<
-    Order,
-    | "id"
-    | "ordered_ts"
-    | "preparation_ts"
-    | "serving_ts"
-    | "special_instructions"
-  >
-) => {
+//ToDo: Fix this flow
+export const uploadOrder = async (order: CartOrder) => {
   const options = {
     method: "POST",
     url: "https://sabina01.onrender.com/orders/upload-order",
     data: {
-      restaurant_id: order.restaurant_id,
-      location_id: order.location_id,
       items: order.items,
-      total_price: order.total_price,
-      status: order.status,
+      special_instructions: order.special_instructions,
+      ticket_id: "67296617b5cb4f83a12608c3",
     },
   };
+
   try {
     const response = await axios.request(options);
-    return response.data as Order;
+
+    return response.data;
   } catch (error) {
     console.error("Error uploading order:", error);
     if (axios.isAxiosError(error) && error.response) {

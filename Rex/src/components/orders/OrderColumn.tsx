@@ -26,7 +26,7 @@ const OrderColumn = ({
   //This just changes styles when dragging
   const [active, setActive] = useState(false);
   const handleDragStart = (e: any, card: Order) => {
-    e.dataTransfer.setData("cardId", card.id);
+    e.dataTransfer.setData("cardId", card._id);
   };
 
   const handleDragEnd = (e: any) => {
@@ -44,7 +44,7 @@ const OrderColumn = ({
     const before = element.dataset.before || "-1";
 
     setCards((prevCards) => {
-      const cardIndex = prevCards.findIndex((c) => c.id === cardId);
+      const cardIndex = prevCards.findIndex((c) => c._id === cardId);
       if (cardIndex === -1) {
         console.error("Card not found:", cardId);
         return prevCards;
@@ -57,7 +57,7 @@ const OrderColumn = ({
       if (before === "-1") {
         newCards.push(updatedCard);
       } else {
-        const insertIndex = newCards.findIndex((c) => c.id === before);
+        const insertIndex = newCards.findIndex((c) => c._id === before);
         if (insertIndex === -1) {
           newCards.push(updatedCard);
         } else {
@@ -145,7 +145,7 @@ const OrderColumn = ({
         {cards.map((c) => {
           return (
             <OrderCard
-              key={c.id}
+              key={c._id}
               order={c}
               column={column}
               handleDragStart={handleDragStart}

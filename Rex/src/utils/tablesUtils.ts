@@ -73,12 +73,12 @@ export const addRestaurantSpace = async (
 export const addRestaurantTable = async (
   restaurant_id: string,
   location_id: string,
-  space_name: string,
+  space_id: string,
   table_number: number
 ) => {
   const options = {
     method: "PUT",
-    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}/add_table`,
+    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_id}/add_table`,
     data: {
       table_number: table_number,
       status: 0,
@@ -98,8 +98,8 @@ export const addRestaurantTable = async (
 export const updateRestaurantTable = async (
   restaurant_id: string,
   location_id: string,
-  space_name: string,
-  table_number: number,
+  space_id: string,
+  table_id: string,
   current_waiter?: string,
   guest_names?: string[],
   number_of_persons?: number,
@@ -107,7 +107,7 @@ export const updateRestaurantTable = async (
 ) => {
   const options = {
     method: "PUT",
-    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}/${table_number}/update`,
+    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_id}/${table_id}/update`,
     data: {
       status: status || 0,
       current_waiter: current_waiter || "",
@@ -143,11 +143,11 @@ export const deleteRestaurantTables = async (
 export const deleteRestaurantSpace = async (
   restaurant_id: string,
   location_id: string,
-  space_name: string
+  space_id: string
 ) => {
   const options = {
     method: "DELETE",
-    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}`,
+    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_id}`,
   };
   try {
     const response = await axios.request(options);
@@ -161,11 +161,11 @@ export const deleteRestaurantTable = async (
   restaurant_id: string,
   location_id: string,
   space_name: string,
-  table_number: number
+  table_id: string
 ) => {
   const options = {
     method: "DELETE",
-    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}/${table_number}`,
+    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}/${table_id}`,
   };
   try {
     const response = await axios.request(options);

@@ -16,7 +16,7 @@ interface TableEditorProps {
   table: Table;
   restaurantId: string;
   locationId: string;
-  spaceName: string;
+  spaceId: string;
   onDelete: (id: string) => void;
   onClose: () => void;
   refetchTables: () => void;
@@ -29,7 +29,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
   refetchTables,
   restaurantId,
   locationId,
-  spaceName,
+  spaceId,
 }) => {
   const [editedTable, setEditedTable] = React.useState<Table>(table);
 
@@ -37,8 +37,8 @@ const TableEditor: React.FC<TableEditorProps> = ({
     await updateRestaurantTable(
       restaurantId,
       locationId,
-      spaceName,
-      updatedTable.table_number,
+      spaceId,
+      updatedTable.table_id,
       updatedTable.current_waiter ?? undefined,
       updatedTable.guest_names,
       updatedTable.number_of_persons,
@@ -137,7 +137,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
               toast({
                 variant: "destructive",
                 title: "Estas seguro?",
-                description: table.table_id + " sera eliminado",
+                description: "Mesa: " + table.table_number + " sera eliminado",
                 action: (
                   <>
                     <ToastAction altText="Cancelar">Cancelar</ToastAction>

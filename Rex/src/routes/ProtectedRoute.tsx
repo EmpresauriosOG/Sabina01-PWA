@@ -60,7 +60,7 @@ const ProtectedRoute = () => {
   return (
     <>
       {!isSignedIn && (
-        <div className="h-screen p-4">
+        <div className="h-screen p-4 dark:bg-neutral-900">
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted border rounded-lg h-full">
             <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
               <div className="flex flex-col items-center gap-1 text-center">

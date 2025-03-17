@@ -20,9 +20,8 @@ interface OrderCardProps {
 
 const OrderCard = ({ order, column, handleDragStart }: OrderCardProps) => {
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
-
   useEffect(() => {
-    if (!order.id) {
+    if (!order._id) {
       console.error("Order ID is undefined", order);
       return;
     }
@@ -30,7 +29,7 @@ const OrderCard = ({ order, column, handleDragStart }: OrderCardProps) => {
     let isMounted = true;
     const updateOrderStatus = async () => {
       try {
-        await updateOrder(order.id, column);
+        await updateOrder(order._id, column);
       } catch (error) {
         if (isMounted) {
           console.error("Failed to update order status:", error);
@@ -44,18 +43,18 @@ const OrderCard = ({ order, column, handleDragStart }: OrderCardProps) => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order.id, column]);
+  }, [order._id, column]);
 
-  if (!order.id) {
+  if (!order._id) {
     return null; // or return a placeholder component
   }
 
   return (
     <>
-      <DropIndicator beforeId={order.id} column={column} />
+      <DropIndicator beforeId={order._id} column={column} />
       <motion.div
         layout
-        layoutId={order.id}
+        layoutId={order._id}
         draggable="true"
         onDragStart={(e) => handleDragStart(e, { ...order })}
         className="cursor-grab active:cursor-grabbing mb-2"
