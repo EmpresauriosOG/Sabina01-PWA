@@ -18,7 +18,6 @@ const RestaurantTablesContainer = () => {
   if (isError) {
     return <div>Error</div>;
   }
-  console.log("This is being passed", data);
   return (
     <RestaurantTables
       tableData={data as TablesResponse}

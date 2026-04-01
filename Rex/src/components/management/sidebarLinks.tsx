@@ -7,6 +7,7 @@ import {
   UserPlus,
   Table,
   PieChartIcon,
+  Ticket,
 } from "lucide-react"; // Import icons if using a library
 
 export interface SidebarLink {
@@ -57,6 +58,12 @@ const sidebarLinks: SidebarLink[] = [
     name: "Kpis",
     icon: <PieChartIcon size={16} strokeWidth={1} />,
     link: "kpis",
+    roles: ["admin", "manager"],
+  },
+  {
+    name: "Tickets",
+    icon: <Ticket size={16} strokeWidth={1} />,
+    link: "tickets",
     roles: ["admin", "manager"],
   },
   // Add more links as needed

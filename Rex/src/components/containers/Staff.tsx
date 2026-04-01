@@ -7,6 +7,7 @@ import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 import StaffModal from "../modals/StaffModal";
 
 const Staff = () => {
+  
   const { user } = useUserStore();
   const staffFormSubmitted = useFormSubmissionStore(
     (state) => state.staffFormSubmitted
@@ -35,11 +36,12 @@ const Staff = () => {
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    //Not sure if you need to move this styles @Braun
+    <div className="container mx-auto py-10 bg-slate-500">
       <DataTable
         columns={columns}
         data={data}
-        filter={["first_name", "email"]}
+        filter="first_name"
         Modal={
           <StaffModal
             location_id={user?.location_id ?? ""}

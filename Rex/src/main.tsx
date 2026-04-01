@@ -14,7 +14,6 @@ import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 // import Restaurants from "./components/containers/Restaurants.tsx";
 import Menu from "./components/Menu.tsx";
 import OTPTable from "./components/menu/OTPTable.tsx";
-import Tables from "./components/management/Tables.tsx";
 import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
 import Staff from "./components/containers/Staff.tsx";
 import Inventory from "./components/containers/Inventory/Inventory.tsx";
@@ -25,6 +24,7 @@ import OrderContainer from "./components/containers/Orders/OrderContainer.tsx";
 import RestaurantTablesContainer from "./components/containers/RestaurantTables/RestaurantTablesContainer.tsx";
 import SmartOrder from "./components/containers/SmartOrder/SmartOrder.tsx";
 import Kpis from "./components/containers/Kpis/Kpis.tsx";
+import Tickets from "@/routes/Tickets";
 
 const queryClient = new QueryClient();
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -71,6 +71,10 @@ const router = createBrowserRouter([
             path: "/kpis",
             element: <Kpis />,
           },
+          {
+            path: "/tickets",
+            element: <Tickets />,
+          },
         ],
         errorElement: <ErrorPage />,
       },
@@ -94,8 +98,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/tables",
-    element: <Tables />,
+    path: "/open-menu",
+    element: <SmartOrder />,
     errorElement: <ErrorPage />,
   },
 ]);

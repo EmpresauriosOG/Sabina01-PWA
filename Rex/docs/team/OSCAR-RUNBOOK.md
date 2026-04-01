@@ -1,0 +1,140 @@
+# OSCAR RUNBOOK
+
+Owner: Oscar
+Lane ownership: B + E
+Date baseline: 2026-04-01
+
+## Goal And Capability Ownership
+Oscar owns data-domain stabilization and cleanup lane:
+- inventory-menu-mgmt
+- staff
+- kpis
+- legacy-orphans
+
+Reference docs:
+- `docs/architecture/01-capabilities/inventory-menu-mgmt.md`
+- `docs/architecture/01-capabilities/staff.md`
+- `docs/architecture/01-capabilities/kpis.md`
+- `docs/architecture/01-capabilities/legacy-orphans.md`
+- `docs/team/TEAM-3P-PLAYBOOK.md`
+
+## In Scope
+- Inventory/menu management refactor and mutation consistency.
+- Staff CRUD stabilization and refresh reliability.
+- KPI hook and response normalization cleanup.
+- Legacy keep/refactor/archive execution and quarantine.
+
+## Out Of Scope
+- Auth provider and guest/smart-order architecture decisions (Mau).
+- Primary ownership of orders/tables/tickets realtime policy (Ian).
+
+## File Ownership Boundaries
+Primary files/directories Oscar may edit freely:
+- `src/components/containers/Inventory/*`
+- `src/components/forms/IngredientForm.tsx`
+- `src/components/forms/StaffForm.tsx`
+- `src/components/modals/IngredientModal.tsx`
+- `src/components/modals/DishesModal.tsx`
+- `src/components/tables/Ingredients/*`
+- `src/components/tables/Dishes/*`
+- `src/components/tables/Staff/*`
+- `src/components/containers/Staff.tsx`
+- `src/components/containers/Kpis/*`
+- `src/components/cards/*`
+- `src/components/charts/*`
+- `src/hooks/tanstack/getAverageOrderTime.ts`
+- `src/hooks/tanstack/getAverageTicket.ts`
+- `src/hooks/tanstack/getBusiestHours.ts`
+- `src/hooks/tanstack/getHighestSelling.ts`
+- `src/hooks/tanstack/getItems.ts`
+- `src/hooks/tanstack/getItemSales.ts`
+- `src/hooks/tanstack/getOrderStatus.ts`
+- `src/hooks/tanstack/getSales.ts`
+- `src/hooks/tanstack/useIngredient.ts`
+- `src/hooks/tanstack/getStaff.ts`
+- `src/utils/ingredientUtils.ts`
+- `src/utils/menuUtils.ts`
+- `src/utils/staffUtils.ts`
+
+Legacy lane files (E):
+- `src/context/AuthContext.tsx`
+- `src/components/forms/Form.tsx`
+- `src/components/management/Tables.tsx`
+- `src/components/containers/Restaurants.tsx`
+- `src/hooks/tanstack/getOTP.ts`
+- `src/utils/tableUtils.ts`
+- `src/shared/constants.ts`
+
+Shared-risk files (handoff required if Mau/Ian also touching):
+- `src/hooks/tanstack/getMenu.ts`
+- `src/shared/state/userState.ts`
+
+## Packetized Tasks
+
+### B1: Split Dish Modal Complexity
+- Break modal into focused sections (data, image, ingredients, attributes).
+- Reduce coupling between view state and submission logic.
+
+### B2: Unify Menu Mutation API Surface
+- Remove overlapping update pathways and choose one canonical mutation path.
+- Link blocker: BR-003.
+
+### B3: Replace Global Submission Flags
+- Replace cross-feature boolean form flags with deterministic mutation invalidation.
+
+### B4: Staff Service Isolation
+- Keep staff CRUD behavior and table refresh behavior consistent and explicit.
+
+### B5: KPI Transport Normalization
+- Normalize KPI query transport and response adapters.
+- Link blocker: BR-009.
+
+### E1: Keep/Refactor/Archive Execution
+- Apply `legacy-orphans.md` module classification decisions.
+- Keep record of archived vs refactored modules.
+
+### E2: Remove Credentials And Stale Imports
+- Remove hardcoded credential usage and stale legacy imports.
+- Link blocker: BR-010 if schema fixture data is needed for safe migration.
+
+## Tests Required Before Handoff
+- Inventory:
+  - ingredient CRUD reflects immediately without manual reload
+  - dish CRUD reflects immediately without manual reload
+- Staff:
+  - create/update/delete behavior and role assignment consistency
+- KPI:
+  - charts render from normalized payloads for same tenant context
+- Legacy cleanup:
+  - archived modules not referenced by active import graph
+  - no hardcoded secrets remain in runtime path
+- Lint/build for touched files
+
+## Handoff Checklist
+- Packet ID completed and referenced in PR.
+- Any archival move includes rationale and impacted import checks.
+- Test evidence attached for each touched capability.
+- Any missing backend dependency references request ID.
+- Capability docs updated where architecture boundaries changed.
+
+## PR Checklist
+- Title format: `Oscar: <packet_id> <summary>`
+- Include scope, files touched, tests, blockers, and cleanup notes.
+- If shared file touched, include handoff note from primary owner.
+
+## Blocker Escalation Template
+Use this exact template in PR or team thread:
+
+`BLOCKER <request_id>`
+- Owner: Oscar
+- Packet: <B1/B2/...>
+- Needed by: <Day #>
+- Capability blocked: <inventory/staff/kpis/legacy>
+- What is missing: <schema/endpoint example/contract>
+- Current workaround risk: <short risk>
+- Decision needed: <specific decision>
+
+## Cleanup Safety Rules
+- Archive by explicit decision, never by accidental deletion.
+- If a module is archived, verify no active route/import depends on it.
+- If uncertain, quarantine with clear `legacy` label and owner note.
