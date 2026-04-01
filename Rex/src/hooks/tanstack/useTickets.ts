@@ -3,7 +3,6 @@ import {
   createTicket,
   fetchTickets,
   closeTicket,
-  Ticket,
 } from "@/utils/ticketUtils";
 import { useToast } from "@/components/ui/use-toast";
 
