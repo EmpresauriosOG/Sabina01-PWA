@@ -37,7 +37,8 @@ const AdminDashboard = (props: AdminDashboardProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [itemAmounts, setItemAmounts] = useState<{ [key: string]: number }>({});
   const [isMessageVisible, setIsMessageVisible] = useState(true);
-  // You'll need to provide these IDs from your application state or props
+  // TODO [D4]: HARDCODED test restaurant/location IDs — should come from useUserStore().user
+  // Previously hardcoded: restaurantId = "665239a9f25b93e429b870bc", locationId = "66523d74f25b93e429b870be"
   const restaurantId = "665239a9f25b93e429b870bc";
   const locationId = "66523d74f25b93e429b870be";
 

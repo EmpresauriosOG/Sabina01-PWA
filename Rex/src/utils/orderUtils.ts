@@ -47,6 +47,8 @@ export const uploadOrder = async (order: CartOrder) => {
     data: {
       items: order.items,
       special_instructions: order.special_instructions,
+      // TODO [D4]: HARDCODED test ticket_id — should come from runtime context (active ticket for the table/session)
+      // Previously hardcoded: "67296617b5cb4f83a12608c3"
       ticket_id: "67296617b5cb4f83a12608c3",
     },
   };
