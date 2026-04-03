@@ -1,5 +1,6 @@
 import { useHighestSelling } from "@/hooks/tanstack/getHighestSelling";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { HighestSellingCard } from "./HighestSellingCard";
 
 interface HighestSellingContainerProps {
@@ -11,7 +12,7 @@ const HighestSellingContainer = (props: HighestSellingContainerProps) => {
   const { data, isLoading, isError } = useHighestSelling(user.restaurant_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMenu } from "@/hooks/tanstack/getMenu";
+import { PageLoader } from "@/components/ui/loading";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { ShoppingCart } from "lucide-react";
@@ -70,6 +71,8 @@ interface OrderItem extends MenuItem {
 }
 
 export default function Menu() {
+  // TODO [D4]: HARDCODED test restaurant/location IDs — should come from route params (:restaurantId/:locationId)
+  // Previously hardcoded: restaurantId = "665239a9f25b93e429b870bc", locationId = "66523d74f25b93e429b870be"
   const { data, isLoading, isError } = useMenu(
     "665239a9f25b93e429b870bc",
     "66523d74f25b93e429b870be"
@@ -259,7 +262,7 @@ export default function Menu() {
   };
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <PageLoader message="Cargando menu" />;
   }
 
   if (isError) {

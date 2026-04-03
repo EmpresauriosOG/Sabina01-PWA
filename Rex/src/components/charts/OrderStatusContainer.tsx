@@ -1,5 +1,6 @@
 import { useOrderStatus } from "@/hooks/tanstack/getOrderStatus";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { OrderStatusChart } from "./OrderStatusChart";
 
 interface OrderStatusChartContainerProps {
@@ -11,7 +12,7 @@ const OrderStatusChartContainer = (props: OrderStatusChartContainerProps) => {
   const { data, isLoading, isError } = useOrderStatus(user.restaurant_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

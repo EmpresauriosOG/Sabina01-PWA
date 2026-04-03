@@ -1,5 +1,6 @@
 import { useItemSales } from "@/hooks/tanstack/getItemSales";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { ItemSalesChart } from "./ItemSalesChart";
 
 interface ItemSalesChartProps {
@@ -15,8 +16,8 @@ const ItemSalesChartContainer = (props: ItemSalesChartProps) => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-[320px] bg-slate-950 p-4 rounded-lg shadow-md flex items-center justify-center">
-        Loading...
+      <div className="w-full h-[320px] bg-slate-950 p-4 rounded-lg shadow-md">
+        <SectionLoader />
       </div>
     );
   }

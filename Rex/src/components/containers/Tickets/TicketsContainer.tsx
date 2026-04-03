@@ -32,6 +32,7 @@ import {
 import { useTickets, useCloseTicket } from "@/hooks/tanstack/useTickets";
 import { useUserStore } from "@/shared/state/userState";
 import { Ticket } from "@/utils/ticketUtils";
+import { SectionLoader } from "@/components/ui/loading";
 
 // Separate component for the actions column to properly use the hook
 const TicketActions = ({ ticket }: { ticket: Ticket }) => {
@@ -200,7 +201,7 @@ export default function TicketsContainer() {
   });
 
   if (isLoading) {
-    return <div className="p-8">Cargando tickets...</div>;
+    return <SectionLoader />;
   }
 
   return (

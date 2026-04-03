@@ -5,6 +5,7 @@ import { useUserStore } from "@/shared/state/userState";
 import { useEffect } from "react";
 import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 import DishModal from "@/components/modals/DishesModal";
+import { SectionLoader } from "@/components/ui/loading";
 
 const Dishes = () => {
   const { user } = useUserStore();
@@ -30,7 +31,7 @@ const Dishes = () => {
     return <div>Missing restaurant or location information</div>;
   }
 
-  if (isLoading) return <div>Loading menu items...</div>;
+  if (isLoading) return <SectionLoader />;
   if (isError) return <div>Error loading menu items: {error?.message}</div>;
 
   const menuItems = Array.isArray(data) ? data : [];

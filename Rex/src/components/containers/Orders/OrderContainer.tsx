@@ -1,5 +1,6 @@
 import { useQueryOrders } from "@/hooks/tanstack/queryOrders";
 import { useUserStore } from "@/shared/state/userState";
+import { SectionLoader } from "@/components/ui/loading";
 import OrderBoard from "./OrderBoard";
 
 const OrderContainer = () => {
@@ -11,7 +12,7 @@ const OrderContainer = () => {
   } = useQueryOrders(user?.restaurant_id, user?.location_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {
