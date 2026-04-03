@@ -19,7 +19,6 @@ import Staff from "./components/containers/Staff.tsx";
 import Inventory from "./components/containers/Inventory/Inventory.tsx";
 //Context
 import { ThemeProvider } from "./components/theme-provider.tsx";
-// import { AuthProvider } from "./context/AuthContext.tsx";
 import OrderContainer from "./components/containers/Orders/OrderContainer.tsx";
 import RestaurantTablesContainer from "./components/containers/RestaurantTables/RestaurantTablesContainer.tsx";
 import SmartOrder from "./components/containers/SmartOrder/SmartOrder.tsx";

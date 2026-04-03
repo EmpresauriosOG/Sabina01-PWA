@@ -1,72 +1,54 @@
-// sidebarLinks.tsx
 import {
-  ShoppingBasket,
-  ChefHat,
   BoxesIcon,
   HandPlatter,
   UserPlus,
   Table,
   PieChartIcon,
   Ticket,
-} from "lucide-react"; // Import icons if using a library
+} from "lucide-react";
+import { hasRouteAccess } from "@/auth/rolePolicy";
 
 export interface SidebarLink {
   name: string;
   icon: JSX.Element;
-  link: string;
-  roles: ("admin" | "waiter" | "chef" | "manager" | "default")[];
+  path: string;
 }
 
 const sidebarLinks: SidebarLink[] = [
   {
     name: "Staff",
     icon: <UserPlus size={16} strokeWidth={1} />,
-    link: "my-staff",
-    roles: ["admin", "manager"],
+    path: "/my-staff",
   },
   {
     name: "Inventario",
     icon: <BoxesIcon size={16} strokeWidth={1} />,
-    link: "inventory",
-    roles: ["admin", "manager"],
+    path: "/inventory",
   },
   {
-    name: "Orders",
+    name: "Ordenes",
     icon: <HandPlatter size={16} strokeWidth={1} />,
-    link: "orders",
-    roles: ["admin", "manager"],
+    path: "/orders",
   },
   {
-    name: "Tables",
+    name: "Mesas",
     icon: <Table size={16} strokeWidth={1} />,
-    link: "tables",
-    roles: ["admin", "manager"],
+    path: "/tables",
   },
   {
-    name: "Recipes",
-    icon: <ChefHat size={16} strokeWidth={1} />,
-    link: "recipes",
-    roles: ["admin"],
-  },
-  {
-    name: "Inventory",
-    icon: <ShoppingBasket size={16} strokeWidth={1} />,
-    link: "inventory",
-    roles: ["admin"],
-  },
-  {
-    name: "Kpis",
+    name: "KPIs",
     icon: <PieChartIcon size={16} strokeWidth={1} />,
-    link: "kpis",
-    roles: ["admin", "manager"],
+    path: "/kpis",
   },
   {
     name: "Tickets",
     icon: <Ticket size={16} strokeWidth={1} />,
-    link: "tickets",
-    roles: ["admin", "manager"],
+    path: "/tickets",
   },
-  // Add more links as needed
 ];
+
+export function getFilteredSidebarLinks(userRoles: string[]): SidebarLink[] {
+  return sidebarLinks.filter((link) => hasRouteAccess(link.path, userRoles));
+}
 
 export default sidebarLinks;

@@ -5,7 +5,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 //Icons
 import { Menu } from "lucide-react";
 //Sidebar Links
-import sidebarLinks from "../sidebarLinks";
+import { getFilteredSidebarLinks } from "../sidebarLinks";
 //React
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/shared/state/userState";
@@ -26,15 +26,11 @@ const MobileSidebar = () => {
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-sm font-light">
-            {sidebarLinks
-              .filter((item) =>
-                item.roles.some((role) => roles?.includes(role))
-              )
-              .map((item) => (
+            {getFilteredSidebarLinks(roles ?? []).map((item) => (
                 <Link
                   className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
                   key={item.name}
-                  to={item.link}
+                  to={item.path}
                 >
                   <span>{item.icon}</span>
                   <span>{item.name}</span>
@@ -48,11 +44,11 @@ const MobileSidebar = () => {
               <Button
                 className="self-center m-4"
                 onClick={() => {
-                  signOut({ redirectUrl: "/" });
                   setUser(null);
+                  signOut({ redirectUrl: "/" });
                 }}
               >
-                Logout
+                Cerrar sesion
               </Button>
             )}
           </nav>

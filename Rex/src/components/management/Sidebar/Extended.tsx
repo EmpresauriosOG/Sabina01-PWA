@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 //Components
 import { ModeToggle } from "@/components/mode-toggle";
 //Data
-import sidebarLinks from "../sidebarLinks";
+import { getFilteredSidebarLinks } from "../sidebarLinks";
 import { Button } from "@/components/ui/button";
 //Hook
 import { useUserStore } from "@/shared/state/userState";
@@ -35,15 +35,11 @@ const Extended = () => {
 
         <div className="flex">
           <nav className="flex flex-col text-sm font-light p-2 space-y-3">
-            {sidebarLinks
-              .filter((item) =>
-                item.roles.some((role) => roles?.includes(role))
-              )
-              .map((item) => (
+            {getFilteredSidebarLinks(roles ?? []).map((item) => (
                 <Link
                   className="flex items-center gap-3 px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted  shadow-md rounded-md "
                   key={item.name}
-                  to={item.link}
+                  to={item.path}
                 >
                   <span>{item.icon}</span>
                   <span>{item.name}</span>
@@ -59,11 +55,11 @@ const Extended = () => {
           <Button
             className="self-center m-4"
             onClick={() => {
-              signOut({ redirectUrl: "/" });
               setUser(null);
+              signOut({ redirectUrl: "/" });
             }}
           >
-            Cerrar Sesion
+            Cerrar sesion
           </Button>
         )}
       </div>
