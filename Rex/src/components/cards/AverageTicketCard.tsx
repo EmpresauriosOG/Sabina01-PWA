@@ -17,9 +17,7 @@ export function AverageTicketCard({ data }: AverageTicketCardProps) {
     <Card className="w-full">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium">Ticket Promedio</CardTitle>
-        <CardDescription>
-          {data.total_orders} tickets totales
-        </CardDescription>
+        <CardDescription>{data.total_orders} tickets totales</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-1">
