@@ -99,9 +99,22 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 - Split `Menu.tsx` into route container + presentational sections.
 - Remove repeated category rendering duplication.
 
+#### D1 Subtasks (completed 2026-04-02)
+- [x] D1.1: Audited Menu.tsx — 1355 lines, same card JSX copy-pasted 5x (one per category tab)
+- [x] D1.2: Extracted into 4 focused components:
+  - `MenuItemCard.tsx` — single menu item with quantity controls + drawer detail
+  - `MenuItemGrid.tsx` — filtered grid, takes optional courseType filter
+  - `MenuCart.tsx` — shopping cart overlay with quantity management
+  - `MenuChatBot.tsx` — AI chat toggle + interface (self-contained state)
+  - `Menu.tsx` — thin route container (1355 → 202 lines, total 728 lines, zero duplication)
+
 ### D2: Route Param Correctness For Guest Menu
 - Use route params for restaurant/location context.
 - Remove hardcoded tenant IDs.
+
+#### D2 Subtasks (completed 2026-04-02)
+- [x] D2.1: Replaced hardcoded IDs with `useParams()` in Menu.tsx (route already defined as `/menu/:restaurantId/:locationId`)
+- [x] D2.2: Also fixed hardcoded IDs in chat RAG endpoint URL
 
 ### D3: Chat Adapter Extraction
 - Move AI transport and parsing to dedicated adapter/hook.
