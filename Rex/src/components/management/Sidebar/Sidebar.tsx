@@ -1,5 +1,5 @@
-import Extended from "./Extended.tsx";
-import MobileSidebar from "./MobileSidebar.tsx";
+import Extended from "./Extended";
+import MobileSidebar from "./MobileSidebar";
 
 export default function Sidebar() {
   return (
