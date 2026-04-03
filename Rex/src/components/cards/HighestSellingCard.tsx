@@ -16,10 +16,10 @@ export function HighestSellingCard({ data }: HighestSellingCardProps) {
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">Producto más vendido</CardTitle>
-        <CardDescription>
-          {data.dish_name}
-        </CardDescription>
+        <CardTitle className="text-sm font-medium">
+          Producto más vendido
+        </CardTitle>
+        <CardDescription>{data.dish_name}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-1">

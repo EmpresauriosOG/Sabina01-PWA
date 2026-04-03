@@ -42,7 +42,7 @@ const ProtectedRoute = () => {
 
   if (!isSignedIn) {
     return (
-      <div className="h-screen p-4 dark:bg-neutral-900">
+      <div className="h-full min-h-0 p-4 dark:bg-neutral-900">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted border rounded-lg h-full">
           <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
             <div className="flex flex-col items-center gap-1 text-center">
@@ -65,7 +65,7 @@ const ProtectedRoute = () => {
 
   if (error) {
     return (
-      <div className="h-screen p-4">
+      <div className="h-full min-h-0 p-4">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted border rounded-lg h-full">
           <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
             <div className="flex flex-col items-center gap-1 text-center">
@@ -81,7 +81,7 @@ const ProtectedRoute = () => {
   const roles = getRoles() ?? [];
   if (!hasRouteAccess(pathname, roles)) {
     return (
-      <div className="h-screen p-4">
+      <div className="h-full min-h-0 p-4">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted border rounded-lg h-full">
           <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
             <div className="flex flex-col items-center gap-1 text-center">
