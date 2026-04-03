@@ -3,6 +3,8 @@ import { Staff } from "../../Staff/constants";
 import { DataTableColumnHeader } from "../ColumnHeader";
 import DeleteToast from "../DeleteToast";
 import ModifyButton from "../Ingredients/ModifyButton";
+import { deleteStaff } from "@/utils/staffUtils";
+import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 
 export const columns: ColumnDef<Staff>[] = [
   {
@@ -47,7 +49,13 @@ export const columns: ColumnDef<Staff>[] = [
       const data = row.original;
       return (
         <div className="flex items-center space-x-2">
-          <DeleteToast item={row.getValue("email")} />
+          <DeleteToast
+            item={row.getValue("email")}
+            onDelete={async (email) => {
+              await deleteStaff(email);
+              useFormSubmissionStore.getState().setStaffFormSubmitted(true);
+            }}
+          />
           <ModifyButton
             dialogTitle="Modificar Personal"
             dialogDescription="Ingresa"

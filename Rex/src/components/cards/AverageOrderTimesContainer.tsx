@@ -1,5 +1,6 @@
 import { useAverageOrderTimes } from "@/hooks/tanstack/getAverageOrderTime";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { AverageOrderTimesCard } from "./AverageOrderTimesCard";
 
 interface AverageOrderTimesContainerProps {
@@ -11,7 +12,7 @@ const AverageOrderTimesContainer = (props: AverageOrderTimesContainerProps) => {
   const { data, isLoading, isError } = useAverageOrderTimes(user.restaurant_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

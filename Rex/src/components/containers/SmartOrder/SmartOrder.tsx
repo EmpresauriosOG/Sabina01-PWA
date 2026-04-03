@@ -1,5 +1,6 @@
 import { useMenu } from "@/hooks/tanstack/getMenu";
 import { useUserStore } from "@/shared/state/userState";
+import { SectionLoader } from "@/components/ui/loading";
 import AdminDashboard from "../AdminDashboard";
 
 const SmartOrder = () => {
@@ -9,7 +10,7 @@ const SmartOrder = () => {
     user?.location_id || "NOT_FOUND"
   );
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

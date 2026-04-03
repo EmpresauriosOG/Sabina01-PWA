@@ -1,5 +1,6 @@
 import { useAverageTicket } from "@/hooks/tanstack/getAverageTicket";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { AverageTicketCard } from "./AverageTicketCard";
 
 interface AverageTicketContainerProps {
@@ -11,7 +12,7 @@ const AverageTicketContainer = (props: AverageTicketContainerProps) => {
   const { data, isLoading, isError } = useAverageTicket(user.restaurant_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

@@ -1,5 +1,6 @@
 import { useBusiestHours } from "@/hooks/tanstack/getBusiestHours";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { BusiestHoursChart } from "./BusiestHoursChart";
 
 interface BusiestHoursContainerProps {
@@ -11,7 +12,7 @@ const BusiestHoursContainer = (props: BusiestHoursContainerProps) => {
   const { data, isLoading, isError } = useBusiestHours(user.restaurant_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

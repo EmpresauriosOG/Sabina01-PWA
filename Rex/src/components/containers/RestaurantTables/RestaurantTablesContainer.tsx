@@ -1,5 +1,6 @@
 import { useQueryTables } from "@/hooks/tanstack/queryTables";
 import { useUserStore } from "@/shared/state/userState";
+import { SectionLoader } from "@/components/ui/loading";
 import RestaurantTables from "./RestaurantTables";
 import { TablesResponse } from "@/utils/tablesUtils";
 
@@ -11,9 +12,8 @@ const RestaurantTablesContainer = () => {
     isError,
     refetch,
   } = useQueryTables(user?.restaurant_id, user?.location_id);
-  console.log(user);
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
   if (isError) {
     return <div>Error</div>;

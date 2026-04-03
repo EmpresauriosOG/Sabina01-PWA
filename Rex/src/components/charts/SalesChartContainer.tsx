@@ -1,5 +1,6 @@
 import { useSales } from "@/hooks/tanstack/getSales";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { SalesChart } from "./SalesChart";
 
 interface SalesChartProps {
@@ -14,7 +15,7 @@ const SalesChartContainer = (props: SalesChartProps) => {
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

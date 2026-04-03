@@ -5,6 +5,7 @@ import { useIngredient } from "@/hooks/tanstack/useIngredient";
 import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 import { useUserStore } from "@/shared/state/userState";
 import { useEffect } from "react";
+import { SectionLoader } from "@/components/ui/loading";
 
 const Ingredients = () => {
   const { user } = useUserStore();
@@ -24,7 +25,7 @@ const Ingredients = () => {
   }, [ingredientFormSubmitted]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

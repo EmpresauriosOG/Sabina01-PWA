@@ -4,22 +4,16 @@ import RootLayout from "./RootLayout";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
-//Setup Routes
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-//Anytime your app throws an error while rendering, loading data, or performing data mutations, React Router will catch it and render an error screen. Let's make our own error page.
 import ErrorPage from "./shared/ErrorPage";
 import Login from "./auth/Login";
 import SignUp from "./auth/SignUp";
 import ProtectedRoute from "./routes/ProtectedRoute";
-// import Restaurants from "./components/containers/Restaurants.tsx";
 import Menu from "./components/Menu";
 import OTPTable from "./components/menu/OTPTable";
-import { AppSidebar } from "./components/management/sidebar/app-sidebar";
 import Staff from "./components/containers/Staff";
 import Inventory from "./components/containers/Inventory/Inventory";
-//Context
 import { ThemeProvider } from "./components/theme-provider";
-// import { AuthProvider } from "./context/AuthContext.tsx";
 import OrderContainer from "./components/containers/Orders/OrderContainer";
 import RestaurantTablesContainer from "./components/containers/RestaurantTables/RestaurantTablesContainer";
 import SmartOrder from "./components/containers/SmartOrder/SmartOrder";
@@ -46,10 +40,6 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <SmartOrder />,
-          },
-          {
-            path: "/sidebar",
-            element: <AppSidebar />,
           },
           {
             path: "/my-staff",

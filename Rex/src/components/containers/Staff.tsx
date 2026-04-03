@@ -5,6 +5,7 @@ import { useUserStore } from "@/shared/state/userState";
 import { useEffect } from "react";
 import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 import StaffModal from "../modals/StaffModal";
+import { SectionLoader } from "@/components/ui/loading";
 
 const Staff = () => {
   
@@ -28,7 +29,7 @@ const Staff = () => {
   }, [staffFormSubmitted]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

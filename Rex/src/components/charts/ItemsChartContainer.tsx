@@ -1,5 +1,6 @@
 import { useItems } from "@/hooks/tanstack/getItems";
 import { User } from "@/hooks/tanstack/getUser";
+import { SectionLoader } from "@/components/ui/loading";
 import { ItemsChart } from "./ItemsCharts";
 interface ItemsChartContainerProps {
   user: User;
@@ -10,7 +11,7 @@ const ItemsChartContainer = (props: ItemsChartContainerProps) => {
   const { data, isLoading, isError } = useItems(user.restaurant_id);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SectionLoader />;
   }
 
   if (isError) {

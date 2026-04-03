@@ -2,7 +2,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "../ColumnHeader";
 import { Ingredient } from "./types";
 import ModifyButton from "./ModifyButton";
-import DeleteIngredientToast from "./DeleteIngredient";
+import DeleteToast from "../DeleteToast";
+import { deleteIngredient } from "@/utils/ingredientUtils";
+import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 
 //@Braun Check styles
 export const columns: ColumnDef<Ingredient>[] = [
@@ -59,7 +61,13 @@ export const columns: ColumnDef<Ingredient>[] = [
       return (
         //@Braun Check styles
         <>
-          <DeleteIngredientToast item={row.getValue("id")} />
+          <DeleteToast
+            item={row.getValue("id")}
+            onDelete={async (id) => {
+              await deleteIngredient(id);
+              useFormSubmissionStore.getState().setIngredientFormSubmitted(true);
+            }}
+          />
           <ModifyButton
             dialogTitle="Modificar Ingrediente"
             dialogDescription="Ingresa"
