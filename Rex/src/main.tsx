@@ -14,7 +14,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 // import Restaurants from "./components/containers/Restaurants.tsx";
 import Menu from "./components/Menu";
 import OTPTable from "./components/menu/OTPTable";
-import Sidebar from "./components/management/Sidebar/Sidebar";
+import { AppSidebar } from "./components/management/sidebar/app-sidebar";
 import Staff from "./components/containers/Staff";
 import Inventory from "./components/containers/Inventory/Inventory";
 //Context
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/sidebar",
-            element: <Sidebar />,
+            element: <AppSidebar />,
           },
           {
             path: "/my-staff",
