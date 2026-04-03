@@ -11,10 +11,8 @@ import ErrorPage from "./shared/ErrorPage.tsx";
 import Login from "./auth/Login.tsx";
 import SignUp from "./auth/SignUp.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
-// import Restaurants from "./components/containers/Restaurants.tsx";
 import Menu from "./components/Menu.tsx";
 import OTPTable from "./components/menu/OTPTable.tsx";
-import Sidebar from "./components/management/Sidebar/Sidebar.tsx";
 import Staff from "./components/containers/Staff.tsx";
 import Inventory from "./components/containers/Inventory/Inventory.tsx";
 //Context
@@ -45,10 +43,6 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <SmartOrder />,
-          },
-          {
-            path: "/sidebar",
-            element: <Sidebar />,
           },
           {
             path: "/my-staff",

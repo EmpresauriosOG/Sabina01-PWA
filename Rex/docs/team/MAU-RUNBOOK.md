@@ -91,6 +91,10 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 - Clarify `/sidebar` route role.
 - Keep shared components domain-neutral.
 
+#### A4 Subtasks (completed 2026-04-02)
+- [x] A4.1: Removed dead `/sidebar` route from main.tsx (was rendering Sidebar twice — already in RootLayout). Removed unused Sidebar import.
+- [x] A4.2: Audited shared components — only `DeleteToast.tsx` had domain leakage (hardcoded `deleteStaff`). Refactored to accept generic `onDelete` callback. Deleted duplicate `DeleteIngredient.tsx`. All `src/components/ui/` primitives are clean.
+
 ### D1: Decompose Guest Menu Monolith
 - Split `Menu.tsx` into route container + presentational sections.
 - Remove repeated category rendering duplication.
