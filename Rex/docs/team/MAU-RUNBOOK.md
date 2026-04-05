@@ -137,6 +137,11 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 ### D5: Smart-order Boundary Separation
 - Split cart, catalog, chat, and submit orchestration boundaries.
 
+#### D5 Subtasks (completed 2026-04-05)
+- [x] D5.1: Extracted `MenuItem`/`OrderItem` types to `src/components/smartOrders/types.ts` — removed cross-component imports from AdminDashboard
+- [x] D5.2: Moved `renderMessage` into `ChatInterface` — removed prop drilling of render function. ChatInterface now owns all message rendering and receives `onAddToOrder` callback instead
+- [x] D5.3: AdminDashboard simplified — owns only cart state + search state + orchestration. No UI rendering logic for chat messages.
+
 ## Tests Required Before Handoff
 - Auth route protection:
   - signed-out user blocked from protected pages
