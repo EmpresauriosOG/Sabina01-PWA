@@ -27,14 +27,20 @@ import {
 import { useClerk } from "@clerk/clerk-react";
 
 import { sidebarRouteItems } from "./config";
+import { Roles } from "@/hooks/tanstack/getUser";
 import type { SidebarActionItem, SidebarUser } from "./types";
 import { getUserDisplayName, getUserInitials, isRouteActive } from "./utils";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
-  const { user, getRoles, setUser } = useUserStore();
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
   const { signOut } = useClerk();
-  const roles = getRoles() ?? [];
+  // TODO [TESTING]: To see all sidebar items without a real session, hardcode the role here:
+  //   const roles = [Roles.admin];   ← "admin" has access to every route in config.tsx
+  // Available roles: admin | manager | staff | waiter | kitchen | hostess
+  // "admin" is the only role that currently sees the full sidebar.
+  const roles = React.useMemo(() => user?.roles ?? [], [user?.roles]);
 
   const mainItems = React.useMemo(
     () =>
