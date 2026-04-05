@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import SmartOrdersChat from "./SmartOrdersChat";
 import { MenuItem } from "./types";
+import { ChatMessage } from "@/hooks/tanstack/useChat";
 
 interface ChatInterfaceProps {
   toggleChat: () => void;
@@ -10,8 +11,6 @@ interface ChatInterfaceProps {
   locationId: string;
   onAddToOrder: (item: MenuItem) => void;
 }
-
-type ChatMessage = { sender: "user" | "bot"; text: string };
 
 const ChatInterface = ({
   toggleChat,

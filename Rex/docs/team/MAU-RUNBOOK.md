@@ -120,6 +120,12 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 - Move AI transport and parsing to dedicated adapter/hook.
 - Link blocker: BR-008.
 
+#### D3 Subtasks (completed 2026-04-05)
+- [x] D3.1: Created `src/hooks/tanstack/useChat.ts` — owns HTTP transport (via `fetchChat`) + wire-format parsing. Exports `ChatMessage` type and `useChat(locationId, { onMessages })` hook.
+- [x] D3.2: Extracted `parseResponse` into `useChat.ts` — handles both plain-text and structured dish-card responses, normalizes to `ChatMessage[]`.
+- [x] D3.3: Rewrote `SmartOrdersChat.tsx` — removed all inline parsing logic, now calls `useChat` and appends normalized messages. Clears input immediately on send.
+- [x] D3.4: Updated `ChatInterface.tsx` — removed local `ChatMessage` type alias, imports from `useChat.ts` (single source of truth).
+
 ### D4: Smart-order Hardcoded Value Removal
 - Remove hardcoded restaurant/location/ticket identifiers.
 - Ensure runtime context injection from session or props.
