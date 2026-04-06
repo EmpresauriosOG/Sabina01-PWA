@@ -81,6 +81,11 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 - Ensure delete/update paths target correct table records.
 - Link blocker: BR-006.
 
+#### C3 Subtasks (completed 2026-04-05)
+- [x] Identified mismatch: `deleteRestaurantTable` parameter was named `space_name` but `RestaurantTables.tsx` always passed `space_id`. The caller was correct — parameter name was wrong.
+- [x] Renamed parameter from `space_name` → `space_id` and updated URL segment to match.
+- [x] Added `TODO [C3/BR-006]` comment documenting the ambiguity — backend confirmation still needed to verify whether the route expects `space_id` or `space_name` as the path segment.
+
 ### C4: Orders Websocket Reconciliation Stabilization
 - Add deterministic event parsing and merge behavior.
 - Handle reconnect and malformed payload scenarios.

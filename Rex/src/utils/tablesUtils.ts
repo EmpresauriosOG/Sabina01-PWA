@@ -190,15 +190,18 @@ export const deleteRestaurantSpace = async (
   }
 };
 
+// TODO [C3/BR-006]: The 3rd path segment here is ambiguous — callers currently pass
+// space_id but the parameter was originally named space_name. Pending BR-006 confirmation
+// of whether the backend route expects space_id or space_name.
 export const deleteRestaurantTable = async (
   restaurant_id: string,
   location_id: string,
-  space_name: string,
+  space_id: string,
   table_id: string
 ) => {
   const options = {
     method: "DELETE",
-    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}/${table_id}`,
+    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_id}/${table_id}`,
   };
   try {
     const response = await axios.request(options);
