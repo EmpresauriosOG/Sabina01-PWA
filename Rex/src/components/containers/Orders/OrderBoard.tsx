@@ -92,6 +92,9 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
     };
   }, [user?.restaurant_id, user?.location_id, updateCards]);
 
+  // TODO [C5/BR-004]: Order status values (1=Pedidos, 2=Confirmados, 3=Cocinando, 4=Listo)
+  // are assumed from current UI — not yet confirmed by backend contract.
+  // Once BR-004 answers allowed statuses and transitions, validate here.
   const filteredCards = useCallback(
     (column: number) => {
       return cards.filter((card) => card.status === column);
