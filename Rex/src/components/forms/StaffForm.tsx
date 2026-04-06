@@ -71,7 +71,6 @@ export function StaffForm(props: StaffFormProps) {
   });
 
   const onSubmit = async () => {
-    // Handle form submission logic here
     try {
       const staff = {
         first_name: form.getValues().first_name,
@@ -81,45 +80,37 @@ export function StaffForm(props: StaffFormProps) {
         restaurant_id: restaurant_id || "",
         roles: [form.getValues().role] as Roles[],
       };
-      await submitStaff(staff).then(() => {
-        toast({
-          description: `${staff.first_name} agregado.`,
-        });
-        form.reset();
-      });
+      await submitStaff(staff);
+      toast({ description: `${staff.first_name} agregado.` });
+      form.reset();
       void invalidateStaffQuery();
-    } catch {
-      console.log("Error adding staff:");
+    } catch (error) {
+      console.error("Error adding staff:", error);
       form.setError("root", {
         message: "Error dando de alta un nuevo usuario.",
       });
     }
   };
 
-  //ToDO: Remove this to a utils file
   const onSubmitModify = async () => {
-    // Handle form submission logic here
-    const staff = {
-      first_name: form.getValues().first_name,
-      last_name: form.getValues().last_name,
-      email: form.getValues().email,
-      location_id: location_id || "",
-      restaurant_id: restaurant_id || "",
-      roles: [form.getValues().role] as Roles[],
-    };
-    await modifyStaff(staff)
-      .then(() => {
-        toast({
-          description: `${staff.email} Modificado.`,
-        });
-        void invalidateStaffQuery();
-      })
-      .catch((error) => {
-        console.log("Error modificando al staff:", error);
-        form.setError("root", {
-          message: "Error modificando staff",
-        });
+    try {
+      const staff = {
+        first_name: form.getValues().first_name,
+        last_name: form.getValues().last_name,
+        email: form.getValues().email,
+        location_id: location_id || "",
+        restaurant_id: restaurant_id || "",
+        roles: [form.getValues().role] as Roles[],
+      };
+      await modifyStaff(staff);
+      toast({ description: `${staff.email} Modificado.` });
+      void invalidateStaffQuery();
+    } catch (error) {
+      console.error("Error modificando al staff:", error);
+      form.setError("root", {
+        message: "Error modificando staff",
       });
+    }
   };
 
   return (

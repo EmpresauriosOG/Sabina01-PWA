@@ -6,6 +6,7 @@ import DeleteToast from "../DeleteToast";
 import ModifyButton from "../Ingredients/ModifyButton";
 import { deleteStaff } from "@/utils/staffUtils";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const StaffActionsCell = ({ row }: { row: Row<Staff> }) => {
   const queryClient = useQueryClient();
@@ -27,8 +28,13 @@ const StaffActionsCell = ({ row }: { row: Row<Staff> }) => {
       <DeleteToast
         item={row.getValue("email")}
         onDelete={async (email) => {
-          await deleteStaff(email);
-          void invalidateStaffQuery();
+          try {
+            await deleteStaff(email);
+            void invalidateStaffQuery();
+          } catch (error) {
+            console.error("Error deleting staff:", error);
+            toast.error("Error al eliminar el usuario");
+          }
         }}
       />
       <ModifyButton
