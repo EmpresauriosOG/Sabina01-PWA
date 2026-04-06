@@ -44,6 +44,79 @@ type SelectedIngredient = { id: string; quantity: number };
 
 type IngredientOption = { id?: string; name: string };
 
+type DishSubmitResult = "created" | "updated" | "updated-via-parent";
+
+interface BuildDishPayloadArgs {
+  formElement: HTMLFormElement;
+  imagePreview: string | null;
+  selectedAttributes: string[];
+  selectedIngredients: SelectedIngredient[];
+  restaurant_id: string;
+  location_id: string;
+  editItem?: MenuItem;
+}
+
+interface PersistDishArgs {
+  menuItem: Omit<MenuItem, "id">;
+  editItem?: MenuItem;
+  onSubmit?: (updatedDish: MenuItem) => Promise<void>;
+  invalidateMenuQuery: () => Promise<void>;
+}
+
+const buildDishPayload = ({
+  formElement,
+  imagePreview,
+  selectedAttributes,
+  selectedIngredients,
+  restaurant_id,
+  location_id,
+  editItem,
+}: BuildDishPayloadArgs): Omit<MenuItem, "id"> => {
+  const formData = new FormData(formElement);
+
+  return {
+    name: formData.get("name") as string,
+    short_description: formData.get("short_description") as string,
+    long_description: formData.get("long_description") as string,
+    price: Number(formData.get("price")),
+    image: imagePreview || "",
+    attributes: selectedAttributes,
+    course_type: formData.get("course_type") as string,
+    meal_type: formData.get("meal_type") as string,
+    ingredients: selectedIngredients.map((ing) => ({
+      ingredient_id: ing.id,
+      quantity: ing.quantity,
+    })),
+    is_active: editItem?.is_active || 1,
+    restaurant_id,
+    location_id,
+  };
+};
+
+const persistDish = async ({
+  menuItem,
+  editItem,
+  onSubmit,
+  invalidateMenuQuery,
+}: PersistDishArgs): Promise<DishSubmitResult> => {
+  if (editItem) {
+    const updatedDish = { ...editItem, ...menuItem };
+
+    if (onSubmit) {
+      await onSubmit(updatedDish);
+      return "updated-via-parent";
+    }
+
+    await submitMenuItem(updatedDish);
+    await invalidateMenuQuery();
+    return "updated";
+  }
+
+  await submitMenuItem(menuItem);
+  await invalidateMenuQuery();
+  return "created";
+};
+
 // ─── DishFormFields ───────────────────────────────────────────────────────────
 // Shared form body used by both the nested and standalone Dialog branches.
 
@@ -609,41 +682,32 @@ export default function DishModal({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const nativeFormData = new FormData(e.currentTarget);
-
-    const menuItem = {
-      name: nativeFormData.get("name") as string,
-      short_description: nativeFormData.get("short_description") as string,
-      long_description: nativeFormData.get("long_description") as string,
-      price: Number(nativeFormData.get("price")),
-      image: imagePreview || "",
-      attributes: selectedAttributes,
-      course_type: nativeFormData.get("course_type") as string,
-      meal_type: nativeFormData.get("meal_type") as string,
-      ingredients: selectedIngredients.map(ing => ({
-        ingredient_id: ing.id,
-        quantity: ing.quantity,
-      })),
-      is_active: editItem?.is_active || 1,
+    const menuItem = buildDishPayload({
+      formElement: e.currentTarget,
+      imagePreview,
+      selectedAttributes,
+      selectedIngredients,
       restaurant_id,
       location_id,
-    };
+      editItem,
+    });
 
     try {
-      if (editItem) {
-        const updatedDish = { ...editItem, ...menuItem };
-        if (onSubmit) {
-          await onSubmit(updatedDish);
-        } else {
-          await submitMenuItem(updatedDish);
-          void invalidateMenuQuery();
-          toast.success("Platillo modificado exitosamente");
-        }
-      } else {
-        await submitMenuItem(menuItem);
-        void invalidateMenuQuery();
+      const result = await persistDish({
+        menuItem,
+        editItem,
+        onSubmit,
+        invalidateMenuQuery,
+      });
+
+      if (result === "created") {
         toast.success("Platillo creado exitosamente");
       }
+
+      if (result === "updated") {
+        toast.success("Platillo modificado exitosamente");
+      }
+
       setOpen(false);
     } catch (error) {
       console.error("Error submitting dish:", error);
