@@ -103,6 +103,9 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 - Remove hardcoded credential usage and stale legacy imports.
 - Link blocker: BR-010 if schema fixture data is needed for safe migration.
 
+#### E2 Subtasks (completed 2026-04-05)
+- [x] Deleted `src/hooks/tanstack/getOTP.ts` — contained exposed RapidAPI key (`X-RapidAPI-Key`) and was a dead weather API stub (not OTP). Zero importers, no active route. Credential should be rotated/revoked by team.
+
 ## Tests Required Before Handoff
 - Inventory:
   - ingredient CRUD reflects immediately without manual reload
