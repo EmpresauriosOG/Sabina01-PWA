@@ -60,6 +60,11 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 - Consolidate on one table API client path.
 - Ensure no runtime imports use duplicate legacy table API module.
 
+#### C1 Subtasks (completed 2026-04-05)
+- [x] Confirmed `src/utils/tableUtils.ts` (singular) had zero importers across the entire codebase.
+- [x] Deleted `src/utils/tableUtils.ts` — it used direct `response.data.table` access with no contract parser, loose `any` error type, and was a non-contract duplicate of `tablesUtils.ts`.
+- [x] `src/utils/tablesUtils.ts` (plural) is the sole table transport — uses contract parsers throughout.
+
 ### C2: Complete Table To Ticket Close Flow
 - Implement real close-ticket action from table UI.
 - Remove placeholder TODO path.
