@@ -11,6 +11,8 @@ import {
   Table,
   TablesResponse,
 } from "@/utils/tablesUtils";
+import { Ticket } from "@/utils/ticketUtils";
+import { useCloseTicket } from "@/hooks/tanstack/useTickets";
 import { Wind } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -21,15 +23,35 @@ interface RestaurantTablesProps {
   restaurantId?: string;
   locationId?: string;
   refetchTables: () => void;
+  tickets: Ticket[];
 }
 
 const RestaurantTables = (props: RestaurantTablesProps) => {
   const data = props.tableData;
   const { toast } = useToast();
+  const closeTicketMutation = useCloseTicket();
   const [selectedSpace, setSelectedSpace] = useState<Space | null>(
     data.spaces[0]
   );
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
+
+  // TODO [C2/BR-005]: Ticket status values not yet confirmed by backend.
+  // Currently finds the first ticket matching table_id regardless of status.
+  // Once BR-005 is answered, add a status filter for "active" tickets only.
+  const handleCloseTicketForTable = (tableId: string) => {
+    const activeTicket = props.tickets.find((t) => t.table_id === tableId);
+    if (!activeTicket) {
+      toast({
+        title: "Sin ticket activo",
+        description: "No se encontró un ticket activo para esta mesa.",
+        variant: "destructive",
+      });
+      return;
+    }
+    closeTicketMutation.mutate(activeTicket._id, {
+      onSuccess: () => props.refetchTables(),
+    });
+  };
   const displayedTables = data.spaces.find(
     (space) => space.name === selectedSpace?.name
   )?.tables;
@@ -138,10 +160,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
                           setSelectedTable(table);
                         }
                       }}
-                      onCloseTicket={(tableId) => {
-                        // TODO: Implement close ticket functionality
-                        console.log("Close ticket:", tableId);
-                      }}
+                      onCloseTicket={handleCloseTicketForTable}
                     />
                   ))}
                 {displayedTables && displayedTables.length === 0 && (

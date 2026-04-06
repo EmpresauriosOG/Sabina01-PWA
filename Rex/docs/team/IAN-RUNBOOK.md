@@ -70,6 +70,12 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 - Remove placeholder TODO path.
 - Link blocker: BR-005, BR-006.
 
+#### C2 Subtasks (completed 2026-04-05)
+- [x] `RestaurantTablesContainer.tsx` — added `useTickets` hook, passes `tickets: Ticket[]` to `RestaurantTables`.
+- [x] `RestaurantTables.tsx` — added `useCloseTicket` mutation, implemented `handleCloseTicketForTable(tableId)`: finds active ticket by `table_id`, calls `closeTicket(ticket._id)`, refetches tables on success, shows error toast if no ticket found.
+- [x] Removed `// TODO: Implement close ticket functionality` + console.log placeholder — replaced with real handler.
+- [ ] TODO [C2/BR-005]: Ticket status filter not applied — currently finds first ticket by `table_id` regardless of status. Once BR-005 confirms active-ticket status values, add status filter.
+
 ### C3: Tighten Table Mutation Argument Contract
 - Resolve `space_id` vs `space_name` ambiguity.
 - Ensure delete/update paths target correct table records.
