@@ -91,6 +91,15 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 - Handle reconnect and malformed payload scenarios.
 - Link blocker: BR-007.
 
+#### C4 Subtasks (completed 2026-04-05)
+- [x] Malformed payload: already handled — `parseWsOrderMessage` returns null → skipped.
+- [x] Upsert merge: `updateCards` uses `_id` lookup — updates existing card or appends new one.
+- [x] Added exponential backoff reconnect (base 1s, max 30s) — reconnects automatically on drop.
+- [x] Added `unmountedRef` to prevent reconnect after component unmounts.
+- [x] Added `wsError` state — shows "Reconectando..." banner when connection has errored.
+- [x] TODO [C4/BR-007]: backoff tuning deferred until BR-007 confirms reconnect/backfill expectations.
+- [x] TODO [C4/BR-017]: ws auth token requirement deferred until BR-017 confirmed.
+
 ### C5: Align Shared Order Payload Contract
 - Ensure order upload/update contracts align with tickets lifecycle invariants.
 - Remove hidden hardcoded ticket assumptions in owned flow.
