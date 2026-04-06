@@ -92,8 +92,22 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 - Remove overlapping update pathways and choose one canonical mutation path.
 - Link blocker: BR-003.
 
-### B3: Replace Global Submission Flags
+### B3: Replace Global Submission Flags (completed 2026-04-05)
 - Replace cross-feature boolean form flags with deterministic mutation invalidation.
+
+#### B3 Subtasks
+- [x] `src/shared/state/formSubmissionState.ts` — deleted (3 Zustand booleans: staffFormSubmitted, ingredientFormSubmitted, dishFormSubmitted).
+- [x] `StaffForm.tsx` — replaced `setStaffFormSubmitted(true)` with `queryClient.invalidateQueries({ queryKey: ["staff"] })` in both onSubmit and onSubmitModify.
+- [x] `Staff.tsx` — removed useEffect watcher and useFormSubmissionStore import.
+- [x] `IngredientForm.tsx` — replaced `setIngredientFormSubmitted(true)` (2 occurrences) with `queryClient.invalidateQueries({ queryKey: ["ingredient"] })`.
+- [x] `Ingredients.tsx` — removed useEffect watcher, removed unused `refetch`.
+- [x] `Dishes.tsx` — removed useEffect watcher, removed unused `refetch`.
+- [x] `DeleteDish.tsx` — replaced `setDishFormSubmitted(true)` with `queryClient.invalidateQueries({ queryKey: ["menu"] })`.
+- [x] `ModifyDish.tsx` — replaced `setDishFormSubmitted(true)` with `queryClient.invalidateQueries({ queryKey: ["menu"] })`.
+- [x] `DishesModal.tsx` — replaced 2 occurrences of `setDishFormSubmitted(true)` with `queryClient.invalidateQueries({ queryKey: ["menu"] })`.
+- [x] `UserColumn.tsx` — extracted `StaffActionsCell` named component; replaced imperative `useFormSubmissionStore.getState().setStaffFormSubmitted(true)` with `queryClient.invalidateQueries({ queryKey: ["staff"] })`.
+- [x] `IngredientColumn.tsx` — extracted `IngredientActionsCell` named component; replaced with `queryClient.invalidateQueries({ queryKey: ["ingredient"] })`.
+- [x] `DishesColumn.tsx` — extracted `DishActiveCell` named component; replaced with `queryClient.invalidateQueries({ queryKey: ["menu"] })`.
 
 ### B4: Staff Service Isolation
 - Keep staff CRUD behavior and table refresh behavior consistent and explicit.
