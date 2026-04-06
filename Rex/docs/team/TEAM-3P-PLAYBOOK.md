@@ -72,8 +72,17 @@ Use this together with:
 - [x] `CF1` first migration wave applied on core hooks/utils and websocket ping handling.
 - [x] Local lint passes.
 - [x] Local build passes.
+- [x] Mau lane (A+D): all packets complete — A1, A2, A3, A4, CF-MAU, D1, D2, D3, D4 (audit), D5.
+- [x] Auth provider consolidated: Clerk only, Kinde/Supabase removed. BR-001, BR-011 resolved.
+- [x] Role policy centralized in `src/auth/rolePolicy.ts`. Route guard + sidebar both consume it.
+- [x] Guest menu decomposed: `Menu.tsx` 1355 → 202 lines, 4 focused components in `src/components/menu/`.
+- [x] Smart-order boundaries separated: types, chat adapter, cart/catalog/chat orchestration split.
+- [x] `getMenu.ts` uses `resolveArrayPayload` — contracts adoption complete for Mau-owned paths.
 - [ ] BR-015/BR-016/BR-021 confirmed by backend (still OPEN).
+- [ ] BR-002 user profile payload contract not formally confirmed (working off inferred shape in `getUser.ts`).
+- [ ] BR-008 AI endpoint contract not formally documented (chat adapter works pragmatically, not contract-verified).
 - [ ] Node runtime aligned to `20.19+` in all CI environments.
+- [ ] Ian lane (C) and Oscar lane (B+E) status unknown — needs update from respective owners.
 
 ## Merge-Conflict Avoidance Matrix
 
@@ -91,7 +100,7 @@ Status values: `OPEN`, `IN_PROGRESS`, `ANSWERED`, `WAIVED`.
 
 | request_id | domain | request | owner | needed_by_day | blocking_capability | impact_if_missing | status |
 |---|---|---|---|---|---|---|---|
-| BR-001 | Auth | Final runtime auth provider decision (Clerk only? migration path?) and role schema contract | Mau | Day 2 | auth-access | route protection and role policy cannot finalize | OPEN |
+| BR-001 | Auth | Final runtime auth provider decision (Clerk only? migration path?) and role schema contract | Mau | Day 2 | auth-access | route protection and role policy cannot finalize | ANSWERED — Clerk only. Kinde/Supabase removed. Role schema: `Roles` enum in `getUser.ts`, policy in `rolePolicy.ts`. |
 | BR-002 | User | User profile payload contract (`restaurant_id`, `location_id`, `roles`) with examples | Mau | Day 2 | auth-access, platform-shared | session hydration may drift | OPEN |
 | BR-003 | Menu | Endpoint request/response examples for menu read/create/update/delete | Oscar | Day 3 | inventory-menu-mgmt, guest-menu, smartorder-ai | menu refactor may break payload mapping | OPEN |
 | BR-004 | Orders | Order upload and status transition contract (required fields, allowed statuses) | Ian | Day 3 | orders, smartorder-ai | order flow and board consistency blocked | OPEN |
@@ -101,9 +110,9 @@ Status values: `OPEN`, `IN_PROGRESS`, `ANSWERED`, `WAIVED`.
 | BR-008 | AI | AI recommendation endpoint contract for smart-order and guest menu (request, response, errors) | Mau | Day 4 | smartorder-ai, guest-menu | chat flow cannot be stabilized | OPEN |
 | BR-009 | KPI | KPI endpoint schemas and location/tenant filtering rules | Oscar | Day 4 | kpis | chart normalization may drift | OPEN |
 | BR-010 | DB | Schema excerpts for user/menu/ingredient/order/ticket/table entities | Oscar | Day 5 | all lanes | test fixtures and data contracts remain weak | OPEN |
-| BR-011 | Auth | Final auth strategy decision by env (Clerk token verification vs custom JWT vs hybrid) + timeline | Mau | Day 2 | auth-access | cannot migrate auth safely | OPEN |
-| BR-012 | Auth | Runtime status matrix for `/auth/login` and `/auth/register` (dev/staging/prod) | Mau | Day 2 | auth-access | prevents incorrect feature toggle behavior | OPEN |
-| BR-013 | Auth | Exact `/auth/login` contract: request, success payload, token fields, error examples | Mau | Day 3 | auth-access, platform-shared | frontend cannot design stable auth adapter | OPEN |
+| BR-011 | Auth | Final auth strategy decision by env (Clerk token verification vs custom JWT vs hybrid) + timeline | Mau | Day 2 | auth-access | cannot migrate auth safely | ANSWERED — Clerk in all envs. No custom JWT. Clerk-hosted UI handles token lifecycle. |
+| BR-012 | Auth | Runtime status matrix for `/auth/login` and `/auth/register` (dev/staging/prod) | Mau | Day 2 | auth-access | prevents incorrect feature toggle behavior | WAIVED — Frontend uses Clerk hosted UI; backend `/auth/login` and `/auth/register` not called by frontend auth flow. |
+| BR-013 | Auth | Exact `/auth/login` contract: request, success payload, token fields, error examples | Mau | Day 3 | auth-access, platform-shared | frontend cannot design stable auth adapter | WAIVED — Same reason as BR-012. Auth is fully delegated to Clerk. |
 | BR-014 | Security | Authoritative protected endpoint matrix for **current runtime now** | Mau | Day 2 | all lanes | ambiguity on what requires auth | OPEN |
 | BR-015 | API Envelope | Confirm wrapper consistency `{ success, data, message, errors, meta }` and list exceptions | Oscar | Day 3 | B, C, D lanes | parsers may break on inconsistent shapes | OPEN |
 | BR-016 | Pagination | Confirm pagination semantics (default sort/order, max limit, out-of-range behavior, exact `meta`) | Oscar | Day 3 | B, C, D lanes | list UIs cannot paginate predictably | OPEN |
