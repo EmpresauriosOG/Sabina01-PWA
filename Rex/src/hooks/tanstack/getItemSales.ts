@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload } from "@/shared/contracts/api";
 
 export interface ItemSale {
   dish_id: string;
@@ -24,7 +25,9 @@ const fetchItemSales = async (restaurant_id: string, location_id: string) => {
   };
 
   const response = await axios.request(options);
-  return response.data as ItemSalesResponse;
+  const itemSales = resolveArrayPayload<DailySales>(response.data, ["data"]);
+
+  return { data: itemSales } as ItemSalesResponse;
 };
 
 export const useItemSales = (restaurant_id: string, location_id: string) => {

@@ -3,6 +3,7 @@ import OrderColumn from "@/components/orders/OrderColumn";
 import BurnBarrel from "@/components/orders/BurnBarrel";
 import { useUserStore } from "@/shared/state/userState";
 import { Order } from "@/utils/orderUtils";
+import { isWsPingMessage, parseWsOrderMessage } from "@/shared/contracts/api";
 
 export interface Card {
   _id: string;
@@ -46,9 +47,13 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
     };
 
     ws.onmessage = (event) => {
-      console.log("WebSocket message received:", event.data);
-      const newCard: Order = JSON.parse(event.data).order;
-      updateCards(newCard);
+      const message = parseWsOrderMessage<Order>(event.data);
+
+      if (!message || isWsPingMessage(message)) {
+        return;
+      }
+
+      updateCards(message.order);
     };
 
     ws.onerror = (error) => {

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload } from "@/shared/contracts/api";
 
 //this is the cUrl of the API that will be fetched
 //i wrote it so llm can help me make fetchSales function
@@ -37,7 +38,9 @@ const fetchSales = async (restaurant_id: string, location_id: string) => {
   };
 
   const response = await axios.request(options);
-  return response.data as SalesResponse;
+  const sales = resolveArrayPayload<Sales>(response.data, ["data"]);
+
+  return { data: sales } as SalesResponse;
 };
 
 //this is the hook that will be used in the component

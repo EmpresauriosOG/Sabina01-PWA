@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload } from "@/shared/contracts/api";
 
 // interface Restaurant {
 //   restaurant_id: string;
@@ -35,15 +36,15 @@ interface UserNotFoundError {
 }
 
 export const fetchUser = async (email: string) => {
-  console.log(email);
   const options = {
     method: "GET",
     url: `https://sabina01.onrender.com/login/get_user_info/${email}`,
   };
 
   const response = await axios.request(options);
-  console.log(response);
-  return response.data as UserResponse | UserNotFoundError;
+  const users = resolveArrayPayload<User>(response.data, ["user", "users"]);
+
+  return { user: users } as UserResponse | UserNotFoundError;
 };
 
 export const useUser = (email: string) => {

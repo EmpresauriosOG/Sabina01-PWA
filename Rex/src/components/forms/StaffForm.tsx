@@ -75,7 +75,7 @@ export function StaffForm(props: StaffFormProps) {
         form.reset();
       });
       useFormSubmissionStore.getState().setStaffFormSubmitted(true);
-    } catch (err) {
+    } catch {
       console.log("Error adding staff:");
       form.setError("root", {
         message: "Error dando de alta un nuevo usuario.",

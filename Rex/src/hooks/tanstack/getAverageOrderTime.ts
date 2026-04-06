@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveObjectPayload } from "@/shared/contracts/api";
 
 export interface AverageOrderTimes {
   avg_order_to_confirm: number;
@@ -20,7 +21,18 @@ const fetchAverageOrderTimes = async (restaurant_id: string) => {
   };
 
   const response = await axios.request(options);
-  return response.data as AverageOrderTimesResponse;
+  const averageOrderTimes = resolveObjectPayload<AverageOrderTimes>(
+    response.data,
+    ["data"]
+  ) ?? {
+    avg_order_to_confirm: 0,
+    avg_confirm_to_preparation: 0,
+    avg_preparation_to_serving: 0,
+    avg_serving_to_completion: 0,
+    avg_total_time: 0,
+  };
+
+  return { data: averageOrderTimes } as AverageOrderTimesResponse;
 };
 
 export const useAverageOrderTimes = (restaurant_id: string) => {

@@ -32,22 +32,20 @@ export const columns: ColumnDef<MenuItem>[] = [
     header: "Activo",
     cell: ({ row }) => {
       const item = row.original;
-      const setDishFormSubmitted = useFormSubmissionStore(
-        (state) => state.setDishFormSubmitted
-      );
-      
+
       return (
-        <Checkbox 
+        <Checkbox
           checked={item.is_active === 1}
           onCheckedChange={async (checked) => {
             try {
               await updateMenuItem({
                 ...item,
-                is_active: checked ? 1 : 0
+                is_active: checked ? 1 : 0,
               });
-              // Trigger a refetch after successful update
-              setDishFormSubmitted(true);
-              toast.success(`Platillo ${checked ? 'activado' : 'desactivado'} exitosamente`);
+              useFormSubmissionStore.getState().setDishFormSubmitted(true);
+              toast.success(
+                `Platillo ${checked ? "activado" : "desactivado"} exitosamente`,
+              );
             } catch (error) {
               console.error("Error updating dish status:", error);
               toast.error("Error al cambiar el estado del platillo");

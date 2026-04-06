@@ -1,5 +1,10 @@
 import axios from "axios";
 import { MenuItem } from "../components/tables/Dishes/types";
+import {
+  getApiErrorMessage,
+  resolveArrayPayload,
+  unwrapApiEnvelope,
+} from "@/shared/contracts/api";
 
 interface MenuResponse {
   menu_items: MenuItem[];
@@ -12,7 +17,12 @@ export const fetchMenuItems = async (restaurant_id: string, location_id: string)
   };
   try {
     const response = await axios.request(options);
-    return response.data as MenuResponse;
+    const menuItems = resolveArrayPayload<MenuItem>(response.data, [
+      "menu_items",
+      "menu",
+    ]);
+
+    return { menu_items: menuItems } as MenuResponse;
   } catch (error) {
     console.error("Error fetching menu items:", error);
     return { menu_items: [] };
@@ -27,14 +37,10 @@ export const submitMenuItem = async (data: Omit<MenuItem, "id">) => {
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error: unknown) {
     console.error("Error submitting menu item:", error);
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(String(error));
-    }
+    throw new Error(getApiErrorMessage(error, "Failed to create menu item."));
   }
 };
 
@@ -46,14 +52,10 @@ export const updateMenuItem = async (data: MenuItem) => {
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error: unknown) {
     console.error("Error submitting menu item:", error);
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(String(error));
-    }
+    throw new Error(getApiErrorMessage(error, "Failed to update menu item."));
   }
 };
 
@@ -64,14 +66,10 @@ export const deleteMenuItem = async (id: string) => {
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error: unknown) {
     console.error("Error submitting menu item:", error);
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(String(error));
-    }
+    throw new Error(getApiErrorMessage(error, "Failed to delete menu item."));
   }
 };
 

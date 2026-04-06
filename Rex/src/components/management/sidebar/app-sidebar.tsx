@@ -27,7 +27,6 @@ import {
 import { useClerk } from "@clerk/clerk-react";
 
 import { sidebarRouteItems } from "./config";
-import { Roles } from "@/hooks/tanstack/getUser";
 import type { SidebarActionItem, SidebarUser } from "./types";
 import { getUserDisplayName, getUserInitials, isRouteActive } from "./utils";
 

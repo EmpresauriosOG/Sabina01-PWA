@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveObjectPayload } from "@/shared/contracts/api";
 
 export interface AverageTicket {
   average_ticket: number;
@@ -18,7 +19,15 @@ const fetchAverageTicket = async (restaurant_id: string) => {
   };
 
   const response = await axios.request(options);
-  return response.data as AverageTicketResponse;
+  const averageTicket = resolveObjectPayload<AverageTicket>(response.data, [
+    "data",
+  ]) ?? {
+    average_ticket: 0,
+    total_orders: 0,
+    total_revenue: 0,
+  };
+
+  return { data: averageTicket } as AverageTicketResponse;
 };
 
 export const useAverageTicket = (restaurant_id: string) => {

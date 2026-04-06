@@ -27,11 +27,13 @@ Use this together with:
 - Review ownership and file boundaries.
 - Confirm backend request table ownership and due dates.
 - Freeze lane scope for Sprint 1.
+- Start contract-first implementation packet (`CF0`, `CF1`) before deeper capability refactors.
 
 ### Day 3: P0 Checkpoint
 - Verify no hardcoded secrets/IDs in touched files.
 - Verify auth direction and route protection decisions are converging.
 - Confirm no unresolved critical blockers without request IDs.
+- Confirm shared contract parser adoption in touched lanes (no direct UI parsing).
 
 ### Day 5: Mid-sprint Integration Checkpoint
 - Merge lane branches into integration branch (or equivalent integration flow).
@@ -52,6 +54,26 @@ Use this together with:
 - Lint and build must pass for touched areas before merge.
 - If capability boundaries shift, update corresponding `docs/architecture/01-capabilities/*.md`.
 - No TODO placeholders in critical runtime paths (auth, orders, ticket lifecycle).
+- All backend payload parsing must go through `src/shared/contracts/api.ts` (or successor contract adapter).
+
+## Contract-First Execution Policy
+- Allowed immediately:
+  - compatibility parser scaffolding (`ApiEnvelope` + legacy fallback)
+  - websocket ping-safe parsing
+  - UI-preserving return-shape normalization in hooks/utils
+- Still blocked until BR answers:
+  - auth strategy migration
+  - endpoint protection assumptions
+  - irreversible endpoint-specific payload cuts with no compatibility fallback
+- Rule: endpoint migration can proceed only if the lane keeps backward-compatible parsing and links unresolved ambiguity to a BR request.
+
+## Current Check Status (2026-04-05)
+- [x] `CF0` shared contract parser created (`src/shared/contracts/api.ts`).
+- [x] `CF1` first migration wave applied on core hooks/utils and websocket ping handling.
+- [x] Local lint passes.
+- [x] Local build passes.
+- [ ] BR-015/BR-016/BR-021 confirmed by backend (still OPEN).
+- [ ] Node runtime aligned to `20.19+` in all CI environments.
 
 ## Merge-Conflict Avoidance Matrix
 
@@ -79,6 +101,19 @@ Status values: `OPEN`, `IN_PROGRESS`, `ANSWERED`, `WAIVED`.
 | BR-008 | AI | AI recommendation endpoint contract for smart-order and guest menu (request, response, errors) | Mau | Day 4 | smartorder-ai, guest-menu | chat flow cannot be stabilized | OPEN |
 | BR-009 | KPI | KPI endpoint schemas and location/tenant filtering rules | Oscar | Day 4 | kpis | chart normalization may drift | OPEN |
 | BR-010 | DB | Schema excerpts for user/menu/ingredient/order/ticket/table entities | Oscar | Day 5 | all lanes | test fixtures and data contracts remain weak | OPEN |
+| BR-011 | Auth | Final auth strategy decision by env (Clerk token verification vs custom JWT vs hybrid) + timeline | Mau | Day 2 | auth-access | cannot migrate auth safely | OPEN |
+| BR-012 | Auth | Runtime status matrix for `/auth/login` and `/auth/register` (dev/staging/prod) | Mau | Day 2 | auth-access | prevents incorrect feature toggle behavior | OPEN |
+| BR-013 | Auth | Exact `/auth/login` contract: request, success payload, token fields, error examples | Mau | Day 3 | auth-access, platform-shared | frontend cannot design stable auth adapter | OPEN |
+| BR-014 | Security | Authoritative protected endpoint matrix for **current runtime now** | Mau | Day 2 | all lanes | ambiguity on what requires auth | OPEN |
+| BR-015 | API Envelope | Confirm wrapper consistency `{ success, data, message, errors, meta }` and list exceptions | Oscar | Day 3 | B, C, D lanes | parsers may break on inconsistent shapes | OPEN |
+| BR-016 | Pagination | Confirm pagination semantics (default sort/order, max limit, out-of-range behavior, exact `meta`) | Oscar | Day 3 | B, C, D lanes | list UIs cannot paginate predictably | OPEN |
+| BR-017 | WebSocket | Confirm current websocket auth requirement and canonical URL format | Ian | Day 3 | orders | connection/auth behavior unclear | OPEN |
+| BR-018 | WebSocket | Provide full websocket event schema (`ping`, order updates, reconnect/backfill expectations) | Ian | Day 4 | orders | parser and reconciliation unstable | OPEN |
+| BR-019 | OTP | Exact OTP expiry contracts for both verification endpoints, including error code/body localization guarantees | Mau | Day 4 | guest-menu, legacy-orphans | OTP UX branch may mismatch backend | OPEN |
+| BR-020 | Tables | Final `get-non-active-tables` method/path + request and response schema + compat window | Ian | Day 4 | tables-tickets | table parser/request mismatch risk | OPEN |
+| BR-021 | Errors | Confirm uniform error model by status code and `errors` population rules | Oscar | Day 4 | all lanes | inconsistent error UX handling | OPEN |
+| BR-022 | Rollout | Versioning plan and cutover/coexistence window for old vs new contracts | Mau | Day 5 | all lanes | sequencing and rollout risk | OPEN |
+| BR-023 | Artifacts | OpenAPI/Swagger or Postman + sample payloads for menu/orders/tickets/tables/user/ingredients/kpis | Oscar | Day 5 | all lanes | contracts cannot be validated | OPEN |
 
 ## Cross-Lane Integration Checks
 1. Authenticated user can navigate all protected routes.
@@ -109,3 +144,6 @@ Status values: `OPEN`, `IN_PROGRESS`, `ANSWERED`, `WAIVED`.
 - Contract tie-break for orders/tickets/tables: Ian.
 - Contract tie-break for inventory/staff/kpis/data mapping: Oscar.
 - If unresolved after tie-break, escalate to explicit `WAIVED`/`DEFERRED` decision note in this file.
+
+
+

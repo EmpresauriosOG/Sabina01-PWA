@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload } from "@/shared/contracts/api";
 
 export interface HourlyData {
   hour: number;
@@ -17,7 +18,9 @@ const fetchBusiestHours = async (restaurant_id: string) => {
   };
 
   const response = await axios.request(options);
-  return response.data as BusiestHoursResponse;
+  const busiestHours = resolveArrayPayload<HourlyData>(response.data, ["data"]);
+
+  return { data: busiestHours } as BusiestHoursResponse;
 };
 
 export const useBusiestHours = (restaurant_id: string) => {

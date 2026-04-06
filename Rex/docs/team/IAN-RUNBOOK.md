@@ -43,6 +43,12 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 
 ## Packetized Tasks
 
+### CF-IAN: Contract-First Kickoff (Day 1-2)
+- Adopt shared parser boundary from `src/shared/contracts/api.ts` for orders/tickets/tables responses.
+- Implement websocket message parsing through contract helper and ignore heartbeat `ping` safely.
+- Keep websocket auth-token behavior behind BR-017/BR-018 confirmation (no irreversible cut).
+- Link blockers: BR-015, BR-017, BR-018, BR-021.
+
 ### C1: Remove Duplicate Table Transport Module
 - Consolidate on one table API client path.
 - Ensure no runtime imports use duplicate legacy table API module.

@@ -35,7 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const data: Tables[] = [
+const data: TableRecord[] = [
   {
     id: "m5gr84i9",
     number: 1,
@@ -66,7 +66,7 @@ const data: Tables[] = [
   },
 ];
 
-export type Tables = {
+type TableRecord = {
   id: string;
   number: number;
   status: "Active" | "Inactive";
@@ -74,7 +74,7 @@ export type Tables = {
   code: string;
 };
 
-export const columns: ColumnDef<Tables>[] = [
+const columns: ColumnDef<TableRecord>[] = [
   {
     id: "select",
     header: ({ table }) => (

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveObjectPayload } from "@/shared/contracts/api";
 
 export interface HighestSellingItem {
   dish_id: string;
@@ -19,7 +20,17 @@ const fetchHighestSelling = async (restaurant_id: string) => {
   };
 
   const response = await axios.request(options);
-  return response.data as HighestSellingResponse;
+  const highestSelling = resolveObjectPayload<HighestSellingItem>(
+    response.data,
+    ["data"]
+  ) ?? {
+    dish_id: "",
+    dish_name: "N/A",
+    total_quantity: 0,
+    total_sales: 0,
+  };
+
+  return { data: highestSelling } as HighestSellingResponse;
 };
 
 export const useHighestSelling = (restaurant_id: string) => {

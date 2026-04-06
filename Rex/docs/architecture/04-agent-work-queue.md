@@ -2,6 +2,28 @@
 
 This queue is optimized for parallel agent execution with minimal overlap.
 Each lane assumes capability-first ownership and strict boundary discipline.
+Current sprint rule: contract safety first (API envelope compatibility) before deeper feature refactors.
+
+## Contract-First Packets (Priority 0)
+
+### Shared Contract Layer (all lanes consume)
+- Packet CF0: create and adopt `src/shared/contracts/api.ts` as the only response-shape parsing boundary.
+- Packet CF1: migrate core hooks/utils to compatibility parsing (`envelope` + `legacy`) with stable UI-facing return shapes.
+
+### Owner split for contract-first pass
+- Mau (A + D): `getMenu`, guest-menu + smartorder parse paths, auth remains HOLD.
+- Ian (C): orders/tickets/tables response + websocket parser (`ping` ignored, update payload validated).
+- Oscar (B + E): inventory/staff/kpis list parsing + pagination/meta normalization.
+
+### Contract-first completion criteria
+- No direct `response.data.<domainKey>` parsing in UI containers/components.
+- All touched endpoints parse via shared contract helpers.
+- Compatibility mode supports both legacy shape and envelope shape.
+- Any unresolved endpoint ambiguity is tracked as BR item in `06-backend-integration/01-open-questions.md`.
+
+### Contract-first live status (2026-04-05)
+- CF0: `DONE`
+- CF1: `IN_PROGRESS` (core hooks/utils migrated; remaining capability edge-cases continue per lane)
 
 ## Workstream Lanes
 
@@ -75,7 +97,8 @@ Each lane assumes capability-first ownership and strict boundary discipline.
 - Keep each packet small enough for review in one PR.
 
 ## Suggested First Sprint Cut
-1. A1 + A2 + E2 (auth stabilization and secret removal)
-2. C1 + C2 (table-ticket integrity)
-3. D4 (smart-order hardcoded value removal)
-4. B3 (form submission signal cleanup)
+1. CF0 + CF1 (shared contract helpers + first migration wave)
+2. C1 + C2 (table-ticket integrity) after contract adapters are merged
+3. D4 (smart-order hardcoded value removal) with contract-safe submit path
+4. B3 (form submission signal cleanup) and pagination normalization
+5. A1 + A2 + E2 (auth stabilization and secret removal) after BR-011/012/013 clarity

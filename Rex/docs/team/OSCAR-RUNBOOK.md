@@ -71,6 +71,12 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 
 ## Packetized Tasks
 
+### CF-OSCAR: Contract-First Kickoff (Day 1-3)
+- Adopt shared parser boundary from `src/shared/contracts/api.ts` in inventory/staff/KPI hooks and utils.
+- Normalize list parsing with envelope compatibility and prepare pagination meta handling.
+- Do not remove legacy parsing fallbacks until BR-015/BR-016/BR-021 are answered or waived.
+- Link blockers: BR-015, BR-016, BR-021, BR-023.
+
 ### B1: Split Dish Modal Complexity
 - Break modal into focused sections (data, image, ingredients, attributes).
 - Reduce coupling between view state and submission logic.

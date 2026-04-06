@@ -1,5 +1,10 @@
 import { Ingredient } from "@/components/tables/Ingredients/types";
 import axios from "axios";
+import {
+  getApiErrorMessage,
+  resolveArrayPayload,
+  unwrapApiEnvelope,
+} from "@/shared/contracts/api";
 
 interface IngredientsResponse {
   ingredients: Ingredient[];
@@ -16,8 +21,11 @@ export const fetchIngredients = async (restaurant_id: string, location_id: strin
   };
   try {
     const response = await axios.request(options);
-    console.log(response);
-    return response.data as IngredientsResponse;
+    const ingredients = resolveArrayPayload<Ingredient>(response.data, [
+      "ingredients",
+    ]);
+
+    return { ingredients } as IngredientsResponse;
   } catch (error) {
     console.error("Oops", error);
     return { ingredients: [] };
@@ -32,13 +40,12 @@ export const submitIngredient = async (data: Omit<Ingredient, "id">) => {
   };
   try {
     const response = await axios.request(options);
-    console.log(data);
-    console.log(response.data);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return unwrapApiEnvelope<unknown>(response.data);
+  } catch (error) {
     console.error("Oops");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to create ingredient.")
+    );
   }
 };
 
@@ -50,11 +57,12 @@ export const updateIngredient = async (data: Ingredient) => {
   };
   try {
     const response = await axios.request(options);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return unwrapApiEnvelope<unknown>(response.data);
+  } catch (error) {
     console.error("Oops");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to update ingredient.")
+    );
   }
 };
 
@@ -65,10 +73,11 @@ export const deleteIngredient = async (id: string) => {
   };
   try {
     const response = await axios.request(options);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return unwrapApiEnvelope<unknown>(response.data);
+  } catch (error) {
     console.error("Oops");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to delete ingredient.")
+    );
   }
 };

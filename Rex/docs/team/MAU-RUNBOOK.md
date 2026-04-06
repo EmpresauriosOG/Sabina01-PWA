@@ -50,6 +50,12 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 
 ## Packetized Tasks
 
+### CF-MAU: Contract-First Kickoff (Day 1-2)
+- Adopt shared parser boundary from `src/shared/contracts/api.ts` in Mau-owned paths.
+- Prioritize `src/hooks/tanstack/getMenu.ts`, guest menu parsing, and smart-order parsing paths.
+- Keep auth migration on HOLD; only compatibility parsing is allowed.
+- Link blockers: BR-011, BR-012, BR-013, BR-015, BR-021.
+
 ### A1: Unify Auth Provider Boundary
 - Remove active drift between Clerk/Kinde/legacy flows in runtime.
 - Define one source of truth for signed-in state and role hydration.

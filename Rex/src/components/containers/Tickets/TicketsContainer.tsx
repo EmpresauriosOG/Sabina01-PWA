@@ -52,7 +52,7 @@ const TicketActions = ({ ticket }: { ticket: Ticket }) => {
   );
 };
 
-export const columns: ColumnDef<Ticket>[] = [
+const columns: ColumnDef<Ticket>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -169,7 +169,6 @@ export default function TicketsContainer() {
     user?.restaurant_id || "",
     user?.location_id || ""
   );
-  console.log("tickets Response", ticketResponse);
 
   const tickets = ticketResponse?.tickets || [];
 

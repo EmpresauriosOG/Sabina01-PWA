@@ -83,3 +83,15 @@
 - Chat logic is isolated from cart logic with clear interface boundaries.
 - Order submission uses validated runtime context and consistent error states.
 - Smart order route can be tested with deterministic mocks for menu, AI, and order APIs.
+
+## Backend Hardening Impact
+- Source packet: docs/architecture/06-backend-integration/*
+- Owner lane alignment:
+  - Mau: auth decision + guest/smartorder wrapper strategy
+  - Ian: websocket + orders/tables/tickets contracts
+  - Oscar: pagination/wrapper/error normalization for data-heavy capabilities
+- Current status:
+  - Auth strategy remains HOLD pending BR-011/012/013/014.
+  - Response wrapper and pagination are READY_TO_SPEC, blocked on BR-015/016/021/023.
+- Rule: no implementation for blocked items until related BR requests are ANSWERED or WAIVED in 1-open-questions.md.
+
