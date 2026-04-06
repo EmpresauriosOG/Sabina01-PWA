@@ -84,9 +84,16 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 - [x] All 8 KPI hooks â€” use `resolveArrayPayload` or `resolveObjectPayload` (see B5 for error handling fix).
 - [x] Legacy parsing fallbacks not removed â€” kept for BR-015/BR-016/BR-021 compatibility.
 
-### B1: Split Dish Modal Complexity
+### B1: Split Dish Modal Complexity (completed 2026-04-05)
 - Break modal into focused sections (data, image, ingredients, attributes).
 - Reduce coupling between view state and submission logic.
+
+#### B1 Subtasks
+- [x] Extracted `DishFormFields` component (inside `DishesModal.tsx`) — owns the shared form body: basic info, image, type selects, attributes, and ingredient tabs.
+- [x] Defined `DishFormData`, `SelectedIngredient`, `IngredientOption` shared types with clear section comments.
+- [x] Both render branches (`isNestedInDialog` and standalone Dialog) now use `<DishFormFields {...sharedFieldsProps} />` — ~300 lines of copy-paste eliminated (1007 → 711 lines).
+- [x] Renamed inner `formData` shadow in `handleSubmit` to `nativeFormData` to make submission path explicit.
+- [ ] TODO [B1/BR-003]: Full submission logic decoupling deferred until B2 (unify menu mutation API surface) is unblocked.
 
 ### B2: Unify Menu Mutation API Surface
 - Remove overlapping update pathways and choose one canonical mutation path.
