@@ -115,8 +115,15 @@ Shared-risk files (handoff required if Mau/Ian also touching):
   - ["ingredient", restaurant_id, location_id] in ingredient form/table actions.
   - ["menu", restaurant_id, location_id] in dish modal/column/delete/modify actions.
 - [x] Preserved compatibility behavior by falling back to ["staff"], ["ingredient"], ["menu"] when tenant identifiers are missing.
-### B4: Staff Service Isolation
+### B4: Staff Service Isolation (completed 2026-04-05)
 - Keep staff CRUD behavior and table refresh behavior consistent and explicit.
+
+#### B4 Subtasks
+- [x] `StaffForm.onSubmit` — normalized from `await fn().then()` + outer try/catch to pure `async/await + try/catch`. Invalidation now consistent with `onSubmitModify`.
+- [x] `StaffForm.onSubmitModify` — normalized from `.then().catch()` to `async/await + try/catch`.
+- [x] `StaffActionsCell.onDelete` (`UserColumn.tsx`) — added try/catch with `toast.error(...)` so delete failures are visible instead of silent.
+- [x] `staffUtils.ts` — already uses contract parsers and throws typed errors; no changes needed.
+- [x] `getStaff.ts` — query key `["staff", restaurant_id, location_id]` already consistent with invalidation keys in StaffForm and StaffActionsCell.
 
 ### B5: KPI Transport Normalization
 - Normalize KPI query transport and response adapters.
