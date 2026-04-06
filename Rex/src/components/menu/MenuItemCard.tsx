@@ -18,24 +18,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Minus, Plus } from "lucide-react";
-
-export interface MenuItem {
-  _id: string;
-  restaurant_id: string;
-  location_id: string;
-  name: string;
-  short_description: string;
-  long_description: string;
-  price: number;
-  image: string;
-  ingredients: Array<{
-    ingredient_id: string;
-    quantity: number;
-  }>;
-  attributes: string[];
-  course_type: string;
-  meal_type: string;
-}
+import type { MenuItem } from "./types";
+export type { MenuItem };
 
 interface MenuItemCardProps {
   item: MenuItem;

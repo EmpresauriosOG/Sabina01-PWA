@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import type { MenuItem } from "@/components/menu/MenuItemCard";
+import type { MenuItem } from "@/components/menu/types";
 import { resolveArrayPayload } from "@/shared/contracts/api";
 
 export const useMenu = (restaurantId: string, locationId: string) => {

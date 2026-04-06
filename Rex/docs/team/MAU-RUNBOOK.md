@@ -56,6 +56,12 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 - Keep auth migration on HOLD; only compatibility parsing is allowed.
 - Link blockers: BR-011, BR-012, BR-013, BR-015, BR-021.
 
+#### CF-MAU Subtasks (completed 2026-04-05)
+- [x] `getMenu.ts` already uses `resolveArrayPayload` from `api.ts` — highest-priority path covered.
+- [x] `useChat.ts` — AI API uses a distinct wire format (`data[0].content`), not `ApiEnvelope`. Contracts correctly do not apply.
+- [x] Auth migration kept on HOLD per task constraint. **BR-001 resolved**: Clerk-only decision made and implemented (A1.2/A1.3).
+- [x] Fixed type layering violation: moved guest-menu `MenuItem` from `MenuItemCard.tsx` into `src/components/menu/types.ts`. `getMenu.ts` now imports from the types file, not a UI component. `MenuItemCard.tsx` re-exports for backward compatibility.
+
 ### A1: Unify Auth Provider Boundary
 - Remove active drift between Clerk/Kinde/legacy flows in runtime.
 - Define one source of truth for signed-in state and role hydration.
@@ -70,7 +76,7 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
   - Uninstalled `@kinde-oss/kinde-auth-react`, `@supabase/supabase-js`
   - Removed dead imports from `ProtectedRoute.tsx` and `main.tsx`
 - [x] A1.4: Validated role-from-backend pattern is clean (no provider-specific role logic)
-- [ ] A1.5: Minor — `sidebarLinks.tsx` role types include "chef"/"default" not in Roles enum (fix later)
+- [x] A1.5: Fixed `sidebar/config.tsx` — replaced local `SidebarRole` string type with `Roles` enum. Removed invalid "chef"/"default" strings. Added hardcode-for-testing comment in `app-sidebar.tsx`.
 
 ### A2: Centralize Route And Sidebar Role Policy
 - One role matrix source for route access + sidebar visibility.
