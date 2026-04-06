@@ -49,6 +49,13 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 - Keep websocket auth-token behavior behind BR-017/BR-018 confirmation (no irreversible cut).
 - Link blockers: BR-015, BR-017, BR-018, BR-021.
 
+#### CF-IAN Subtasks (completed 2026-04-05)
+- [x] `tablesUtils.ts` uses `resolveObjectPayload`, `unwrapApiEnvelope`, `getApiErrorMessage` from contracts.
+- [x] `ticketUtils.ts` uses `resolveObjectPayload`, `resolveArrayPayload`, `getApiErrorMessage` from contracts.
+- [x] `orderUtils.ts` uses `resolveArrayPayload`, `unwrapApiEnvelope`, `getApiErrorMessage` from contracts.
+- [x] `OrderBoard.tsx` uses `parseWsOrderMessage<Order>` + `isWsPingMessage` — heartbeat ignored safely.
+- [x] No irreversible ws auth-token changes made — behavior kept behind BR-017/BR-018.
+
 ### C1: Remove Duplicate Table Transport Module
 - Consolidate on one table API client path.
 - Ensure no runtime imports use duplicate legacy table API module.
