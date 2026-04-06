@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
 import { deleteMenuItem } from "@/utils/menuUtils";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,11 +13,12 @@ interface DeleteDishProps {
 
 export const DeleteDish = ({ id, name }: DeleteDishProps) => {
   const { toast: shadcnToast } = useToast();
-  
+  const queryClient = useQueryClient();
+
   const handleDelete = async () => {
     try {
       await deleteMenuItem(id);
-      useFormSubmissionStore.getState().setDishFormSubmitted(true);
+      void queryClient.invalidateQueries({ queryKey: ["menu"] });
       toast.success(`Platillo "${name}" eliminado exitosamente`);
     } catch (error) {
       console.error("Error deleting dish:", error);

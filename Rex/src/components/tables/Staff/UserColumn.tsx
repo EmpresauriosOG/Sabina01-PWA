@@ -1,10 +1,31 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { Staff } from "../../Staff/constants";
 import { DataTableColumnHeader } from "../ColumnHeader";
 import DeleteToast from "../DeleteToast";
 import ModifyButton from "../Ingredients/ModifyButton";
 import { deleteStaff } from "@/utils/staffUtils";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
+
+const StaffActionsCell = ({ row }: { row: Row<Staff> }) => {
+  const queryClient = useQueryClient();
+  const data = row.original;
+  return (
+    <div className="flex items-center space-x-2">
+      <DeleteToast
+        item={row.getValue("email")}
+        onDelete={async (email) => {
+          await deleteStaff(email);
+          void queryClient.invalidateQueries({ queryKey: ["staff"] });
+        }}
+      />
+      <ModifyButton
+        dialogTitle="Modificar Personal"
+        dialogDescription="Ingresa"
+        item={{ ...data, itemName: "staff" } as Staff}
+      />
+    </div>
+  );
+};
 
 export const columns: ColumnDef<Staff>[] = [
   {
@@ -45,24 +66,6 @@ export const columns: ColumnDef<Staff>[] = [
   },
   {
     accessorKey: "Opciones",
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <div className="flex items-center space-x-2">
-          <DeleteToast
-            item={row.getValue("email")}
-            onDelete={async (email) => {
-              await deleteStaff(email);
-              useFormSubmissionStore.getState().setStaffFormSubmitted(true);
-            }}
-          />
-          <ModifyButton
-            dialogTitle="Modificar Personal"
-            dialogDescription="Ingresa"
-            item={{ ...data, itemName: "staff" } as Staff}
-          />
-        </div>
-      );
-    },
+    cell: ({ row }) => <StaffActionsCell row={row} />,
   },
 ];

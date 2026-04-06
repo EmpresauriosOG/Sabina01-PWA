@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useIngredient } from "@/hooks/tanstack/useIngredient";
 import { submitMenuItem} from "@/utils/menuUtils";
@@ -132,7 +132,7 @@ export default function DishModal({
     }
   }, [editItem]);
 
-  const setDishFormSubmitted = useFormSubmissionStore((state) => state.setDishFormSubmitted);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -167,12 +167,12 @@ export default function DishModal({
         } else {
           // If no onSubmit provided, handle submission directly
           await submitMenuItem(updatedDish);
-          setDishFormSubmitted(true);
+          void queryClient.invalidateQueries({ queryKey: ["menu"] });
           toast.success("Platillo modificado exitosamente");
         }
       } else {
         await submitMenuItem(menuItem);
-        setDishFormSubmitted(true);
+        void queryClient.invalidateQueries({ queryKey: ["menu"] });
         toast.success("Platillo creado exitosamente");
       }
       setOpen(false);

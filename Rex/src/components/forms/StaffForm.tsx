@@ -15,7 +15,7 @@ import GenericInput from "./FormFields/GenericInput";
 //Utils
 import { modifyStaff, submitStaff } from "@/utils/staffUtils";
 import { Roles } from "@/hooks/tanstack/getUser";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
 import { Staff } from "../Staff/constants";
 
 const FormSchema = z.object({
@@ -47,6 +47,7 @@ interface StaffFormProps {
 export function StaffForm(props: StaffFormProps) {
   const { location_id, restaurant_id, isModify, staffToModify } = props;
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -74,7 +75,7 @@ export function StaffForm(props: StaffFormProps) {
         });
         form.reset();
       });
-      useFormSubmissionStore.getState().setStaffFormSubmitted(true);
+      void queryClient.invalidateQueries({ queryKey: ["staff"] });
     } catch {
       console.log("Error adding staff:");
       form.setError("root", {
@@ -99,7 +100,7 @@ export function StaffForm(props: StaffFormProps) {
         toast({
           description: `${staff.email} Modificado.`,
         });
-        useFormSubmissionStore.getState().setStaffFormSubmitted(true);
+        void queryClient.invalidateQueries({ queryKey: ["staff"] });
       })
       .catch((error) => {
         console.log("Error modificando al staff:", error);

@@ -1,12 +1,37 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { MenuItem } from "@/components/tables/Dishes/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { updateMenuItem } from "@/utils/menuUtils";
 import { DishIngredients } from "./DishIngredients";
 import { ModifyDish } from "./ModifyDish";
 import { DeleteDish } from "./DeleteDish";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+
+const DishActiveCell = ({ row }: { row: Row<MenuItem> }) => {
+  const queryClient = useQueryClient();
+  const item = row.original;
+  return (
+    <Checkbox
+      checked={item.is_active === 1}
+      onCheckedChange={async (checked) => {
+        try {
+          await updateMenuItem({
+            ...item,
+            is_active: checked ? 1 : 0,
+          });
+          void queryClient.invalidateQueries({ queryKey: ["menu"] });
+          toast.success(
+            `Platillo ${checked ? "activado" : "desactivado"} exitosamente`,
+          );
+        } catch (error) {
+          console.error("Error updating dish status:", error);
+          toast.error("Error al cambiar el estado del platillo");
+        }
+      }}
+    />
+  );
+};
 
 export const columns: ColumnDef<MenuItem>[] = [
   {
@@ -30,30 +55,7 @@ export const columns: ColumnDef<MenuItem>[] = [
   {
     accessorKey: "is_active",
     header: "Activo",
-    cell: ({ row }) => {
-      const item = row.original;
-
-      return (
-        <Checkbox
-          checked={item.is_active === 1}
-          onCheckedChange={async (checked) => {
-            try {
-              await updateMenuItem({
-                ...item,
-                is_active: checked ? 1 : 0,
-              });
-              useFormSubmissionStore.getState().setDishFormSubmitted(true);
-              toast.success(
-                `Platillo ${checked ? "activado" : "desactivado"} exitosamente`,
-              );
-            } catch (error) {
-              console.error("Error updating dish status:", error);
-              toast.error("Error al cambiar el estado del platillo");
-            }
-          }}
-        />
-      );
-    },
+    cell: ({ row }) => <DishActiveCell row={row} />,
   },
   {
     id: "actions",
