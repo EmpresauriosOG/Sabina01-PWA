@@ -10,6 +10,7 @@ export const useTickets = (restaurant_id: string, location_id: string) => {
   return useQuery({
     queryKey: ["tickets", restaurant_id, location_id],
     queryFn: () => fetchTickets(restaurant_id, location_id),
+    enabled: Boolean(restaurant_id && location_id),
     staleTime: 0,
   });
 };

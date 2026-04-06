@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "../ColumnHeader";
 import { Ingredient } from "./types";
@@ -10,6 +11,18 @@ import { useQueryClient } from "@tanstack/react-query";
 const IngredientActionsCell = ({ row }: { row: Row<Ingredient> }) => {
   const queryClient = useQueryClient();
   const data = row.original;
+
+  const invalidateIngredientQuery = async () => {
+    if (data.restaurant_id && data.location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["ingredient", data.restaurant_id, data.location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["ingredient"] });
+  };
+
   return (
     //@Braun Check styles
     <>
@@ -17,7 +30,7 @@ const IngredientActionsCell = ({ row }: { row: Row<Ingredient> }) => {
         item={row.getValue("id")}
         onDelete={async (id) => {
           await deleteIngredient(id);
-          void queryClient.invalidateQueries({ queryKey: ["ingredient"] });
+          void invalidateIngredientQuery();
         }}
       />
       <ModifyButton

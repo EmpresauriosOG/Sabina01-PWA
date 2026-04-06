@@ -11,7 +11,6 @@ const Staff = () => {
     data = [],
     isLoading,
     isError,
-    refetch,
   } = useStaff(user?.restaurant_id, user?.location_id);
 
   if (isLoading) {

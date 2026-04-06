@@ -205,7 +205,7 @@ export default function TicketsContainer() {
 
   return (
     <div className="w-full p-6 md:p-8">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Tickets</h2>
+      <h2 className="mb-4 text-2xl font-semibold text-foreground">Tickets</h2>
       <div className="flex flex-col sm:flex-row items-center justify-between py-4 space-y-2 sm:space-y-0">
         <Input
           placeholder="Filtrar por mesero..."
@@ -245,7 +245,7 @@ export default function TicketsContainer() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border overflow-hidden">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -257,7 +257,7 @@ export default function TicketsContainer() {
                   return (
                     <TableHead
                       key={header.id}
-                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                     >
                       {header.isPlaceholder
                         ? null
@@ -296,7 +296,7 @@ export default function TicketsContainer() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-gray-500"
+                  className="h-24 text-center text-muted-foreground"
                 >
                   No se encontraron tickets.
                 </TableCell>

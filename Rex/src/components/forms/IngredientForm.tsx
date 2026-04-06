@@ -49,6 +49,18 @@ export function IngredientForm(props: IngredientFormProps) {
   const { location_id, restaurant_id, ingredientToModify, isModify } = props;
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const invalidateIngredientQuery = async () => {
+    if (restaurant_id && location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["ingredient", restaurant_id, location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["ingredient"] });
+  };
+
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -79,7 +91,7 @@ export function IngredientForm(props: IngredientFormProps) {
           description: `${ingredient.name} agregado.`,
         });
         form.reset();
-        void queryClient.invalidateQueries({ queryKey: ["ingredient"] });
+        void invalidateIngredientQuery();
       })
       .catch((error) => {
         console.log("Error adding ingredient:", error);
@@ -108,7 +120,7 @@ export function IngredientForm(props: IngredientFormProps) {
         toast({
           description: `${ingredient.name} Modificado.`,
         });
-        void queryClient.invalidateQueries({ queryKey: ["ingredient"] });
+        void invalidateIngredientQuery();
       })
       .catch((error) => {
         console.log("Error modificando ingrediente:", error);

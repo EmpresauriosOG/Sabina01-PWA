@@ -134,6 +134,17 @@ export default function DishModal({
 
   const queryClient = useQueryClient();
 
+  const invalidateMenuQuery = async () => {
+    if (restaurant_id && location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["menu", restaurant_id, location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["menu"] });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -167,12 +178,12 @@ export default function DishModal({
         } else {
           // If no onSubmit provided, handle submission directly
           await submitMenuItem(updatedDish);
-          void queryClient.invalidateQueries({ queryKey: ["menu"] });
+          void invalidateMenuQuery();
           toast.success("Platillo modificado exitosamente");
         }
       } else {
         await submitMenuItem(menuItem);
-        void queryClient.invalidateQueries({ queryKey: ["menu"] });
+        void invalidateMenuQuery();
         toast.success("Platillo creado exitosamente");
       }
       setOpen(false);

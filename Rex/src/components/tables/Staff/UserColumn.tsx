@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Staff } from "../../Staff/constants";
 import { DataTableColumnHeader } from "../ColumnHeader";
@@ -9,13 +10,25 @@ import { useQueryClient } from "@tanstack/react-query";
 const StaffActionsCell = ({ row }: { row: Row<Staff> }) => {
   const queryClient = useQueryClient();
   const data = row.original;
+
+  const invalidateStaffQuery = async () => {
+    if (data.restaurant_id && data.location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["staff", data.restaurant_id, data.location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["staff"] });
+  };
+
   return (
     <div className="flex items-center space-x-2">
       <DeleteToast
         item={row.getValue("email")}
         onDelete={async (email) => {
           await deleteStaff(email);
-          void queryClient.invalidateQueries({ queryKey: ["staff"] });
+          void invalidateStaffQuery();
         }}
       />
       <ModifyButton

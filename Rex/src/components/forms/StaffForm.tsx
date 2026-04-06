@@ -48,6 +48,18 @@ export function StaffForm(props: StaffFormProps) {
   const { location_id, restaurant_id, isModify, staffToModify } = props;
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const invalidateStaffQuery = async () => {
+    if (restaurant_id && location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["staff", restaurant_id, location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["staff"] });
+  };
+
   const form = useForm<FormFields>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -75,7 +87,7 @@ export function StaffForm(props: StaffFormProps) {
         });
         form.reset();
       });
-      void queryClient.invalidateQueries({ queryKey: ["staff"] });
+      void invalidateStaffQuery();
     } catch {
       console.log("Error adding staff:");
       form.setError("root", {
@@ -100,7 +112,7 @@ export function StaffForm(props: StaffFormProps) {
         toast({
           description: `${staff.email} Modificado.`,
         });
-        void queryClient.invalidateQueries({ queryKey: ["staff"] });
+        void invalidateStaffQuery();
       })
       .catch((error) => {
         console.log("Error modificando al staff:", error);

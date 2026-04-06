@@ -1,8 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { createTicket } from "@/utils/ticketUtils";
 import { Table } from "@/utils/tablesUtils";
-import { useToast } from "@/components/ui/use-toast";
+import { useCreateTicket } from "@/hooks/tanstack/useTickets";
 
 interface TableProps {
   table: Table;
@@ -10,6 +9,7 @@ interface TableProps {
   isSelected: boolean;
   onOpenEditor: (tableId: string) => void;
   onCloseTicket: (tableId: string) => void;
+  onTicketCreated: () => void;
 }
 
 const DisplayedTable: React.FC<TableProps> = ({
@@ -18,27 +18,19 @@ const DisplayedTable: React.FC<TableProps> = ({
   isSelected,
   onOpenEditor,
   onCloseTicket,
+  onTicketCreated,
 }) => {
-  const { toast } = useToast();
+  const { mutateAsync: createTicketMutation } = useCreateTicket();
 
   const handleCreateTicket = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
     try {
-      await createTicket(table.table_id);
-      toast({
-        title: "Ticket creado",
-        description: `Ticket creado para la mesa ${table.table_number}`,
-        variant: "default",
-      });
+      await createTicketMutation(table.table_id);
+      onTicketCreated();
       onOpenEditor(table.table_id);
     } catch (error) {
       console.error("Error creating ticket:", error);
-      toast({
-        title: "Error al crear ticket",
-        description:
-          "Ocurrió un error al crear el ticket. Por favor, intente nuevamente.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -112,11 +104,12 @@ const DisplayedTable: React.FC<TableProps> = ({
         >
           {status}
         </span>
-        <div className="flex space-x-2 mt-2">
+        <div className="flex w-full flex-wrap justify-center gap-2 mt-2">
           {(status === "Disponible" || status === "Reservado") && (
             <Button
               variant="default"
               size="sm"
+              className="w-full sm:w-auto"
               onClick={handleCreateTicket}
               aria-label={`Crear ticket para mesa ${table.table_number}`}
             >
@@ -128,6 +121,7 @@ const DisplayedTable: React.FC<TableProps> = ({
               <Button
                 variant="destructive"
                 size="sm"
+                className="w-full sm:w-auto"
                 onClick={handleCloseTicket}
                 aria-label={`Cerrar ticket de mesa ${table.table_number}`}
               >
@@ -136,6 +130,7 @@ const DisplayedTable: React.FC<TableProps> = ({
               <Button
                 variant="outline"
                 size="sm"
+                className="w-full sm:w-auto"
                 onClick={handleModify}
                 aria-label={`Modificar ticket de mesa ${table.table_number}`}
               >

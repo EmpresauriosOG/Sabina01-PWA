@@ -24,12 +24,23 @@ export const ModifyDish = ({ item, onUpdate }: ModifyDishProps) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  const invalidateMenuQuery = async () => {
+    if (item.restaurant_id && item.location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["menu", item.restaurant_id, item.location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["menu"] });
+  };
+
   const handleUpdate = async (updatedDish: MenuItem) => {
     const result = await updateDish(updatedDish);
     if (result.success) {
       toast.success("Platillo actualizado exitosamente");
       setOpen(false);
-      void queryClient.invalidateQueries({ queryKey: ["menu"] });
+      void invalidateMenuQuery();
       onUpdate?.();
     } else {
       toast.error("Error al actualizar el platillo");
