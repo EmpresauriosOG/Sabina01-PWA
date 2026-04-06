@@ -99,6 +99,18 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 - Apply `legacy-orphans.md` module classification decisions.
 - Keep record of archived vs refactored modules.
 
+#### E1 Subtasks (completed 2026-04-05)
+Previously deleted (Mau lane, A1.3):
+- [x] `src/context/AuthContext.tsx` — Supabase auth context, deleted.
+- [x] `src/components/forms/Form.tsx` — legacy login form, deleted.
+- [x] `src/utils/tableUtils.ts` — no-contract legacy duplicate, deleted (Ian C1).
+
+Deleted this session (zero importers confirmed before deletion):
+- [x] `src/components/management/Tables.tsx` — static demo table UI, not routed, no importers.
+- [x] `src/components/containers/Restaurants.tsx` — fully commented-out code, no importers.
+- [x] `src/shared/constants.ts` — large static fixture menu data, no active importers.
+- [x] `src/hooks/tanstack/getOTP.ts` — dead weather API stub with exposed credential (see E2).
+
 ### E2: Remove Credentials And Stale Imports
 - Remove hardcoded credential usage and stale legacy imports.
 - Link blocker: BR-010 if schema fixture data is needed for safe migration.
