@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload, getApiErrorMessage } from "@/shared/contracts/api";
 
 export interface OrderStatus {
   status: number;
@@ -24,8 +25,13 @@ const fetchOrderStatus = async (restaurant_id: string) => {
     url: `https://sabina01.onrender.com/kpis/order_status_distribution/${restaurant_id}`,
   };
 
-  const response = await axios.request(options);
-  return response.data as OrderStatusResponse;
+  try {
+    const response = await axios.request(options);
+    const orderStatus = resolveArrayPayload<OrderStatus>(response.data, ["data"]);
+    return { data: orderStatus } as OrderStatusResponse;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch order status distribution."));
+  }
 };
 
 export const useOrderStatus = (restaurant_id: string) => {

@@ -1,4 +1,10 @@
-import axios from "axios";
+﻿import axios from "axios";
+import {
+  getApiErrorMessage,
+  resolveArrayPayload,
+  unwrapApiEnvelope,
+} from "@/shared/contracts/api";
+
 export interface Order {
   restaurant_id: string;
   location_id: string;
@@ -22,62 +28,60 @@ export interface CartOrder {
   ticket_id: string;
 }
 
+export interface OrdersResponse {
+  orders: Order[];
+}
+
 export const fetchOrders = async (
   restaurant_id: string,
   location_id: string
-) => {
+): Promise<OrdersResponse> => {
   const options = {
     method: "GET",
     url: `https://sabina01.onrender.com/orders/${restaurant_id}/${location_id}`,
   };
+
   try {
     const response = await axios.request(options);
-    return response.data;
+    const orders = resolveArrayPayload<Order>(response.data, ["orders"]);
+
+    return { orders };
   } catch (error) {
     console.error("Error fetching orders:", error);
-    throw new Error("Failed to fetch orders. Please try again later.");
+    throw new Error(
+      getApiErrorMessage(error, "Failed to fetch orders. Please try again later.")
+    );
   }
 };
 
-//ToDo: Fix this flow
 export const uploadOrder = async (order: CartOrder) => {
+  if (!order.ticket_id || order.ticket_id.trim().length === 0) {
+    throw new Error(
+      "Missing ticket_id for order submission. An active ticket is required."
+    );
+  }
+
   const options = {
     method: "POST",
     url: "https://sabina01.onrender.com/orders/upload-order",
     data: {
       items: order.items,
       special_instructions: order.special_instructions,
-      // TODO [D4]: HARDCODED test ticket_id — should come from runtime context (active ticket for the table/session)
-      // Previously hardcoded: "67296617b5cb4f83a12608c3"
-      ticket_id: "67296617b5cb4f83a12608c3",
+      ticket_id: order.ticket_id,
     },
   };
 
   try {
     const response = await axios.request(options);
-
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Error uploading order:", error);
-    if (axios.isAxiosError(error) && error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      throw new Error(
-        `Failed to upload order: ${
-          error.response.data.message || error.message
-        }`
-      );
-    } else if (axios.isAxiosError(error) && error.request) {
-      // The request was made but no response was received
-      throw new Error(
-        "No response received from server. Please check your network connection."
-      );
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      throw new Error(
+    throw new Error(
+      getApiErrorMessage(
+        error,
         "An unexpected error occurred while uploading the order."
-      );
-    }
+      )
+    );
   }
 };
 
@@ -86,11 +90,14 @@ export const updateOrder = async (order_id: string, status: number) => {
     method: "PUT",
     url: `https://sabina01.onrender.com/orders/${order_id}/${status}`,
   };
+
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Error updating order:", error);
-    throw new Error("Failed to update order. Please try again later.");
+    throw new Error(
+      getApiErrorMessage(error, "Failed to update order. Please try again later.")
+    );
   }
 };

@@ -43,24 +43,62 @@ Shared-risk files (handoff required if Mau/Oscar also touching):
 
 ## Packetized Tasks
 
+### CF-IAN: Contract-First Kickoff (Day 1-2)
+- Adopt shared parser boundary from `src/shared/contracts/api.ts` for orders/tickets/tables responses.
+- Implement websocket message parsing through contract helper and ignore heartbeat `ping` safely.
+- Keep websocket auth-token behavior behind BR-017/BR-018 confirmation (no irreversible cut).
+- Link blockers: BR-015, BR-017, BR-018, BR-021.
+
+#### CF-IAN Subtasks (completed 2026-04-05)
+- [x] `tablesUtils.ts` uses `resolveObjectPayload`, `unwrapApiEnvelope`, `getApiErrorMessage` from contracts.
+- [x] `ticketUtils.ts` uses `resolveObjectPayload`, `resolveArrayPayload`, `getApiErrorMessage` from contracts.
+- [x] `orderUtils.ts` uses `resolveArrayPayload`, `unwrapApiEnvelope`, `getApiErrorMessage` from contracts.
+- [x] `OrderBoard.tsx` uses `parseWsOrderMessage<Order>` + `isWsPingMessage` — heartbeat ignored safely.
+- [x] No irreversible ws auth-token changes made — behavior kept behind BR-017/BR-018.
+
 ### C1: Remove Duplicate Table Transport Module
 - Consolidate on one table API client path.
 - Ensure no runtime imports use duplicate legacy table API module.
+
+#### C1 Subtasks (completed 2026-04-05)
+- [x] Confirmed `src/utils/tableUtils.ts` (singular) had zero importers across the entire codebase.
+- [x] Deleted `src/utils/tableUtils.ts` — it used direct `response.data.table` access with no contract parser, loose `any` error type, and was a non-contract duplicate of `tablesUtils.ts`.
+- [x] `src/utils/tablesUtils.ts` (plural) is the sole table transport — uses contract parsers throughout.
 
 ### C2: Complete Table To Ticket Close Flow
 - Implement real close-ticket action from table UI.
 - Remove placeholder TODO path.
 - Link blocker: BR-005, BR-006.
 
+#### C2 Subtasks (completed 2026-04-05)
+- [x] `RestaurantTablesContainer.tsx` — added `useTickets` hook, passes `tickets: Ticket[]` to `RestaurantTables`.
+- [x] `RestaurantTables.tsx` — added `useCloseTicket` mutation, implemented `handleCloseTicketForTable(tableId)`: finds active ticket by `table_id`, calls `closeTicket(ticket._id)`, refetches tables on success, shows error toast if no ticket found.
+- [x] Removed `// TODO: Implement close ticket functionality` + console.log placeholder — replaced with real handler.
+- [ ] TODO [C2/BR-005]: Ticket status filter not applied — currently finds first ticket by `table_id` regardless of status. Once BR-005 confirms active-ticket status values, add status filter.
+
 ### C3: Tighten Table Mutation Argument Contract
 - Resolve `space_id` vs `space_name` ambiguity.
 - Ensure delete/update paths target correct table records.
 - Link blocker: BR-006.
 
+#### C3 Subtasks (completed 2026-04-05)
+- [x] Identified mismatch: `deleteRestaurantTable` parameter was named `space_name` but `RestaurantTables.tsx` always passed `space_id`. The caller was correct — parameter name was wrong.
+- [x] Renamed parameter from `space_name` → `space_id` and updated URL segment to match.
+- [x] Added `TODO [C3/BR-006]` comment documenting the ambiguity — backend confirmation still needed to verify whether the route expects `space_id` or `space_name` as the path segment.
+
 ### C4: Orders Websocket Reconciliation Stabilization
 - Add deterministic event parsing and merge behavior.
 - Handle reconnect and malformed payload scenarios.
 - Link blocker: BR-007.
+
+#### C4 Subtasks (completed 2026-04-05)
+- [x] Malformed payload: already handled — `parseWsOrderMessage` returns null → skipped.
+- [x] Upsert merge: `updateCards` uses `_id` lookup — updates existing card or appends new one.
+- [x] Added exponential backoff reconnect (base 1s, max 30s) — reconnects automatically on drop.
+- [x] Added `unmountedRef` to prevent reconnect after component unmounts.
+- [x] Added `wsError` state — shows "Reconectando..." banner when connection has errored.
+- [x] TODO [C4/BR-007]: backoff tuning deferred until BR-007 confirms reconnect/backfill expectations.
+- [x] TODO [C4/BR-017]: ws auth token requirement deferred until BR-017 confirmed.
 
 ### C5: Align Shared Order Payload Contract
 - Ensure order upload/update contracts align with tickets lifecycle invariants.

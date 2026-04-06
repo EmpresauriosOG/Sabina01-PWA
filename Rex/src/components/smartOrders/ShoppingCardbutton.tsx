@@ -1,5 +1,5 @@
 import { ShoppingCart } from "lucide-react";
-import { OrderItem } from "../containers/AdminDashboard";
+import { OrderItem } from "./types";
 
 interface ShoppingCardbuttonProps {
   order: OrderItem[];

@@ -11,6 +11,8 @@ import {
   Table,
   TablesResponse,
 } from "@/utils/tablesUtils";
+import { Ticket } from "@/utils/ticketUtils";
+import { useCloseTicket } from "@/hooks/tanstack/useTickets";
 import { Wind } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -21,15 +23,42 @@ interface RestaurantTablesProps {
   restaurantId?: string;
   locationId?: string;
   refetchTables: () => void;
+  tickets: Ticket[];
 }
 
 const RestaurantTables = (props: RestaurantTablesProps) => {
   const data = props.tableData;
   const { toast } = useToast();
+  const closeTicketMutation = useCloseTicket();
   const [selectedSpace, setSelectedSpace] = useState<Space | null>(
     data.spaces[0]
   );
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
+
+  // TODO [C2/BR-005]: Ticket status values not yet confirmed by backend.
+  // Temporary heuristic: close the newest ticket for the table by created_ts.
+  // Once BR-005 is answered, replace this with explicit active-status filtering.
+  const handleCloseTicketForTable = (tableId: string) => {
+    const tableTickets = props.tickets.filter((t) => t.table_id === tableId);
+
+    const activeTicket = [...tableTickets].sort((a, b) => {
+      const aTs = Number(new Date(a.created_ts));
+      const bTs = Number(new Date(b.created_ts));
+      return bTs - aTs;
+    })[0];
+
+    if (!activeTicket) {
+      toast({
+        title: "Sin ticket activo",
+        description: "No se encontró un ticket activo para esta mesa.",
+        variant: "destructive",
+      });
+      return;
+    }
+    closeTicketMutation.mutate(activeTicket._id, {
+      onSuccess: () => props.refetchTables(),
+    });
+  };
   const displayedTables = data.spaces.find(
     (space) => space.name === selectedSpace?.name
   )?.tables;
@@ -56,11 +85,11 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
   };
 
   //Delete a Table
-  const deleteTable = async (spaceName: string, tableId: string) => {
+  const deleteTable = async (spaceId: string, tableId: string) => {
     await deleteRestaurantTable(
       props.restaurantId || "",
       props.locationId || "",
-      spaceName,
+      spaceId,
       tableId
     );
     props.refetchTables();
@@ -91,7 +120,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
         onDeleteSpace={deleteSpace}
       />
       <div className="flex flex-col md:flex-row flex-1 dark:bg-neutral-900 overflow-auto">
-        <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0 shadow-md rounded-md mr-4">
+        <div className="w-full md:w-2/3 pr-0 md:pr-4 mb-4 md:mb-0 shadow-md rounded-md md:mr-4">
           {/* //ToDo add a component for empty spaces */}
           {data.spaces.length === 0 && (
             <div>
@@ -121,7 +150,7 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
               >
                 Agrega una mesa
               </Button>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {displayedTables &&
                   displayedTables.length > 0 &&
                   displayedTables.map((table) => (
@@ -138,10 +167,8 @@ const RestaurantTables = (props: RestaurantTablesProps) => {
                           setSelectedTable(table);
                         }
                       }}
-                      onCloseTicket={(tableId) => {
-                        // TODO: Implement close ticket functionality
-                        console.log("Close ticket:", tableId);
-                      }}
+                      onCloseTicket={handleCloseTicketForTable}
+                      onTicketCreated={props.refetchTables}
                     />
                   ))}
                 {displayedTables && displayedTables.length === 0 && (

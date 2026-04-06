@@ -13,7 +13,7 @@ import DishModal from "@/components/modals/DishesModal";
 import { updateDish } from "@/utils/menuUtils";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ModifyDishProps {
   item: MenuItem;
@@ -22,16 +22,25 @@ interface ModifyDishProps {
 
 export const ModifyDish = ({ item, onUpdate }: ModifyDishProps) => {
   const [open, setOpen] = useState(false);
-  const setDishFormSubmitted = useFormSubmissionStore(
-    (state) => state.setDishFormSubmitted
-  );
+  const queryClient = useQueryClient();
+
+  const invalidateMenuQuery = async () => {
+    if (item.restaurant_id && item.location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["menu", item.restaurant_id, item.location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["menu"] });
+  };
 
   const handleUpdate = async (updatedDish: MenuItem) => {
     const result = await updateDish(updatedDish);
     if (result.success) {
       toast.success("Platillo actualizado exitosamente");
       setOpen(false);
-      setDishFormSubmitted(true);
+      void invalidateMenuQuery();
       onUpdate?.();
     } else {
       toast.error("Error al actualizar el platillo");
@@ -50,7 +59,7 @@ export const ModifyDish = ({ item, onUpdate }: ModifyDishProps) => {
           <DialogTitle>Modificar platillo</DialogTitle>
           <DialogDescription>Modifica los detalles del platillo</DialogDescription>
         </DialogHeader>
-        <DishModal 
+        <DishModal
           location_id={item.location_id}
           restaurant_id={item.restaurant_id}
           editItem={item}

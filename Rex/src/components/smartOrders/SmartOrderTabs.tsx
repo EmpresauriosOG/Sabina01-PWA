@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { MenuItem } from "../containers/AdminDashboard";
+import { MenuItem } from "./types";
 
 interface SmartOrderTabsProps {
   filteredItems: MenuItem[];

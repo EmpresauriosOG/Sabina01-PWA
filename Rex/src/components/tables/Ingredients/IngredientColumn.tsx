@@ -1,12 +1,47 @@
-import { ColumnDef } from "@tanstack/react-table";
+/* eslint-disable react-refresh/only-export-components */
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "../ColumnHeader";
 import { Ingredient } from "./types";
 import ModifyButton from "./ModifyButton";
 import DeleteToast from "../DeleteToast";
 import { deleteIngredient } from "@/utils/ingredientUtils";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
+import { useQueryClient } from "@tanstack/react-query";
 
 //@Braun Check styles
+const IngredientActionsCell = ({ row }: { row: Row<Ingredient> }) => {
+  const queryClient = useQueryClient();
+  const data = row.original;
+
+  const invalidateIngredientQuery = async () => {
+    if (data.restaurant_id && data.location_id) {
+      await queryClient.invalidateQueries({
+        queryKey: ["ingredient", data.restaurant_id, data.location_id],
+      });
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["ingredient"] });
+  };
+
+  return (
+    //@Braun Check styles
+    <>
+      <DeleteToast
+        item={row.getValue("id")}
+        onDelete={async (id) => {
+          await deleteIngredient(id);
+          void invalidateIngredientQuery();
+        }}
+      />
+      <ModifyButton
+        dialogTitle="Modificar Ingrediente"
+        dialogDescription="Ingresa"
+        item={{ ...data, itemName: "ingredient" } as Ingredient}
+      />
+    </>
+  );
+};
+
 export const columns: ColumnDef<Ingredient>[] = [
   {
     accessorKey: "name",
@@ -56,25 +91,6 @@ export const columns: ColumnDef<Ingredient>[] = [
   {
     accessorKey: "id",
     header: () => <div>Opciones</div>,
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        //@Braun Check styles
-        <>
-          <DeleteToast
-            item={row.getValue("id")}
-            onDelete={async (id) => {
-              await deleteIngredient(id);
-              useFormSubmissionStore.getState().setIngredientFormSubmitted(true);
-            }}
-          />
-          <ModifyButton
-            dialogTitle="Modificar Ingrediente"
-            dialogDescription="Ingresa"
-            item={{ ...data, itemName: "ingredient" } as Ingredient}
-          />
-        </>
-      );
-    },
+    cell: ({ row }) => <IngredientActionsCell row={row} />,
   },
 ];

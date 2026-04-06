@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload, getApiErrorMessage } from "@/shared/contracts/api";
 
 export interface HourlyData {
   hour: number;
@@ -16,8 +17,13 @@ const fetchBusiestHours = async (restaurant_id: string) => {
     url: `https://sabina01.onrender.com/kpis/busiest_hours/${restaurant_id}`,
   };
 
-  const response = await axios.request(options);
-  return response.data as BusiestHoursResponse;
+  try {
+    const response = await axios.request(options);
+    const busiestHours = resolveArrayPayload<HourlyData>(response.data, ["data"]);
+    return { data: busiestHours } as BusiestHoursResponse;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch busiest hours data."));
+  }
 };
 
 export const useBusiestHours = (restaurant_id: string) => {

@@ -50,6 +50,18 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 
 ## Packetized Tasks
 
+### CF-MAU: Contract-First Kickoff (Day 1-2)
+- Adopt shared parser boundary from `src/shared/contracts/api.ts` in Mau-owned paths.
+- Prioritize `src/hooks/tanstack/getMenu.ts`, guest menu parsing, and smart-order parsing paths.
+- Keep auth migration on HOLD; only compatibility parsing is allowed.
+- Link blockers: BR-011, BR-012, BR-013, BR-015, BR-021.
+
+#### CF-MAU Subtasks (completed 2026-04-05)
+- [x] `getMenu.ts` already uses `resolveArrayPayload` from `api.ts` — highest-priority path covered.
+- [x] `useChat.ts` — AI API uses a distinct wire format (`data[0].content`), not `ApiEnvelope`. Contracts correctly do not apply.
+- [x] Auth migration kept on HOLD per task constraint. **BR-001 resolved**: Clerk-only decision made and implemented (A1.2/A1.3).
+- [x] Fixed type layering violation: moved guest-menu `MenuItem` from `MenuItemCard.tsx` into `src/components/menu/types.ts`. `getMenu.ts` now imports from the types file, not a UI component. `MenuItemCard.tsx` re-exports for backward compatibility.
+
 ### A1: Unify Auth Provider Boundary
 - Remove active drift between Clerk/Kinde/legacy flows in runtime.
 - Define one source of truth for signed-in state and role hydration.
@@ -64,7 +76,7 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
   - Uninstalled `@kinde-oss/kinde-auth-react`, `@supabase/supabase-js`
   - Removed dead imports from `ProtectedRoute.tsx` and `main.tsx`
 - [x] A1.4: Validated role-from-backend pattern is clean (no provider-specific role logic)
-- [ ] A1.5: Minor — `sidebarLinks.tsx` role types include "chef"/"default" not in Roles enum (fix later)
+- [x] A1.5: Fixed `sidebar/config.tsx` — replaced local `SidebarRole` string type with `Roles` enum. Removed invalid "chef"/"default" strings. Added hardcode-for-testing comment in `app-sidebar.tsx`.
 
 ### A2: Centralize Route And Sidebar Role Policy
 - One role matrix source for route access + sidebar visibility.
@@ -120,6 +132,12 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 - Move AI transport and parsing to dedicated adapter/hook.
 - Link blocker: BR-008.
 
+#### D3 Subtasks (completed 2026-04-05)
+- [x] D3.1: Created `src/hooks/tanstack/useChat.ts` — owns HTTP transport (via `fetchChat`) + wire-format parsing. Exports `ChatMessage` type and `useChat(locationId, { onMessages })` hook.
+- [x] D3.2: Extracted `parseResponse` into `useChat.ts` — handles both plain-text and structured dish-card responses, normalizes to `ChatMessage[]`.
+- [x] D3.3: Rewrote `SmartOrdersChat.tsx` — removed all inline parsing logic, now calls `useChat` and appends normalized messages. Clears input immediately on send.
+- [x] D3.4: Updated `ChatInterface.tsx` — removed local `ChatMessage` type alias, imports from `useChat.ts` (single source of truth).
+
 ### D4: Smart-order Hardcoded Value Removal
 - Remove hardcoded restaurant/location/ticket identifiers.
 - Ensure runtime context injection from session or props.
@@ -136,6 +154,11 @@ Shared-risk files (handoff required if Ian/Oscar also touching):
 
 ### D5: Smart-order Boundary Separation
 - Split cart, catalog, chat, and submit orchestration boundaries.
+
+#### D5 Subtasks (completed 2026-04-05)
+- [x] D5.1: Extracted `MenuItem`/`OrderItem` types to `src/components/smartOrders/types.ts` — removed cross-component imports from AdminDashboard
+- [x] D5.2: Moved `renderMessage` into `ChatInterface` — removed prop drilling of render function. ChatInterface now owns all message rendering and receives `onAddToOrder` callback instead
+- [x] D5.3: AdminDashboard simplified — owns only cart state + search state + orchestration. No UI rendering logic for chat messages.
 
 ## Tests Required Before Handoff
 - Auth route protection:

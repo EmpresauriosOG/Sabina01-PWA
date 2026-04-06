@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { OrderItem } from "../containers/AdminDashboard";
+import { OrderItem } from "./types";
 import { useState } from "react";
 import { uploadOrder } from "@/utils/orderUtils";
 import { useToast } from "@/components/ui/use-toast";

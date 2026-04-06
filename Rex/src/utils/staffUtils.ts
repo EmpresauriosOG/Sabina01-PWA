@@ -1,6 +1,11 @@
 import { Staff } from "@/components/Staff/constants";
 import { User } from "@/hooks/tanstack/getUser";
 import axios from "axios";
+import {
+  getApiErrorMessage,
+  resolveArrayPayload,
+  unwrapApiEnvelope,
+} from "@/shared/contracts/api";
 
 export interface NoStaffFoundError {
   detail: string;
@@ -9,15 +14,21 @@ export interface NoStaffFoundError {
 export const fetchStaff = async (
   restaurant_id: string,
   location_id: string
-) => {
+): Promise<Staff[]> => {
   const options = {
     method: "GET",
     url: `https://sabina01.onrender.com/user/get_all_users/${restaurant_id}/${location_id}`,
   };
 
-  const response = await axios.request(options);
-  console.log(response);
-  return response.data.user as Staff[];
+  try {
+    const response = await axios.request(options);
+    return resolveArrayPayload<Staff>(response.data, ["user", "users"]);
+  } catch (error) {
+    console.error("Oops");
+    throw new Error(
+      getApiErrorMessage(error, "Failed to fetch staff. Please try again later.")
+    );
+  }
 };
 
 export const submitStaff = async (data: User) => {
@@ -28,12 +39,12 @@ export const submitStaff = async (data: User) => {
   };
   try {
     const response = await axios.request(options);
-    console.log(response.data);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return unwrapApiEnvelope<unknown>(response.data);
+  } catch (error) {
     console.error("Oops");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to create staff member.")
+    );
   }
 };
 
@@ -45,12 +56,12 @@ export const deleteStaff = async (email: string) => {
 
   try {
     const response = await axios.request(options);
-    console.log(response.data);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return unwrapApiEnvelope<unknown>(response.data);
+  } catch (error) {
     console.error("Oops");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to delete staff member.")
+    );
   }
 };
 
@@ -62,11 +73,11 @@ export const modifyStaff = async (data: User) => {
   };
   try {
     const response = await axios.request(options);
-    console.log(response.data);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return unwrapApiEnvelope<unknown>(response.data);
+  } catch (error) {
     console.error("Oops");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to update staff member.")
+    );
   }
 };

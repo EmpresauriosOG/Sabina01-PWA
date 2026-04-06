@@ -1,107 +1,35 @@
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { fetchChat } from "@/hooks/tanstack/fetchChat";
-import { useMutation } from "@tanstack/react-query";
-
-interface Dish {
-  name: string;
-  price: number;
-  short_description: string;
-  attributes: string[];
-}
-
-interface ChatResponse {
-  dishes: Dish[];
-  total_results: number;
-  message: string;
-}
+import { useChat, ChatMessage } from "@/hooks/tanstack/useChat";
 
 interface SmartOrderProps {
   restaurantId: string;
   locationId: string;
   isChatLoading: boolean;
-  setMessages: React.Dispatch<
-    React.SetStateAction<
-      {
-        sender: "user" | "bot";
-        text: string;
-      }[]
-    >
-  >;
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
   setIsChatLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SmartOrdersChat = (props: SmartOrderProps) => {
-  const {
-    locationId,
-    setMessages,
-    isChatLoading,
-    setIsChatLoading,
-  } = props;
+  const { locationId, setMessages, isChatLoading, setIsChatLoading } = props;
   const [chatInput, setChatInput] = useState("");
-  const mutation = useMutation({
-    mutationFn: () => fetchChat( locationId, chatInput),
-    onSuccess: (data) => {
-      setIsChatLoading(false);
-      setChatInput("");
-      
-      try {
-        // Try to parse as JSON first
-        const content = data[0].content;
-        let parsedContent: ChatResponse;
-        
-        try {
-          parsedContent = JSON.parse(content);
-          const { dishes, message } = parsedContent;
-          
-          // Add the natural language message
-          setMessages((prev) => [...prev, { text: message, sender: "bot" }]);
 
-          // If there are dishes, add them as cards
-          if (dishes && dishes.length > 0) {
-            dishes.forEach((dish: Dish) => {
-              const cardMessage = JSON.stringify({
-                type: "card",
-                content: {
-                  title: dish.name,
-                  price: dish.price,
-                  description: dish.short_description,
-                  attributes: dish.attributes,
-                },
-              });
-              setMessages((prev) => [...prev, { text: cardMessage, sender: "bot" }]);
-            });
-          }
-        } catch {
-          // If content is not JSON, treat it as a plain string message
-          setMessages((prev) => [...prev, { text: content, sender: "bot" }]);
-        }
-      } catch (error) {
-        console.error("Error processing response:", error);
-        setMessages((prev) => [
-          ...prev,
-          { text: "Error processing the server response.", sender: "bot" },
-        ]);
-      }
-    },
-    onError: (error) => {
-      console.log("Getting Here");
-      console.error("Error sending message:", error);
-      setMessages((prev) => [
-        ...prev,
-        { text: "Error communicating with the server.", sender: "bot" },
-      ]); // Handle error
+  const { send } = useChat(locationId, {
+    onMessages: (messages) => {
+      setMessages((prev) => [...prev, ...messages]);
+      setIsChatLoading(false);
     },
   });
 
   const handleChatSend = () => {
-    if (chatInput.trim() !== "") {
-      setMessages((prev) => [...prev, { text: chatInput, sender: "user" }]);
-      setIsChatLoading(true);
-      mutation.mutate();
-    }
+    if (chatInput.trim() === "") return;
+    setMessages((prev) => [...prev, { text: chatInput, sender: "user" }]);
+    setIsChatLoading(true);
+    send(chatInput);
+    setChatInput("");
   };
+
   return (
     <div className="p-3 bg-gray-800 border-t border-gray-700">
       <div className="flex items-center">

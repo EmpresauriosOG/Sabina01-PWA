@@ -130,9 +130,12 @@ const TableEditor: React.FC<TableEditorProps> = ({
             Agregar Nombre
           </Button>
         </div>
-        <div className="flex justify-between mt-4">
-          <Button onClick={handleSave}>Guardar</Button>
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-between">
+          <Button className="w-full sm:w-auto" onClick={handleSave}>
+            Guardar
+          </Button>
           <Button
+            className="w-full sm:w-auto"
             onClick={() => {
               toast({
                 variant: "destructive",
@@ -155,8 +158,8 @@ const TableEditor: React.FC<TableEditorProps> = ({
           >
             Borrar Mesa
           </Button>
-          <Button onClick={onClose} variant="outline">
-            Close
+          <Button className="w-full sm:w-auto" onClick={onClose} variant="outline">
+            Cerrar
           </Button>
         </div>
       </div>

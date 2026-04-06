@@ -60,9 +60,10 @@ Rubric snapshot:
 ## 5) Recommended Execution Order
 
 ### P0 First
-1. Remove hardcoded IDs/credentials and normalize runtime config.
-2. Consolidate auth strategy to one provider path.
-3. Fix critical lint errors and ticket lifecycle gaps.
+1. Contract-first: add shared API envelope compatibility parser and migrate core hooks/utils.
+2. Remove hardcoded IDs/credentials and normalize runtime config.
+3. Consolidate auth strategy to one provider path (currently blocked by BR-011/012/013).
+4. Fix critical lint errors and ticket lifecycle gaps.
 
 ### Then Parallel Capability Lanes
 - Lane A: auth-access + platform-shared
@@ -83,6 +84,7 @@ Rubric snapshot:
 - Team cross-review and sign-off on estimates.
 - Dry-run skill validation on 3 prompts for both adapters.
 - CI-level architecture guardrails (import boundaries, secret scanning, test baseline).
+- Backend BR confirmations for envelope/pagination/error contracts before removing compatibility fallbacks.
 
 ## 8) Detailed Docs Index
 - `00-system-map.md`

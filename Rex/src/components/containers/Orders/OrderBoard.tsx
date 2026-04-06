@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import OrderColumn from "@/components/orders/OrderColumn";
 import BurnBarrel from "@/components/orders/BurnBarrel";
 import { useUserStore } from "@/shared/state/userState";
 import { Order } from "@/utils/orderUtils";
+import { isWsPingMessage, parseWsOrderMessage } from "@/shared/contracts/api";
 
 export interface Card {
   _id: string;
@@ -10,9 +11,18 @@ export interface Card {
   column: string;
 }
 
+// TODO [C4/BR-007]: Max reconnect delay and backoff multiplier may need tuning
+// once BR-007 confirms reconnect/backfill expectations from the backend.
+const WS_RECONNECT_BASE_MS = 1000;
+const WS_RECONNECT_MAX_MS = 30000;
+
 const OrderBoard = ({ data }: { data: Order[] }) => {
   const { user } = useUserStore();
   const [cards, setCards] = useState<Order[]>(data);
+  const [wsError, setWsError] = useState(false);
+  const reconnectAttemptRef = useRef(0);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const unmountedRef = useRef(false);
 
   const updateCards = useCallback((newCard: Order) => {
     if (!newCard || !newCard._id) {
@@ -25,45 +35,66 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
         (card) => card._id === newCard._id
       );
       if (existingCardIndex !== -1) {
-        // Update existing card
         return prevCards.map((card, index) =>
           index === existingCardIndex ? { ...card, ...newCard } : card
         );
       } else {
-        // Add new card
         return [...prevCards, newCard];
       }
     });
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket(
-      `wss://sabina01.onrender.com/ws/orders/${user?.restaurant_id}/${user?.location_id}`
-    );
+    unmountedRef.current = false;
 
-    ws.onopen = () => {
-      console.log("WebSocket connection established");
+    const connect = () => {
+      if (unmountedRef.current || !user?.restaurant_id || !user?.location_id) return;
+
+      const ws = new WebSocket(
+        // TODO [C4/BR-017]: Auth token requirement for ws connection not yet confirmed.
+        `wss://sabina01.onrender.com/ws/orders/${user.restaurant_id}/${user.location_id}`
+      );
+
+      ws.onopen = () => {
+        reconnectAttemptRef.current = 0;
+        setWsError(false);
+      };
+
+      ws.onmessage = (event) => {
+        const message = parseWsOrderMessage<Order>(event.data);
+        if (!message || isWsPingMessage(message)) return;
+        updateCards(message.order);
+      };
+
+      ws.onerror = () => {
+        setWsError(true);
+      };
+
+      ws.onclose = () => {
+        if (unmountedRef.current) return;
+        const delay = Math.min(
+          WS_RECONNECT_BASE_MS * 2 ** reconnectAttemptRef.current,
+          WS_RECONNECT_MAX_MS
+        );
+        reconnectAttemptRef.current += 1;
+        reconnectTimerRef.current = setTimeout(connect, delay);
+      };
+
+      return ws;
     };
 
-    ws.onmessage = (event) => {
-      console.log("WebSocket message received:", event.data);
-      const newCard: Order = JSON.parse(event.data).order;
-      updateCards(newCard);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
+    const ws = connect();
 
     return () => {
-      ws.close();
+      unmountedRef.current = true;
+      if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
+      ws?.close();
     };
   }, [user?.restaurant_id, user?.location_id, updateCards]);
 
+  // TODO [C5/BR-004]: Order status values (1=Pedidos, 2=Confirmados, 3=Cocinando, 4=Listo)
+  // are assumed from current UI — not yet confirmed by backend contract.
+  // Once BR-004 answers allowed statuses and transitions, validate here.
   const filteredCards = useCallback(
     (column: number) => {
       return cards.filter((card) => card.status === column);
@@ -72,7 +103,12 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
   );
 
   return (
-    //ToDO: Check this container. map Order COlumns
+    <div className="flex flex-col h-full w-full">
+      {wsError && (
+        <div className="px-4 py-2 text-sm text-yellow-800 bg-yellow-100 border-b border-yellow-200">
+          Reconectando al servidor de pedidos...
+        </div>
+      )}
     <div className="flex flex-col md:flex-row h-full w-full gap-3 overflow-x-auto p-4 md:p-12">
       <OrderColumn
         title="Pedidos"
@@ -110,6 +146,7 @@ const OrderBoard = ({ data }: { data: Order[] }) => {
         setCards={setCards}
       />
       <BurnBarrel setCards={setCards} />
+    </div>
     </div>
   );
 };

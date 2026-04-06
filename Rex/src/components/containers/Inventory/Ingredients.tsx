@@ -2,27 +2,14 @@ import IngredientModal from "@/components/modals/IngredientModal";
 import { DataTable } from "@/components/tables/DataTable";
 import { columns } from "@/components/tables/Ingredients/IngredientColumn";
 import { useIngredient } from "@/hooks/tanstack/useIngredient";
-import { useFormSubmissionStore } from "@/shared/state/formSubmissionState";
 import { useUserStore } from "@/shared/state/userState";
-import { useEffect } from "react";
 import { SectionLoader } from "@/components/ui/loading";
 
 const Ingredients = () => {
   const { user } = useUserStore();
-  const { data, isLoading, isError, refetch } = useIngredient(
+  const { data, isLoading, isError } = useIngredient(
     user?.restaurant_id, user?.location_id
   );
-  const ingredientFormSubmitted = useFormSubmissionStore(
-    (state) => state.ingredientFormSubmitted
-  );
-
-  useEffect(() => {
-    if (ingredientFormSubmitted) {
-      refetch();
-      useFormSubmissionStore.getState().setStaffFormSubmitted(false); // Optionally reset the flag after fetching
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ingredientFormSubmitted]);
 
   if (isLoading) {
     return <SectionLoader />;

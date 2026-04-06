@@ -1,4 +1,9 @@
 import axios from "axios";
+import {
+  getApiErrorMessage,
+  resolveArrayPayload,
+  resolveObjectPayload,
+} from "@/shared/contracts/api";
 
 export interface Ticket {
   _id: string;
@@ -24,13 +29,19 @@ export const createTicket = async (table_id: string) => {
   };
 
   try {
-    console.log("options", options);
     const response = await axios.request(options);
-    return response.data as Ticket;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    const ticket = resolveObjectPayload<Ticket>(response.data, ["ticket"]);
+
+    if (!ticket) {
+      throw new Error("Ticket response payload is empty.");
+    }
+
+    return ticket;
+  } catch (error) {
     console.error("Oops creating ticket");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to create ticket. Please try again later.")
+    );
   }
 };
 
@@ -45,11 +56,14 @@ export const fetchTickets = async (
 
   try {
     const response = await axios.request(options);
-    return response.data as TicketResponse;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    return {
+      tickets: resolveArrayPayload<Ticket>(response.data, ["tickets"]),
+    };
+  } catch (error) {
     console.error("Oops fetching tickets");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to fetch tickets. Please try again later.")
+    );
   }
 };
 
@@ -60,10 +74,17 @@ export const closeTicket = async (ticket_id: string) => {
   };
   try {
     const response = await axios.request(options);
-    return response.data as Ticket;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+    const ticket = resolveObjectPayload<Ticket>(response.data, ["ticket"]);
+
+    if (!ticket) {
+      throw new Error("Ticket close response payload is empty.");
+    }
+
+    return ticket;
+  } catch (error) {
     console.error("Oops closing ticket");
-    throw new Error(error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to close ticket. Please try again later.")
+    );
   }
 };

@@ -1,4 +1,9 @@
 import axios from "axios";
+import {
+  getApiErrorMessage,
+  resolveObjectPayload,
+  unwrapApiEnvelope,
+} from "@/shared/contracts/api";
 
 export interface TablesResponse {
   _id: string;
@@ -22,21 +27,34 @@ export interface Table {
   table_id: string;
 }
 
+const EMPTY_TABLES_RESPONSE: TablesResponse = {
+  _id: "",
+  restaurant_id: "",
+  location_id: "",
+  spaces: [],
+};
+
 export const fetchTables = async (
   restaurant_id: string,
   location_id: string
-) => {
+): Promise<TablesResponse> => {
   const options = {
     method: "GET",
     url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}`,
   };
   try {
     const response = await axios.request(options);
-    console.log(response.data);
-    return response.data as TablesResponse;
+    const parsed = resolveObjectPayload<TablesResponse>(response.data, [
+      "table",
+      "tables",
+    ]);
+
+    return parsed ?? EMPTY_TABLES_RESPONSE;
   } catch (error) {
     console.error("Oops", error);
-    return { tables: [] };
+    throw new Error(
+      getApiErrorMessage(error, "Failed to fetch tables. Please try again later.")
+    );
   }
 };
 
@@ -64,9 +82,12 @@ export const addRestaurantSpace = async (
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Oops", error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to add restaurant space.")
+    );
   }
 };
 
@@ -89,9 +110,12 @@ export const addRestaurantTable = async (
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Oops", error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to add restaurant table.")
+    );
   }
 };
 
@@ -117,9 +141,12 @@ export const updateRestaurantTable = async (
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Oops", error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to update restaurant table.")
+    );
   }
 };
 
@@ -134,9 +161,12 @@ export const deleteRestaurantTables = async (
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Oops", error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to delete restaurant tables.")
+    );
   }
 };
 
@@ -151,26 +181,35 @@ export const deleteRestaurantSpace = async (
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Oops", error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to delete restaurant space.")
+    );
   }
 };
 
+// TODO [C3/BR-006]: The 3rd path segment here is ambiguous — callers currently pass
+// space_id but the parameter was originally named space_name. Pending BR-006 confirmation
+// of whether the backend route expects space_id or space_name.
 export const deleteRestaurantTable = async (
   restaurant_id: string,
   location_id: string,
-  space_name: string,
+  space_id: string,
   table_id: string
 ) => {
   const options = {
     method: "DELETE",
-    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_name}/${table_id}`,
+    url: `https://sabina01.onrender.com/tables/${restaurant_id}/${location_id}/${space_id}/${table_id}`,
   };
   try {
     const response = await axios.request(options);
-    return response.data;
+    return unwrapApiEnvelope<unknown>(response.data);
   } catch (error) {
     console.error("Oops", error);
+    throw new Error(
+      getApiErrorMessage(error, "Failed to delete restaurant table.")
+    );
   }
 };

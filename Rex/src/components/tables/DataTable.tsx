@@ -45,21 +45,21 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
   
   // Custom filter function that searches across multiple columns
-  const multiColumnFilter: FilterFn<any> = React.useCallback(
-    (row: Row<any>, _columnId: string, filterValue: string) => {
+  const multiColumnFilter: FilterFn<TData> = React.useCallback(
+    (row: Row<TData>, _columnId: string, filterValue: string) => {
       if (!filterValue) return true;
-      
+
       const filterFields = Array.isArray(filter) ? filter : [filter];
       const filterValueLower = filterValue.toLowerCase();
-      
-      return filterFields.some(field => {
-        const cellValue = String(row.getValue(field) || '').toLowerCase();
+
+      return filterFields.some((field) => {
+        const cellValue = String(row.getValue(field) || "").toLowerCase();
         return cellValue.includes(filterValueLower);
       });
     },
-    [filter]
+    [filter],
   );
-  
+
   const table = useReactTable({
     data,
     columns,

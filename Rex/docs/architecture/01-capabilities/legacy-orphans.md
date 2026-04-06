@@ -12,13 +12,13 @@
 
 ### Pages And Components
 - `src/components/menu/OTPTable.tsx`
-- `src/context/AuthContext.tsx`
-- `src/components/forms/Form.tsx`
-- `src/components/management/Tables.tsx`
-- `src/components/containers/Restaurants.tsx`
-- `src/shared/constants.ts`
-- `src/utils/tableUtils.ts`
-- `src/hooks/tanstack/getOTP.ts`
+- `src/context/AuthContext.tsx` (archived/deleted)
+- `src/components/forms/Form.tsx` (archived/deleted)
+- `src/components/management/Tables.tsx` (archived/deleted)
+- `src/components/containers/Restaurants.tsx` (archived/deleted)
+- `src/shared/constants.ts` (archived/deleted)
+- `src/utils/tableUtils.ts` (archived/deleted)
+- `src/hooks/tanstack/getOTP.ts` (archived/deleted)
 
 ## Current Functions Hooks Utils Used
 
@@ -90,4 +90,4 @@
 | `src/components/management/Tables.tsx` | archive | Static demo page, not routed/imported. |
 | `src/components/containers/Restaurants.tsx` | archive | Entire component commented out, not used. |
 | `src/utils/tableUtils.ts` | archive | Duplicate fetch API, replaced by `tablesUtils.ts`. |
-| `src/shared/constants.ts` | keep (quarantine) | Large static content; currently unused but may be useful fixture data. |
+| `src/shared/constants.ts` | archive | Removed on 2026-04-05 during legacy cleanup (zero importers). |

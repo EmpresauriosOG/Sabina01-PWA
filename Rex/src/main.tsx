@@ -1,4 +1,4 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import RootLayout from "./RootLayout";
 import { ClerkProvider } from "@clerk/clerk-react";
@@ -34,35 +34,34 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
         element: <ProtectedRoute />,
         children: [
           {
-            path: "/",
+            index: true,
             element: <SmartOrder />,
           },
           {
-            path: "/my-staff",
+            path: "my-staff",
             element: <Staff />,
           },
           {
-            path: "/inventory",
+            path: "inventory",
             element: <Inventory />,
           },
           {
-            path: "/orders",
+            path: "orders",
             element: <OrderContainer />,
           },
           {
-            path: "/tables",
+            path: "tables",
             element: <RestaurantTablesContainer />,
           },
           {
-            path: "/kpis",
+            path: "kpis",
             element: <Kpis />,
           },
           {
-            path: "/tickets",
+            path: "tickets",
             element: <Tickets />,
           },
         ],
@@ -94,8 +93,14 @@ const router = createBrowserRouter([
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Missing root element");
+}
+
+ReactDOM.createRoot(rootElement).render(
+  <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -103,5 +108,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ThemeProvider>
       </QueryClientProvider>
     </ClerkProvider>
-  </React.StrictMode>,
+  </StrictMode>,
 );

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { resolveArrayPayload, getApiErrorMessage } from "@/shared/contracts/api";
 
 //this is the cUrl of the API that will be fetched
 //i wrote it so llm can help me make fetchSales function
@@ -36,8 +37,13 @@ const fetchSales = async (restaurant_id: string, location_id: string) => {
     url: `https://sabina01.onrender.com/kpis/daily_sales/${restaurant_id}?location_id=${location_id}`,
   };
 
-  const response = await axios.request(options);
-  return response.data as SalesResponse;
+  try {
+    const response = await axios.request(options);
+    const sales = resolveArrayPayload<Sales>(response.data, ["data"]);
+    return { data: sales } as SalesResponse;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch sales data."));
+  }
 };
 
 //this is the hook that will be used in the component
