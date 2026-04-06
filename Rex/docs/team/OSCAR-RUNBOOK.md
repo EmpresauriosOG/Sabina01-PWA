@@ -77,6 +77,13 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 - Do not remove legacy parsing fallbacks until BR-015/BR-016/BR-021 are answered or waived.
 - Link blockers: BR-015, BR-016, BR-021, BR-023.
 
+#### CF-OSCAR Subtasks (completed 2026-04-05)
+- [x] `ingredientUtils.ts` — uses `resolveArrayPayload`, `unwrapApiEnvelope`, `getApiErrorMessage`.
+- [x] `menuUtils.ts` — uses `resolveArrayPayload`, `unwrapApiEnvelope`, `getApiErrorMessage`.
+- [x] `staffUtils.ts` — uses `resolveArrayPayload`, `unwrapApiEnvelope`, `getApiErrorMessage`.
+- [x] All 8 KPI hooks — use `resolveArrayPayload` or `resolveObjectPayload` (see B5 for error handling fix).
+- [x] Legacy parsing fallbacks not removed — kept for BR-015/BR-016/BR-021 compatibility.
+
 ### B1: Split Dish Modal Complexity
 - Break modal into focused sections (data, image, ingredients, attributes).
 - Reduce coupling between view state and submission logic.
@@ -94,6 +101,11 @@ Shared-risk files (handoff required if Mau/Ian also touching):
 ### B5: KPI Transport Normalization
 - Normalize KPI query transport and response adapters.
 - Link blocker: BR-009.
+
+#### B5 Subtasks (completed 2026-04-05)
+- [x] All 8 KPI hooks (getSales, getItems, getOrderStatus, getAverageOrderTime, getAverageTicket, getBusiestHours, getHighestSelling, getItemSales) already use contract parsers.
+- [x] Added try/catch with `getApiErrorMessage` to all 8 hooks — errors now produce consistent messages instead of raw axios exceptions.
+- [ ] TODO [B5/BR-009]: Response shape changes (field additions, renames) deferred until BR-009 answers KPI endpoint schemas and location/tenant filtering.
 
 ### E1: Keep/Refactor/Archive Execution
 - Apply `legacy-orphans.md` module classification decisions.

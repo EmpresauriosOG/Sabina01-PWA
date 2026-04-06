@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { resolveArrayPayload } from "@/shared/contracts/api";
+import { resolveArrayPayload, getApiErrorMessage } from "@/shared/contracts/api";
 
 export interface ItemSale {
   dish_id: string;
@@ -24,10 +24,13 @@ const fetchItemSales = async (restaurant_id: string, location_id: string) => {
     url: `https://sabina01.onrender.com/kpis/item_sales/${restaurant_id}?location_id=${location_id}`,
   };
 
-  const response = await axios.request(options);
-  const itemSales = resolveArrayPayload<DailySales>(response.data, ["data"]);
-
-  return { data: itemSales } as ItemSalesResponse;
+  try {
+    const response = await axios.request(options);
+    const itemSales = resolveArrayPayload<DailySales>(response.data, ["data"]);
+    return { data: itemSales } as ItemSalesResponse;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch item sales data."));
+  }
 };
 
 export const useItemSales = (restaurant_id: string, location_id: string) => {

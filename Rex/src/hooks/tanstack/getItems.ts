@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { resolveArrayPayload } from "@/shared/contracts/api";
+import { resolveArrayPayload, getApiErrorMessage } from "@/shared/contracts/api";
 
 export interface Item {
   dish_id: string;
@@ -20,10 +20,13 @@ const fetchItems = async (restaurant_id: string) => {
     url: `https://sabina01.onrender.com/kpis/item_performance/${restaurant_id}`,
   };
 
-  const response = await axios.request(options);
-  const items = resolveArrayPayload<Item>(response.data, ["data"]);
-
-  return { data: items } as ItemsResponse;
+  try {
+    const response = await axios.request(options);
+    const items = resolveArrayPayload<Item>(response.data, ["data"]);
+    return { data: items } as ItemsResponse;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch item performance data."));
+  }
 };
 
 export const useItems = (restaurant_id: string) => {
